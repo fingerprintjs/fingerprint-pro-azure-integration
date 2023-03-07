@@ -29,7 +29,7 @@ function makeConfig(
    * @type {import('rollup').RollupOptions}
    * */
   const commonInput = {
-    input: 'functions/proxy/index.ts',
+    input: entryFile,
     external: ['https'],
     plugins: [
       jsonPlugin(),
