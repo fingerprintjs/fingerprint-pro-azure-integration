@@ -13,12 +13,12 @@
     "start": "func start"
   },
   "dependencies": {
+    "@azure/functions": "^3.0.0",
     "@azure/arm-appplatform": "^2.0.0",
     "@azure/arm-resources": "^5.1.0",
     "@azure/identity": "^3.1.3"
   },
   "devDependencies": {
-    "@azure/functions": "^3.0.0",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
