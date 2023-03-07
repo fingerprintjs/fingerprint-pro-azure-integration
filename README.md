@@ -20,9 +20,9 @@
   <img src="https://img.shields.io/discord/852099967190433792?style=logo&label=Discord&logo=Discord&logoColor=white" alt="Discord server">
 </a>
 
-# Fingerprint Pro AWS Integration
+# Fingerprint Pro Azure Integration
 
-Fingerprint Pro AWS Integration is responsible for proxying identification and agent-download requests that are performed on your Azure infrastructure.
+Fingerprint Pro Azure Integration is responsible for proxying identification and agent-download requests that are performed on your Azure infrastructure.
 
 ## License
 This project is licensed under the MIT license. See the [LICENSE](https://github.com/fingerprintjs/fingerprintjs-pro-azure-integration/blob/main/LICENSE) file for more info.
