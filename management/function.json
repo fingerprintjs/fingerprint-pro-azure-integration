@@ -9,5 +9,5 @@
       "connection": "StorageConnectionString"
     }
   ],
-  "scriptFile": "../dist/fingerprintjs-pro-aws-function-management.js"
+  "scriptFile": "../dist/fingerprintjs-pro-azure-function-management.js"
 }
