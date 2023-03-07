@@ -75,6 +75,6 @@ function makeConfig(
 
 
 export default [
-  ...makeConfig('functions/proxy/index.ts', 'fingerprintjs-pro-aws-function'),
-  ...makeConfig('functions/management/index.ts', 'fingerprintjs-pro-aws-function-management'),
+  ...makeConfig('proxy/index.ts', 'fingerprintjs-pro-aws-function'),
+  ...makeConfig('management/index.ts', 'fingerprintjs-pro-aws-function-management'),
 ]

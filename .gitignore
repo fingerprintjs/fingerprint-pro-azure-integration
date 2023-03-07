@@ -108,3 +108,11 @@ dist
 # Pulumi
 .pulumi
 stack.json
+
+# Azure Functions artifacts
+bin
+obj
+appsettings.json
+local.settings.json
+storage/*
+!storage/.gitkeep

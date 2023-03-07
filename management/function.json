@@ -1,0 +1,13 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "blob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "func-dist/{name}",
+      "connection": "StorageConnectionString"
+    }
+  ],
+  "scriptFile": "../dist/fingerprintjs-pro-aws-function-management.js"
+}

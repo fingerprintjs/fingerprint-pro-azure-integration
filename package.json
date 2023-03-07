@@ -8,7 +8,9 @@
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore --max-warnings 0 functions/",
     "lint:fix": "yarn lint --fix",
     "test": "jest --coverage",
-    "test:dts": "tsc --noEmit --isolatedModules dist/*.d.ts"
+    "test:dts": "tsc --noEmit --isolatedModules dist/*.d.ts",
+    "emulate-storage": "azurite -l ./storage --silent",
+    "start": "func start"
   },
   "dependencies": {
     "@azure/arm-appplatform": "^2.0.0",
@@ -25,6 +27,7 @@
     "@typescript-eslint/eslint-plugin": "^5.44.0",
     "@typescript-eslint/parser": "^5.44.0",
     "@types/node": "^16.x",
+    "azurite": "^3.22.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
