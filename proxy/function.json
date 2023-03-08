@@ -14,5 +14,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/fingerprintjs-pro-azure-function.js"
+  "scriptFile": "../dist/fingerprintjs-pro-azure-function/fingerprintjs-pro-azure-function.js"
 }

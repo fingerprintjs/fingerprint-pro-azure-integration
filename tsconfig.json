@@ -1,12 +1,10 @@
 {
   "compilerOptions": {
-    "module": "es6",
+    "module": "ES2020",
     "target": "es2020",
     "outDir": "dist",
     "rootDir": ".",
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
