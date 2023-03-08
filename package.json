@@ -5,6 +5,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "rimraf dist && rollup -c rollup.config.mjs",
+    "watch": "yarn build --watch",
     "postbuild": "cp host.json dist && node scripts/copyLocalSettings.mjs",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore --max-warnings 0 .",
     "lint:fix": "yarn lint --fix",

@@ -49,7 +49,7 @@ function makeConfig(entryFile, artifactName, functionJsonPath) {
         tsconfig: 'tsconfig.app.json',
       }),
       commonjs(),
-      nodeResolve({ preferBuiltins: false, modulesOnly: true }),
+      nodeResolve({ preferBuiltins: false, modulesOnly: true, exportConditions: ['node'] }),
       replace({
         __FPCDN__: process.env.FPCDN,
         __INGRESS_API__: process.env.INGRESS_API,
@@ -60,6 +60,9 @@ function makeConfig(entryFile, artifactName, functionJsonPath) {
     ],
   }
 
+  /**
+   * @type {import('rollup').OutputOptions}
+   * */
   const commonOutput = {
     exports: 'named',
     sourcemap: true,
