@@ -49,7 +49,7 @@ function makeConfig(entryFile, artifactName, functionJsonPath) {
         tsconfig: 'tsconfig.app.json',
       }),
       commonjs(),
-      nodeResolve({ preferBuiltins: false, modulesOnly: true, exportConditions: ['node'] }),
+      nodeResolve({ preferBuiltins: false, exportConditions: ['node'] }),
       replace({
         __FPCDN__: process.env.FPCDN,
         __INGRESS_API__: process.env.INGRESS_API,

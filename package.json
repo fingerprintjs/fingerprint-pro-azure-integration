@@ -11,7 +11,9 @@
     "lint:fix": "yarn lint --fix",
     "test": "jest --coverage",
     "test:dts": "tsc --noEmit --isolatedModules dist/**/*.d.ts",
-    "emulate-storage": "azurite -l ./storage --silent",
+    "emulate-storage": "azurite -l ./storage -L",
+    "create-azurite-container": "az storage container create -n func-dist --connection-string \"DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;\"",
+    "upload-to-azurite": "az storage blob upload --overwrite -f ./app.zip -c func-dist -n app.zip --connection-string \"DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;\"",
     "start": "func start"
   },
   "dependencies": {
