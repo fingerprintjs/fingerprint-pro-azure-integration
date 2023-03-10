@@ -13,11 +13,11 @@ const subscriptionId = 'fb04eab4-40ef-4df0-b1df-4bd5c3dd8eaf'
 const WEBSITE_RUN_FROM_PACKAGE = 'WEBSITE_RUN_FROM_PACKAGE'
 
 const storageBlobTrigger: AzureFunction = async (context: Context, blob: Buffer) => {
-  console.debug('typeof', typeof blob)
+  context.log.verbose('typeof', typeof blob)
 
   const blobData = context.bindingData.properties as BlobProperties
 
-  console.debug('blobData', blobData)
+  context.log.verbose('blobData', JSON.stringify(blobData, null, 2))
 
   try {
     const credentials = new DefaultAzureCredential()
@@ -29,21 +29,21 @@ const storageBlobTrigger: AzureFunction = async (context: Context, blob: Buffer)
     const setting = settings.properties?.[WEBSITE_RUN_FROM_PACKAGE]
 
     if (setting) {
-      console.log('storageUrl', setting)
+      context.log.verbose('storageUrl', setting)
 
       const storageUrl = new URL(setting)
       const storageName = storageUrl.pathname.split('/')[1]
       const accountName = storageUrl.hostname.split('.')[0]
 
-      console.debug('storageName', storageName)
-      console.debug('accountName', accountName)
+      context.log.verbose('storageName', storageName)
+      context.log.verbose('accountName', accountName)
 
       const { keys } = await storageArmClient.storageAccounts.listKeys(resourceGroupName, accountName)
 
       const key = keys?.[0].value
 
       if (!key) {
-        console.warn('No storage keys found')
+        context.log.warn('No storage keys found')
 
         return
       }
@@ -58,9 +58,7 @@ const storageBlobTrigger: AzureFunction = async (context: Context, blob: Buffer)
       // TODO We should come up with more clever naming, maybe include version number?
       const blobClient = storageClient.getBlockBlobClient('func.zip')
 
-      const uploadResult = await blobClient.uploadData(blob)
-
-      console.debug('uploadResult', uploadResult._response)
+      await blobClient.uploadData(blob)
 
       const sas = await blobClient.generateSasUrl({
         startsOn: new Date(),
@@ -70,14 +68,14 @@ const storageBlobTrigger: AzureFunction = async (context: Context, blob: Buffer)
         }),
       })
 
-      console.debug('sas', sas)
+      context.log.verbose('sas', sas)
 
       settings.properties![WEBSITE_RUN_FROM_PACKAGE] = sas
 
       await client.webApps.updateApplicationSettings(resourceGroupName, appName, settings)
     }
   } catch (error) {
-    console.error(error)
+    context.log.error(error)
   }
 }
 
