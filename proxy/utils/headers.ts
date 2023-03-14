@@ -9,36 +9,8 @@ const CACHE_CONTROL_HEADER_NAME = 'cache-control'
 // Azure specific headers
 const BLACKLISTED_HEADERS_PREFIXES = ['x-edge-', 'x-arr-', 'x-site', 'x-azure-']
 
-const READ_ONLY_REQUEST_HEADERS = new Set(['content-length', 'host', 'transfer-encoding', 'via', 'disguised-host'])
-const READ_ONLY_RESPONSE_HEADERS = new Set([
-  'accept-encoding',
-  'content-length',
-  'if-modified-since',
-  'if-none-match',
-  'if-range',
-  'if-unmodified-since',
-  'transfer-encoding',
-  'via',
-])
-
-const BLACKLISTED_HEADERS = new Set([
-  'connection',
-  'expect',
-  'keep-alive',
-  'proxy-authenticate',
-  'proxy-authorization',
-  'proxy-connection',
-  'trailer',
-  'upgrade',
-  'x-accel-buffering',
-  'x-accel-charset',
-  'x-accel-limit-rate',
-  'x-accel-redirect',
-  'x-cache',
-  'x-forwarded-proto',
-  'x-real-ip',
-  'strict-transport-security',
-])
+const BLACKLISTED_REQUEST_HEADERS = new Set(['host', 'strict-transport-security'])
+const BLACKLISTED_RESPONSE_HEADERS = new Set(['strict-transport-security'])
 
 export function filterRequestHeaders(headers: HttpRequestHeaders) {
   return Object.entries(headers).reduce((result: { [key: string]: string }, [name, value]) => {
@@ -93,19 +65,11 @@ export function getHost(request: Pick<HttpRequest, 'headers'>) {
 }
 
 function isHeaderAllowedForResponse(headerName: string) {
-  return (
-    !READ_ONLY_RESPONSE_HEADERS.has(headerName) &&
-    !BLACKLISTED_HEADERS.has(headerName) &&
-    !matchesBlacklistedHeaderPrefix(headerName)
-  )
+  return !BLACKLISTED_RESPONSE_HEADERS.has(headerName) && !matchesBlacklistedHeaderPrefix(headerName)
 }
 
 function isHeaderAllowedForRequest(headerName: string) {
-  return (
-    !READ_ONLY_REQUEST_HEADERS.has(headerName) &&
-    !BLACKLISTED_HEADERS.has(headerName) &&
-    !matchesBlacklistedHeaderPrefix(headerName)
-  )
+  return !BLACKLISTED_REQUEST_HEADERS.has(headerName) && !matchesBlacklistedHeaderPrefix(headerName)
 }
 
 function matchesBlacklistedHeaderPrefix(headerName: string) {

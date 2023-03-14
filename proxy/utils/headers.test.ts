@@ -2,7 +2,7 @@ import { HttpRequest } from '@azure/functions'
 import { filterRequestHeaders, getHost, updateResponseHeaders } from './headers'
 import { IncomingHttpHeaders } from 'http'
 
-const mockReq: HttpRequest = {
+const mockReq = {
   method: 'GET',
   url: 'https://example.org/fpjs/client',
   query: {
@@ -27,16 +27,16 @@ const mockReq: HttpRequest = {
   params: {},
   get: jest.fn(),
   parseFormBody: jest.fn(),
-}
+} satisfies HttpRequest
 
 describe('filterRequestHeaders', () => {
   test('test filtering blackilisted headers', () => {
     const headers = filterRequestHeaders(mockReq.headers)
 
-    expect(headers.hasOwnProperty('content-length')).toBe(false)
+    expect(headers.hasOwnProperty('content-length')).toBe(true)
     expect(headers.hasOwnProperty('host')).toBe(false)
-    expect(headers.hasOwnProperty('transfer-encoding')).toBe(false)
-    expect(headers.hasOwnProperty('via')).toBe(false)
+    expect(headers.hasOwnProperty('transfer-encoding')).toBe(true)
+    expect(headers.hasOwnProperty('via')).toBe(true)
     expect(headers['content-type']).toBe('application/json')
     expect(headers['cookie']).toBe('_iidt=7A03Gwg')
     expect(headers['x-custom-header']).toBe('value123899')
@@ -69,7 +69,7 @@ describe('updateResponseHeaders', () => {
     const resultHeaders = updateResponseHeaders(headers, 'fpjs.sh')
 
     expect(resultHeaders.hasOwnProperty('custom-header-1')).toBe(true)
-    expect(resultHeaders.hasOwnProperty('content-length')).toBe(false)
+    expect(resultHeaders.hasOwnProperty('content-length')).toBe(true)
     expect(resultHeaders.hasOwnProperty('x-edge-xxx')).toBe(false)
     expect(resultHeaders['cache-control']).toBe('public, max-age=3600, s-maxage=60')
     expect(resultHeaders['set-cookie']).toBe('_iidf; HttpOnly; Domain=fpjs.sh')
@@ -95,7 +95,7 @@ describe('updateResponseHeaders', () => {
     const resultHeaders = updateResponseHeaders(headers, 'fpjs.sh')
 
     expect(resultHeaders.hasOwnProperty('custom-header-1')).toBe(true)
-    expect(resultHeaders.hasOwnProperty('content-length')).toBe(false)
+    expect(resultHeaders.hasOwnProperty('content-length')).toBe(true)
     expect(resultHeaders['cache-control']).toBe('no-cache, max-age=3600, s-maxage=60')
     expect(resultHeaders['set-cookie']).toBe('_iidf; HttpOnly; Domain=fpjs.sh')
   })
