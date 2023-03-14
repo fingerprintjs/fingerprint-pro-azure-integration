@@ -1,5 +1,5 @@
 import { HttpRequest } from '@azure/functions'
-import { filterRequestHeaders, updateResponseHeaders } from './headers'
+import { filterRequestHeaders, getHost, updateResponseHeaders } from './headers'
 import { IncomingHttpHeaders } from 'http'
 
 const mockReq: HttpRequest = {
@@ -94,5 +94,28 @@ describe('updateResponseHeaders', () => {
     expect(resultHeaders.hasOwnProperty('content-length')).toBe(false)
     expect(resultHeaders['cache-control']).toBe('no-cache, max-age=3600, s-maxage=60')
     expect(resultHeaders['set-cookie']).toBe('_iidf; HttpOnly; Domain=fpjs.sh')
+  })
+})
+
+describe('getHost', () => {
+  it.each([
+    [
+      {
+        headers: {
+          'x-forwarded-host': 'fpjs.sh',
+        },
+      },
+      'fpjs.sh',
+    ],
+    [
+      {
+        headers: {
+          host: 'fpjs.sh',
+        },
+      },
+      'fpjs.sh',
+    ],
+  ])('returns correct host', (request, expectedHost) => {
+    expect(getHost(request)).toBe(expectedHost)
   })
 })
