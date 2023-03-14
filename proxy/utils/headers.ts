@@ -73,11 +73,5 @@ function isHeaderAllowedForRequest(headerName: string) {
 }
 
 function matchesBlacklistedHeaderPrefix(headerName: string) {
-  for (const blacklistedHeaderPrefix of BLACKLISTED_HEADERS_PREFIXES) {
-    if (headerName.startsWith(blacklistedHeaderPrefix)) {
-      return true
-    }
-  }
-
-  return false
+  return BLACKLISTED_HEADERS_PREFIXES.some((prefix) => headerName.startsWith(prefix))
 }
