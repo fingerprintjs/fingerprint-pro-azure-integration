@@ -26,8 +26,6 @@ export async function downloadAgent({ httpRequest, logger }: DownloadAgentParams
   return new Promise<HttpResponseSimple & { isRaw?: boolean }>((resolve) => {
     const data: any[] = []
 
-    logger.verbose('Downloading agent from', url.toString())
-
     const request = https.request(
       url,
       {
