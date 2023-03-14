@@ -113,5 +113,6 @@ stack.json
 bin
 obj
 appsettings.json
+local.settings.json
 storage/*
 !storage/.gitkeep
