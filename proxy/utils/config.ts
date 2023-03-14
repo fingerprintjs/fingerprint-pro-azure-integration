@@ -1,5 +1,5 @@
 // TODO - Extract these into ENV variables
 export const config = {
-  fpdcdn: 'fpcdn.io',
-  ingressApi: 'api.fpjs.io',
+  fpdcdn: '__FPCDN__',
+  ingressApi: '__INGRESS_API__',
 }
