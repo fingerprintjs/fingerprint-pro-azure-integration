@@ -6,6 +6,8 @@ import { adjustCookies, filterCookie } from './cookies'
 const COOKIE_HEADER_NAME = 'set-cookie'
 const CACHE_CONTROL_HEADER_NAME = 'cache-control'
 
+const FPJS_COOKIE_NAME = '_iidt'
+
 // Azure specific headers
 const BLACKLISTED_HEADERS_PREFIXES = ['x-edge-', 'x-arr-', 'x-site', 'x-azure-']
 
@@ -21,7 +23,8 @@ export function filterRequestHeaders(headers: HttpRequestHeaders) {
 
       if (headerName === 'cookie') {
         headerValue = headerValue.split(/; */).join('; ')
-        headerValue = filterCookie(headerValue, (key) => key === '_iidt')
+
+        headerValue = filterCookie(headerValue, (key) => key === FPJS_COOKIE_NAME)
       }
 
       result[headerName] = headerValue
