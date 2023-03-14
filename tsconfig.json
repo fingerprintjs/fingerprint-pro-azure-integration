@@ -8,11 +8,16 @@
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "esModuleInterop": true
   },
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.test.ts"
+  "include": ["proxy", "management"],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.test.json"
+    }
   ]
 }
