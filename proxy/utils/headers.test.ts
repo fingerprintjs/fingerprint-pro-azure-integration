@@ -87,7 +87,7 @@ describe('updateResponseHeaders', () => {
       'content-type': 'application/json',
       'cross-origin-resource-policy': 'cross-origin',
       etag: 'dskjhfadsjk',
-      'set-cookie': ['_iidf', 'HttpOnly', 'Domain=cloudfront.net'],
+      'set-cookie': ['_iidf', 'HttpOnly', 'Domain=azure.net'],
       vary: 'Accept-Encoding',
       'custom-header-1': 'gdfddfd',
     }

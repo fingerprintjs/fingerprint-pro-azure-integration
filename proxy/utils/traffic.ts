@@ -10,5 +10,5 @@ export function addTrafficMonitoringSearchParamsForVisitorIdRequest(url: URL) {
 }
 
 function getTrafficMonitoringValue(type: 'procdn' | 'ingress'): string {
-  return `fingerprintjs-pro-cloudfront/${LAMBDA_FUNC_VERSION}/${type}`
+  return `fingerprintjs-pro-azure/${LAMBDA_FUNC_VERSION}/${type}`
 }
