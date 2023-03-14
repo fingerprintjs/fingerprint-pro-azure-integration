@@ -23,7 +23,7 @@ export async function downloadAgent({ httpRequest, logger }: DownloadAgentParams
 
   const headers = filterRequestHeaders(httpRequest.headers)
 
-  return new Promise<HttpResponseSimple & { isRaw?: boolean }>((resolve) => {
+  return new Promise<HttpResponseSimple>((resolve) => {
     const data: any[] = []
 
     const request = https.request(
@@ -44,12 +44,12 @@ export async function downloadAgent({ httpRequest, logger }: DownloadAgentParams
 
         response.on('end', () => {
           const body = Buffer.concat(data)
+          const responseHeaders = updateResponseHeaders(response.headers, domain)
 
           resolve({
             status: response.statusCode ? response.statusCode.toString() : '500',
-            headers: updateResponseHeaders(response.headers, domain),
+            headers: responseHeaders,
             body: new Uint8Array(body),
-            isRaw: true,
           })
         })
       },
