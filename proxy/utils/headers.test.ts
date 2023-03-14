@@ -20,6 +20,8 @@ const mockReq: HttpRequest = {
     'x-custom-header': 'value123899',
     'x-edge-qqq': 'x-edge-qqq',
     'strict-transport-security': 'max-age=600',
+    'x-azure-requestchain': 'hops=1',
+    'x-azure-socketip': '46.204.4.119',
   },
   user: null,
   params: {},
@@ -40,6 +42,8 @@ describe('filterRequestHeaders', () => {
     expect(headers['x-custom-header']).toBe('value123899')
     expect(headers.hasOwnProperty('x-edge-qqq')).toBe(false)
     expect(headers.hasOwnProperty('strict-transport-security')).toBe(false)
+    expect(headers.hasOwnProperty('x-azure-requestchain')).toBe(false)
+    expect(headers.hasOwnProperty('x-azure-socketip')).toBe(false)
   })
 })
 

@@ -5,10 +5,11 @@ import { adjustCookies, filterCookie } from './cookies'
 
 const COOKIE_HEADER_NAME = 'set-cookie'
 const CACHE_CONTROL_HEADER_NAME = 'cache-control'
-// TODO Include azure headers
-const BLACKLISTED_HEADERS_PREFIXES = ['x-edge-', 'x-amz-cf-']
 
-const READ_ONLY_REQUEST_HEADERS = new Set(['content-length', 'host', 'transfer-encoding', 'via'])
+// Azure specific headers
+const BLACKLISTED_HEADERS_PREFIXES = ['x-edge-', 'x-arr-', 'x-site', 'x-azure-']
+
+const READ_ONLY_REQUEST_HEADERS = new Set(['content-length', 'host', 'transfer-encoding', 'via', 'disguised-host'])
 const READ_ONLY_RESPONSE_HEADERS = new Set([
   'accept-encoding',
   'content-length',
@@ -20,7 +21,6 @@ const READ_ONLY_RESPONSE_HEADERS = new Set([
   'via',
 ])
 
-// TODO Include azure headers
 const BLACKLISTED_HEADERS = new Set([
   'connection',
   'expect',
