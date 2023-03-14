@@ -4,24 +4,47 @@ import { updateCacheControlHeader } from './cacheControl'
 
 const COOKIE_HEADER_NAME = 'set-cookie'
 const CACHE_CONTROL_HEADER_NAME = 'cache-control'
-const ALLOWED_RESPONSE_HEADERS = [
-  'access-control-allow-credentials',
-  'access-control-allow-origin',
-  'access-control-expose-headers',
-  'content-encoding',
-  'content-type',
-  'cross-origin-resource-policy',
-  'etag',
-  'vary',
-]
-const BLACKLISTED_REQUEST_HEADERS = ['content-length', 'host', 'transfer-encoding', 'via']
+// TODO Include azure headers
+const BLACKLISTED_HEADERS_PREFIXES = ['x-edge-', 'x-amz-cf-']
+
+const READ_ONLY_REQUEST_HEADERS = new Set(['content-length', 'host', 'transfer-encoding', 'via'])
+const READ_ONLY_RESPONSE_HEADERS = new Set([
+  'accept-encoding',
+  'content-length',
+  'if-modified-since',
+  'if-none-match',
+  'if-range',
+  'if-unmodified-since',
+  'transfer-encoding',
+  'via',
+])
+
+// TODO Include azure headers
+const BLACKLISTED_HEADERS = new Set([
+  'connection',
+  'expect',
+  'keep-alive',
+  'proxy-authenticate',
+  'proxy-authorization',
+  'proxy-connection',
+  'trailer',
+  'upgrade',
+  'x-accel-buffering',
+  'x-accel-charset',
+  'x-accel-limit-rate',
+  'x-accel-redirect',
+  'x-cache',
+  'x-forwarded-proto',
+  'x-real-ip',
+  'strict-transport-security',
+])
 
 export function filterRequestHeaders(headers: HttpRequestHeaders) {
   return Object.entries(headers).reduce((result: { [key: string]: string }, [name, value]) => {
     const headerName = name.toLowerCase()
 
-    if (!BLACKLISTED_REQUEST_HEADERS.includes(headerName)) {
-      let headerValue = value[0]
+    if (isHeaderAllowedForRequest(headerName)) {
+      let headerValue = value
 
       if (headerName === 'cookie') {
         headerValue = headerValue.split(/; */).join('; ')
@@ -38,20 +61,27 @@ export function filterRequestHeaders(headers: HttpRequestHeaders) {
 export function updateResponseHeaders(headers: http.IncomingHttpHeaders, domain: string): HttpResponseHeaders {
   const result: HttpResponseHeaders = {}
 
-  for (const name of ALLOWED_RESPONSE_HEADERS) {
-    const value = headers[name]
-
-    if (value) {
-      result[name] = value.toString()
+  for (const [key, value] of Object.entries(headers)) {
+    if (!isHeaderAllowedForResponse(key) || !value) {
+      continue
     }
-  }
 
-  if (headers[COOKIE_HEADER_NAME]) {
-    result[COOKIE_HEADER_NAME] = adjustCookies(headers[COOKIE_HEADER_NAME], domain)
-  }
+    switch (key) {
+      case COOKIE_HEADER_NAME: {
+        result[COOKIE_HEADER_NAME] = adjustCookies(Array.isArray(value) ? value : [value], domain)
 
-  if (headers[CACHE_CONTROL_HEADER_NAME]) {
-    result[CACHE_CONTROL_HEADER_NAME] = updateCacheControlHeader(headers[CACHE_CONTROL_HEADER_NAME])
+        break
+      }
+
+      case CACHE_CONTROL_HEADER_NAME: {
+        result[CACHE_CONTROL_HEADER_NAME] = updateCacheControlHeader(value.toString())
+
+        break
+      }
+
+      default:
+        result[key] = value.toString()
+    }
   }
 
   return result
@@ -98,4 +128,30 @@ export function adjustCookies(cookies: string[], domainName: string): string {
   })
 
   return newCookies.join('; ').trim()
+}
+
+function isHeaderAllowedForResponse(headerName: string) {
+  return (
+    !READ_ONLY_RESPONSE_HEADERS.has(headerName) &&
+    !BLACKLISTED_HEADERS.has(headerName) &&
+    !matchesBlacklistedHeaderPrefix(headerName)
+  )
+}
+
+function isHeaderAllowedForRequest(headerName: string) {
+  return (
+    !READ_ONLY_REQUEST_HEADERS.has(headerName) &&
+    !BLACKLISTED_HEADERS.has(headerName) &&
+    !matchesBlacklistedHeaderPrefix(headerName)
+  )
+}
+
+function matchesBlacklistedHeaderPrefix(headerName: string) {
+  for (const blacklistedHeaderPrefix of BLACKLISTED_HEADERS_PREFIXES) {
+    if (headerName.startsWith(blacklistedHeaderPrefix)) {
+      return true
+    }
+  }
+
+  return false
 }
