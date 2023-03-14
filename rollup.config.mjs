@@ -62,6 +62,7 @@ function makeConfig(entryFile, artifactName, functionJsonPath) {
 
   const commonOutput = {
     exports: 'named',
+    sourcemap: true,
   }
 
   /**

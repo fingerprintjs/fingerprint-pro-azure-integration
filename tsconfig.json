@@ -9,7 +9,8 @@
     "noImplicitAny": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "sourceMap": true
   },
   "include": ["proxy", "management"],
   "references": [
