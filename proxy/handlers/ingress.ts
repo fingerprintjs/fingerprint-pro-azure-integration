@@ -1,7 +1,7 @@
 import { HttpRequest } from '@azure/functions'
-import { config } from './config'
+import { config } from '../utils/config'
 import * as https from 'https'
-import { updateResponseHeaders } from './headers'
+import { updateResponseHeaders } from '../utils/headers'
 import { HttpResponseSimple } from '@azure/functions/types/http'
 
 export function handleIngress(httpRequest: HttpRequest) {
