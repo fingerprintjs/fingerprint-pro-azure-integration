@@ -10,7 +10,7 @@ const CACHE_CONTROL_HEADER_NAME = 'cache-control'
 const BLACKLISTED_HEADERS_PREFIXES = ['x-edge-', 'x-arr-', 'x-site', 'x-azure-']
 
 const BLACKLISTED_REQUEST_HEADERS = new Set(['host', 'strict-transport-security'])
-const BLACKLISTED_RESPONSE_HEADERS = new Set(['strict-transport-security'])
+const BLACKLISTED_RESPONSE_HEADERS = new Set(['strict-transport-security', 'transfer-encoding'])
 
 export function filterRequestHeaders(headers: HttpRequestHeaders) {
   return Object.entries(headers).reduce((result: { [key: string]: string }, [name, value]) => {
