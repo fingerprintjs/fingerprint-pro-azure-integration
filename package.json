@@ -9,7 +9,7 @@
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore --max-warnings 0 .",
     "lint:fix": "yarn lint --fix",
     "test": "jest --coverage",
-    "test:dts": "tsc --noEmit --isolatedModules dist/*.d.ts",
+    "test:dts": "tsc --noEmit --isolatedModules dist/**/*.d.ts",
     "emulate-storage": "azurite -l ./storage --silent",
     "start": "func start"
   },
