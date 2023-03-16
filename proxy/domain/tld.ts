@@ -223,7 +223,7 @@ function get(domain: string): string | null {
 export function getEffectiveTLDPlusOne(hostname: string) {
   try {
     return get(hostname) || ''
-  } catch (e) {
+  } catch {
     return ''
   }
 }
