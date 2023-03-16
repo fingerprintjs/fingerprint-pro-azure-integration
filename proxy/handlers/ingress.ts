@@ -1,29 +1,31 @@
-import { HttpRequest } from '@azure/functions'
+import { HttpRequest, Logger } from '@azure/functions'
 import { config } from '../utils/config'
 import * as https from 'https'
-import { updateResponseHeaders } from '../utils/headers'
+import { filterRequestHeaders, getHost, updateResponseHeaders } from '../utils/headers'
 import { HttpResponseSimple } from '@azure/functions/types/http'
+import { generateErrorResponse } from '../utils/errorResponse'
+import { getEffectiveTLDPlusOne } from '../domain/tld'
 
-export function handleIngress(httpRequest: HttpRequest) {
+export interface HandleIngressParams {
+  httpRequest: HttpRequest
+  logger: Logger
+}
+
+export function handleIngress({ httpRequest, logger }: HandleIngressParams) {
   const { region } = httpRequest.query
 
-  const domain = new URL(httpRequest.url).hostname
-
+  const domain = getEffectiveTLDPlusOne(getHost(httpRequest))
   const url = new URL(getIngressAPIHost(region))
 
   Object.entries(httpRequest.query).forEach(([key, value]) => {
     url.searchParams.append(key, value)
   })
 
-  console.debug('Performing request', url.toString())
+  logger.verbose('Performing request', url.toString())
 
-  const headers = {
-    ...httpRequest.headers,
-  }
+  const headers = filterRequestHeaders(httpRequest.headers)
 
-  delete headers['host']
-
-  return new Promise<HttpResponseSimple & { isRaw?: boolean }>((resolve) => {
+  return new Promise<HttpResponseSimple>((resolve) => {
     const data: any[] = []
 
     const request = https.request(
@@ -38,13 +40,11 @@ export function handleIngress(httpRequest: HttpRequest) {
         response.on('end', () => {
           const payload = Buffer.concat(data)
 
-          console.debug('Response from Ingress API', response.statusCode, payload.toString('utf-8'))
+          logger.verbose('Response from Ingress API', response.statusCode, payload.toString('utf-8'))
 
           resolve({
             status: response.statusCode ? response.statusCode.toString() : '500',
-            // TODO Adjust response headers
             headers: updateResponseHeaders(response.headers, domain),
-            isRaw: true,
             body: payload,
           })
         })
@@ -52,13 +52,14 @@ export function handleIngress(httpRequest: HttpRequest) {
     )
 
     request.on('error', (error) => {
-      console.error('unable to handle result', { error })
+      logger.error('unable to handle result', { error })
 
       resolve({
         status: '500',
-        headers: {},
-        // TODO Generate error response with our integrations format
-        body: error,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: generateErrorResponse(error),
       })
     })
 
