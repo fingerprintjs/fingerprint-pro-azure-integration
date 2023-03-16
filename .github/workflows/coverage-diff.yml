@@ -20,6 +20,8 @@ jobs:
         id: coverage-md
         with:
           srcBasePath: './'
+      - run: |
+          cat ./coverage/coverage.txt
       - uses: marocchino/sticky-pull-request-comment@adca94abcaf73c10466a71cc83ae561fd66d1a56
         with:
           message: |
