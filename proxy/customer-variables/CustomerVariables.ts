@@ -1,6 +1,7 @@
 import { CustomerVariableProvider, CustomerVariableType, CustomerVariableValue } from './types'
 import { getDefaultCustomerVariable } from './defaults'
 import { Logger } from '@azure/functions'
+import { maybeObfuscateVariable } from './maybeObfuscateVariable'
 
 export interface GetVariableResult {
   value: CustomerVariableValue
@@ -41,7 +42,12 @@ export class CustomerVariables {
         const result = await provider.getVariable(variable)
 
         if (result) {
-          this.logger?.verbose(`Resolved customer variable ${variable} with provider ${provider.name}`)
+          this.logger?.verbose(
+            `Resolved customer variable ${variable} with provider ${provider.name}. Value: ${maybeObfuscateVariable(
+              variable,
+              result,
+            )}`,
+          )
 
           return {
             value: result,
