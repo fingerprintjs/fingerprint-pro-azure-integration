@@ -1,7 +1,6 @@
 import { CustomerVariableValue, CustomerVariableType } from './types'
 
 const defaultCustomerVariables = {
-  [CustomerVariableType.BehaviourPath]: 'fpjs',
   [CustomerVariableType.GetResultPath]: 'resultId',
   [CustomerVariableType.PreSharedSecret]: null,
   [CustomerVariableType.AgentDownloadPath]: 'agent',

@@ -10,7 +10,6 @@ export function getInMemoryCustomerVariables() {
     [CustomerVariableType.AgentDownloadPath]: 'download',
     [CustomerVariableType.PreSharedSecret]: 'secret',
     [CustomerVariableType.GetResultPath]: 'result',
-    [CustomerVariableType.BehaviourPath]: 'behaviour',
   } satisfies CustomerVariablesRecord
 
   const provider: CustomerVariableProvider = {
