@@ -16,7 +16,6 @@ const httpTrigger: AzureFunction = async (context: Context, req: HttpRequest): P
   const [clientPath, resultPath] = await Promise.all([
     customerVariables.getVariable(CustomerVariableType.AgentDownloadPath),
     customerVariables.getVariable(CustomerVariableType.GetResultPath),
-    customerVariables.getVariable(CustomerVariableType.GetResultPath),
   ])
 
   const path = req.params?.restOfPath
