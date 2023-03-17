@@ -12,7 +12,7 @@ export interface GetVariableResult {
  * Variables will be resolved in order in which providers are set.
  * */
 export class CustomerVariables {
-  constructor(private readonly providers: CustomerVariableProvider[], private readonly logger: Logger) {}
+  constructor(private readonly providers: CustomerVariableProvider[], private readonly logger?: Logger) {}
 
   /**
    * Attempts to resolve customer variable using providers.
@@ -27,7 +27,7 @@ export class CustomerVariables {
 
     const defaultValue = getDefaultCustomerVariable(variable)
 
-    this.logger.verbose(`Resolved customer variable ${variable} with default value ${defaultValue}`)
+    this.logger?.verbose(`Resolved customer variable ${variable} with default value ${defaultValue}`)
 
     return {
       value: defaultValue,
@@ -41,7 +41,7 @@ export class CustomerVariables {
         const result = await provider.getVariable(variable)
 
         if (result) {
-          this.logger.verbose(`Resolved customer variable ${variable} with provider ${provider.name}`)
+          this.logger?.verbose(`Resolved customer variable ${variable} with provider ${provider.name}`)
 
           return {
             value: result,
@@ -49,7 +49,7 @@ export class CustomerVariables {
           }
         }
       } catch (error) {
-        this.logger.error(`Error while resolving customer variable ${variable} with provider ${provider.name}`, {
+        this.logger?.error(`Error while resolving customer variable ${variable} with provider ${provider.name}`, {
           error,
         })
       }

@@ -1,5 +1,5 @@
 import { HttpRequest } from '@azure/functions'
-import { filterRequestHeaders, getHost, updateResponseHeaders } from './headers'
+import { filterRequestHeaders, getHost, prepareHeadersForIngressAPI, updateResponseHeaders } from './headers'
 import { IncomingHttpHeaders } from 'http'
 
 const mockReq = {
@@ -22,6 +22,7 @@ const mockReq = {
     'strict-transport-security': 'max-age=600',
     'x-azure-requestchain': 'hops=1',
     'x-azure-socketip': '46.204.4.119',
+    'x-forwarded-for': '127.0.0.1',
   },
   user: null,
   params: {},
@@ -30,7 +31,7 @@ const mockReq = {
 } satisfies HttpRequest
 
 describe('filterRequestHeaders', () => {
-  test('test filtering blackilisted headers', () => {
+  it('test filtering blackilisted headers', () => {
     const headers = filterRequestHeaders(mockReq.headers)
 
     expect(headers.hasOwnProperty('content-length')).toBe(true)
@@ -48,7 +49,7 @@ describe('filterRequestHeaders', () => {
 })
 
 describe('updateResponseHeaders', () => {
-  test('correctly updates response headers', () => {
+  it('correctly updates response headers', () => {
     const headers: IncomingHttpHeaders = {
       'access-control-allow-credentials': 'true',
       'access-control-allow-origin': 'true',
@@ -76,7 +77,7 @@ describe('updateResponseHeaders', () => {
     expect(resultHeaders.hasOwnProperty('strict-transport-security')).toBe(false)
   })
 
-  test('updates cache policy', () => {
+  it('updates cache policy', () => {
     const headers: IncomingHttpHeaders = {
       'access-control-allow-credentials': 'true',
       'access-control-allow-origin': 'true',
@@ -121,5 +122,21 @@ describe('getHost', () => {
     ],
   ])('returns correct host', (request, expectedHost) => {
     expect(getHost(request)).toBe(expectedHost)
+  })
+})
+
+describe('prepareHeadersForIngressAPI', () => {
+  it('should set client ip and proxy secret', () => {
+    const result = prepareHeadersForIngressAPI(mockReq, 'secret')
+
+    expect(result['fpjs-proxy-client-ip']).toBe(mockReq.headers['x-forwarded-for'])
+    expect(result['fpjs-proxy-secret']).toBe('secret')
+  })
+
+  it('should not set secret if it is undefined', () => {
+    const result = prepareHeadersForIngressAPI(mockReq, undefined)
+
+    expect(result['fpjs-proxy-client-ip']).toBe(mockReq.headers['x-forwarded-for'])
+    expect(result['fpjs-proxy-secret']).toBe(undefined)
   })
 })
