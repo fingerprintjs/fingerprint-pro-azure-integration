@@ -30,7 +30,7 @@ export function handleIngress({ httpRequest, logger, preSharedSecret }: HandleIn
     logger.warn('Pre-shared secret is not set')
   }
 
-  const headers = prepareHeadersForIngressAPI(httpRequest, preSharedSecret)
+  const headers = prepareHeadersForIngressAPI(httpRequest, preSharedSecret, logger)
 
   return new Promise<HttpResponseSimple>((resolve) => {
     const data: any[] = []

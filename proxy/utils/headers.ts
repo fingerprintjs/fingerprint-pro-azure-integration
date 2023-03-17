@@ -1,5 +1,5 @@
 import * as http from 'http'
-import { HttpRequest, HttpRequestHeaders, HttpResponseHeaders } from '@azure/functions'
+import { HttpRequest, HttpRequestHeaders, HttpResponseHeaders, Logger } from '@azure/functions'
 import { updateCacheControlHeader } from './cacheControl'
 import { adjustCookies, filterCookie } from './cookies'
 
@@ -67,22 +67,33 @@ export function getHost(request: Pick<HttpRequest, 'headers'>) {
   return request.headers['x-forwarded-host'] || request.headers.host
 }
 
-function resolveClientIp(request: HttpRequest) {
+function resolveClientIp(request: HttpRequest, logger?: Logger) {
   const forwardedFor = request.headers['x-forwarded-for']
 
   if (forwardedFor) {
     const [clientIp] = forwardedFor.split(',')
 
+    logger?.verbose('Client IP resolved from x-forwarded-for', {
+      clientIp,
+      forwardedFor,
+    })
+
     return clientIp
   }
 
-  return request.headers['x-client-ip'] || request.headers['x-real-ip']
+  const clientIp = request.headers['x-client-ip'] || request.headers['x-real-ip']
+
+  logger?.verbose('Client IP resolved from x-client-ip or x-real-ip', {
+    clientIp,
+  })
+
+  return clientIp
 }
 
-export function prepareHeadersForIngressAPI(request: HttpRequest, preSharedSecret?: string) {
+export function prepareHeadersForIngressAPI(request: HttpRequest, preSharedSecret?: string, logger?: Logger) {
   const headers = filterRequestHeaders(request.headers)
 
-  headers['fpjs-proxy-client-ip'] = resolveClientIp(request)
+  headers['fpjs-proxy-client-ip'] = resolveClientIp(request, logger)
 
   if (preSharedSecret) {
     headers['fpjs-proxy-secret'] = preSharedSecret
