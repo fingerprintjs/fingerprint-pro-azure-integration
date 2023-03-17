@@ -24,7 +24,6 @@ const httpTrigger: AzureFunction = async (context: Context, req: HttpRequest): P
   const get404 = () => ({
     status: 404,
     body: JSON.stringify({
-      req,
       message: 'Invalid route',
       path,
     }),
@@ -40,14 +39,19 @@ const httpTrigger: AzureFunction = async (context: Context, req: HttpRequest): P
   }
 
   switch (path) {
-    case clientPath.value: {
+    case clientPath.value:
       context.res = await downloadAgent({ httpRequest: req, logger: context.log })
 
       break
-    }
 
     case resultPath.value:
-      context.res = await handleIngress({ httpRequest: req, logger: context.log })
+      context.res = await handleIngress({
+        httpRequest: req,
+        logger: context.log,
+        preSharedSecret: await customerVariables
+          .getVariable(CustomerVariableType.PreSharedSecret)
+          .then((v) => v.value ?? undefined),
+      })
 
       break
 
