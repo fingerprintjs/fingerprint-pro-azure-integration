@@ -59,7 +59,7 @@ export function handleIngress({ httpRequest, logger }: HandleIngressParams) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: generateErrorResponse(error),
+        body: JSON.stringify(generateErrorResponse(error)),
       })
     })
 

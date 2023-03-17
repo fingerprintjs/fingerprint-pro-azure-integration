@@ -1,21 +1,19 @@
-export function generateErrorResponse(err: Error): string {
-  const body = {
+export function generateErrorResponse(err: Error) {
+  return {
     v: '2',
     error: {
       code: 'Failed',
-      message: `An error occured with Fingerprint Pro Azure function. Reason ${err}`,
+      message: `An error occured with Fingerprint Pro Azure function. Reason: ${err.message}`,
     },
-    requestId: generateRequestId,
+    requestId: generateRequestId(),
     products: {},
   }
-
-  return JSON.stringify(body)
 }
 
 function generateRequestId(): string {
   const uniqueId = generateRequestUniqueId()
   const now = new Date().getTime()
-  return `${now}.azure-${uniqueId}`
+  return `${now}.azr-${uniqueId}`
 }
 
 function generateRequestUniqueId(): string {
