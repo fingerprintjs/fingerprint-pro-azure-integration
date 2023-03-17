@@ -45,7 +45,9 @@ function makeConfig(entryFile, artifactName, functionJsonPath) {
         ],
       }),
       jsonPlugin(),
-      typescript(),
+      typescript({
+        tsconfig: 'tsconfig.app.json',
+      }),
       commonjs(),
       nodeResolve({ preferBuiltins: false, modulesOnly: true }),
       replace({
@@ -60,6 +62,7 @@ function makeConfig(entryFile, artifactName, functionJsonPath) {
 
   const commonOutput = {
     exports: 'named',
+    sourcemap: true,
   }
 
   /**

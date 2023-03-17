@@ -1,15 +1,15 @@
-import { HttpRequest } from '@azure/functions'
-import { config } from './config'
+import { HttpRequest, Logger } from '@azure/functions'
+import { config } from '../utils/config'
 import * as https from 'https'
-import { updateResponseHeaders } from './headers'
+import { filterRequestHeaders, updateResponseHeaders } from '../utils/headers'
 import { HttpResponseSimple } from '@azure/functions/types/http'
 
-function getEndpoint(apiKey: string | undefined, version: string, loaderVersion: string | undefined): string {
-  const lv: string = loaderVersion !== undefined && loaderVersion !== '' ? `/loader_v${loaderVersion}.js` : ''
-  return `/v${version}/${apiKey}${lv}`
+export interface DownloadAgentParams {
+  httpRequest: HttpRequest
+  logger: Logger
 }
 
-export async function downloadAgent(httpRequest: HttpRequest) {
+export async function downloadAgent({ httpRequest, logger }: DownloadAgentParams) {
   const apiKey = httpRequest.query.apiKey
   const version = httpRequest.query.version
   const loaderVersion = httpRequest.query.loaderVersion
@@ -19,26 +19,17 @@ export async function downloadAgent(httpRequest: HttpRequest) {
   const url = new URL(`https://${config.fpdcdn}`)
   url.pathname = getEndpoint(apiKey, version, loaderVersion)
 
-  const headers = {
-    ...httpRequest.headers,
-  }
+  logger.verbose('Downloading agent from', url.toString())
 
-  // TODO - Extract this into separate function
-  delete headers['host']
-  delete headers['content-length']
-  delete headers['transfer-encoding']
-  delete headers['via']
+  const headers = filterRequestHeaders(httpRequest.headers)
 
-  return new Promise<HttpResponseSimple & { isRaw?: boolean }>((resolve) => {
+  return new Promise<HttpResponseSimple>((resolve) => {
     const data: any[] = []
-
-    console.debug('Downloading agent from', url.toString())
 
     const request = https.request(
       url,
       {
         method: 'GET',
-        // TODO Filter headers
         headers,
       },
       (response) => {
@@ -53,31 +44,34 @@ export async function downloadAgent(httpRequest: HttpRequest) {
 
         response.on('end', () => {
           const body = Buffer.concat(data)
+          const responseHeaders = updateResponseHeaders(response.headers, domain)
 
           resolve({
             status: response.statusCode ? response.statusCode.toString() : '500',
-            // TODO Filter headers
-            headers: updateResponseHeaders(response.headers, domain),
+            headers: responseHeaders,
             body: new Uint8Array(body),
-            isRaw: true,
           })
         })
       },
     )
 
     request.on('error', (error) => {
-      console.error('unable to download agent', { error })
+      logger.error('unable to download agent', { error })
 
       resolve({
         status: '500',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'text/plain',
         },
-        // TODO Generate error response with our integrations format
-        body: error,
+        body: 'error',
       })
     })
 
     request.end()
   })
+}
+
+function getEndpoint(apiKey: string | undefined, version: string, loaderVersion: string | undefined): string {
+  const lv: string = loaderVersion !== undefined && loaderVersion !== '' ? `/loader_v${loaderVersion}.js` : ''
+  return `/v${version}/${apiKey}${lv}`
 }
