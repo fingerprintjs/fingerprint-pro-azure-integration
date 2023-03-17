@@ -4,7 +4,7 @@ import {
 } from './traffic'
 
 describe('test procdn call', () => {
-  test('test', () => {
+  it('test', () => {
     const url = new URL('https://fpjs.sh/agent?smth')
     addTrafficMonitoringSearchParamsForProCDN(url)
 
@@ -14,7 +14,7 @@ describe('test procdn call', () => {
 })
 
 describe('test visitor call', () => {
-  test('test', () => {
+  it('test', () => {
     const url = new URL('https://fpjs.sh/visitorId?smth')
     addTrafficMonitoringSearchParamsForVisitorIdRequest(url)
 
