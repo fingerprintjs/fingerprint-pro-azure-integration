@@ -1,7 +1,7 @@
 import { HttpRequest, Logger } from '@azure/functions'
 import { config } from '../utils/config'
 import * as https from 'https'
-import { filterRequestHeaders, getHost, updateResponseHeaders } from '../utils/headers'
+import { getHost, prepareHeadersForIngressAPI, updateResponseHeaders } from '../utils/headers'
 import { HttpResponseSimple } from '@azure/functions/types/http'
 import { generateErrorResponse } from '../utils/errorResponse'
 import { getEffectiveTLDPlusOne } from '../domain/tld'
@@ -9,9 +9,10 @@ import { getEffectiveTLDPlusOne } from '../domain/tld'
 export interface HandleIngressParams {
   httpRequest: HttpRequest
   logger: Logger
+  preSharedSecret?: string
 }
 
-export function handleIngress({ httpRequest, logger }: HandleIngressParams) {
+export function handleIngress({ httpRequest, logger, preSharedSecret }: HandleIngressParams) {
   const { region } = httpRequest.query
 
   const domain = getEffectiveTLDPlusOne(getHost(httpRequest))
@@ -23,7 +24,13 @@ export function handleIngress({ httpRequest, logger }: HandleIngressParams) {
 
   logger.verbose('Performing request', url.toString())
 
-  const headers = filterRequestHeaders(httpRequest.headers)
+  if (preSharedSecret) {
+    logger.verbose('Pre-shared secret is set')
+  } else {
+    logger.warn('Pre-shared secret is not set')
+  }
+
+  const headers = prepareHeadersForIngressAPI(httpRequest, preSharedSecret)
 
   return new Promise<HttpResponseSimple>((resolve) => {
     const data: any[] = []

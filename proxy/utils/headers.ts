@@ -67,6 +67,19 @@ export function getHost(request: Pick<HttpRequest, 'headers'>) {
   return request.headers['x-forwarded-host'] || request.headers.host
 }
 
+export function prepareHeadersForIngressAPI(request: HttpRequest, preSharedSecret?: string) {
+  const headers = filterRequestHeaders(request.headers)
+
+  headers['fpjs-proxy-client-ip'] =
+    request.headers['x-forwarded-for'] || request.headers['x-client-ip'] || request.headers['x-real-ip']
+
+  if (preSharedSecret) {
+    headers['fpjs-proxy-secret'] = preSharedSecret
+  }
+
+  return headers
+}
+
 function isHeaderAllowedForResponse(headerName: string) {
   return !BLACKLISTED_RESPONSE_HEADERS.has(headerName) && !matchesBlacklistedHeaderPrefix(headerName)
 }
