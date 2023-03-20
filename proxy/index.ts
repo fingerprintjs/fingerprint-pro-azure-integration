@@ -19,7 +19,7 @@ const httpTrigger: AzureFunction = async (context: Context, req: HttpRequest): P
     }
 
     case 'visitorId':
-      context.res = await handleIngress(req)
+      context.res = await handleIngress({ httpRequest: req, logger: context.log })
 
       break
 
