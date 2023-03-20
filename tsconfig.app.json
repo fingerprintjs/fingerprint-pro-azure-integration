@@ -6,10 +6,10 @@
   "exclude": [
     "dist",
     "node_modules",
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "test"
   ],
   "include": [
-    "**/*.ts",
-    "test"
+    "**/*.ts"
   ]
 }
