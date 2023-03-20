@@ -13,11 +13,11 @@ export function generateErrorResponse(err: Error) {
 function generateRequestId(): string {
   const uniqueId = generateRequestUniqueId()
   const now = new Date().getTime()
-  return `${now}.azr-${uniqueId}`
+  return `${now}.${uniqueId}`
 }
 
 function generateRequestUniqueId(): string {
-  return generateRandomString(2)
+  return generateRandomString(6)
 }
 
 function generateRandomString(length: number): string {
