@@ -1,9 +1,10 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { AzureFunction, Context, Timer } from '@azure/functions'
 import { WebSiteManagementClient } from '@azure/arm-appservice'
 import { DefaultAzureCredential } from '@azure/identity'
 import * as storageBlob from '@azure/storage-blob'
-import { BlobProperties, BlobSASPermissions, StorageSharedKeyCredential } from '@azure/storage-blob'
+import { BlobSASPermissions, StorageSharedKeyCredential } from '@azure/storage-blob'
 import { StorageManagementClient } from '@azure/arm-storage'
+import { getLatestFunctionZip } from './github'
 
 // TODO These values must come from ENV
 const resourceGroupName = 'fpjs-proxy-integration'
@@ -12,12 +13,20 @@ const subscriptionId = 'fb04eab4-40ef-4df0-b1df-4bd5c3dd8eaf'
 
 const WEBSITE_RUN_FROM_PACKAGE = 'WEBSITE_RUN_FROM_PACKAGE'
 
-const storageBlobTrigger: AzureFunction = async (context: Context, blob: Buffer) => {
-  context.log.verbose('typeof', typeof blob)
+const storageBlobTrigger: AzureFunction = async (context: Context, timer: Timer) => {
+  if (timer.isPastDue) {
+    context.log('Timer function is running late!')
+  }
 
-  const blobData = context.bindingData.properties as BlobProperties
+  const latestFunction = await getLatestFunctionZip(context.log, process.env.GITHUB_TOKEN)
 
-  context.log.verbose('blobData', JSON.stringify(blobData, null, 2))
+  if (!latestFunction) {
+    context.log.warn('No new release found')
+
+    return
+  }
+
+  context.log.verbose('latestFunction', latestFunction)
 
   try {
     const credentials = new DefaultAzureCredential()
@@ -55,10 +64,9 @@ const storageBlobTrigger: AzureFunction = async (context: Context, blob: Buffer)
         new StorageSharedKeyCredential(accountName, key),
       )
 
-      // TODO We should come up with more clever naming, maybe include version number?
-      const blobClient = storageClient.getBlockBlobClient('func.zip')
+      const blobClient = storageClient.getBlockBlobClient(latestFunction.name)
 
-      await blobClient.uploadData(blob)
+      await blobClient.uploadData(latestFunction.file)
 
       const sas = await blobClient.generateSasUrl({
         startsOn: new Date(),
@@ -72,6 +80,7 @@ const storageBlobTrigger: AzureFunction = async (context: Context, blob: Buffer)
 
       settings.properties![WEBSITE_RUN_FROM_PACKAGE] = sas
 
+      // TODO Add healthcheck, if it fails, revert to previous version, otherwise, delete previous version
       await client.webApps.updateApplicationSettings(resourceGroupName, appName, settings)
     }
   } catch (error) {
