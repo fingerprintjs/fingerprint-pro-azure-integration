@@ -1,6 +1,7 @@
 import { config } from './config'
 import { isSemverGreater } from './semver'
 import { Logger } from '@azure/functions'
+import * as https from 'https'
 
 function bearer(token?: string) {
   return `Bearer ${token}`
@@ -19,14 +20,60 @@ export async function getLatestGithubRelease(token?: string) {
   return await response.json()
 }
 
-export async function downloadReleaseAsset(url: string, token?: string) {
-  const response = await fetch(url, {
-    headers: {
-      Authorization: bearer(token),
-    },
-  })
+export async function downloadReleaseAsset(url: string, token?: string, logger?: Logger) {
+  logger?.verbose(`Downloading release asset from ${url}`)
 
-  return Buffer.from(await response.arrayBuffer())
+  return new Promise<Buffer>((resolve, reject) => {
+    const handleError = (error: Error) => {
+      logger?.error('Unable to download release asset', { error })
+
+      reject(error)
+    }
+
+    const request = https.request(
+      url,
+      {
+        headers: {
+          Authorization: bearer(token),
+          Accept: 'application/octet-stream',
+          'User-Agent': 'fingerprint-pro-azure-integration',
+        },
+        method: 'GET',
+      },
+      (response) => {
+        // TODO For now, the request causes redirect, We need to check it again once repository is public
+        if (response.statusCode === 302) {
+          const downloadUrl = response.headers.location
+
+          if (!downloadUrl) {
+            reject(new Error('Unable to find download url'))
+
+            return
+          }
+
+          const downloadRequest = https.get(downloadUrl, (downloadResponse) => {
+            const chunks: any[] = []
+
+            downloadResponse.on('data', (chunk) => {
+              chunks.push(chunk)
+            })
+
+            downloadResponse.on('end', () => {
+              resolve(Buffer.concat(chunks))
+            })
+          })
+
+          downloadRequest.on('error', handleError)
+          downloadRequest.end()
+        } else {
+          reject(new Error(`Unable to download release asset: ${response.statusCode} ${response.statusMessage}`))
+        }
+      },
+    )
+
+    request.on('error', handleError)
+    request.end()
+  })
 }
 
 export async function findFunctionZip(assets: GithubReleaseAsset[]) {
@@ -50,7 +97,7 @@ export async function getLatestFunctionZip(logger?: Logger, token?: string) {
 
   return asset
     ? {
-        file: await downloadReleaseAsset(asset.browser_download_url, token),
+        file: await downloadReleaseAsset(asset.url, token, logger),
         name: asset.name,
       }
     : null
@@ -65,8 +112,8 @@ export interface GithubRelease {
 }
 
 export interface GithubReleaseAsset {
+  url: string
   name: string
   content_type: string
   state: 'uploaded' | 'errored'
-  browser_download_url: string
 }

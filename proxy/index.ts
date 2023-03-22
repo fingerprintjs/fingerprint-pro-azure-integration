@@ -5,7 +5,7 @@ import { CustomerVariables } from './customer-variables/CustomerVariables'
 import { EnvCustomerVariables } from './customer-variables/EnvCustomerVariables'
 import { CustomerVariableType } from './customer-variables/types'
 
-const httpTrigger: AzureFunction = async (context: Context, req: HttpRequest): Promise<void> => {
+const proxy: AzureFunction = async (context: Context, req: HttpRequest): Promise<void> => {
   context.log.verbose('Handling request', {
     req,
     context,
@@ -61,4 +61,4 @@ const httpTrigger: AzureFunction = async (context: Context, req: HttpRequest): P
   }
 }
 
-export default httpTrigger
+export default proxy

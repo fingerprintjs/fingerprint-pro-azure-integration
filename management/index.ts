@@ -9,7 +9,8 @@ import { gatherEnvs } from './env'
 
 const WEBSITE_RUN_FROM_PACKAGE = 'WEBSITE_RUN_FROM_PACKAGE'
 
-const storageBlobTrigger: AzureFunction = async (context: Context, timer: Timer) => {
+// TODO Update cron
+const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
   if (timer.isPastDue) {
     context.log('Timer function is running late!')
   }
@@ -25,7 +26,7 @@ const storageBlobTrigger: AzureFunction = async (context: Context, timer: Timer)
   const latestFunction = await getLatestFunctionZip(context.log, process.env.GITHUB_TOKEN)
 
   if (!latestFunction) {
-    context.log.warn('No new release found')
+    context.log.info('No new release found')
 
     return
   }
@@ -102,4 +103,4 @@ function getSasExpiration() {
   return expiresOn
 }
 
-export default storageBlobTrigger
+export default managementFn
