@@ -33,10 +33,7 @@ export async function downloadAgent({ httpRequest, logger }: DownloadAgentParams
         headers,
       },
       (response) => {
-        let binary = false
-        if (response.headers['content-encoding']) {
-          binary = true
-        }
+        const binary = Boolean(response.headers['content-encoding'])
 
         response.setEncoding(binary ? 'binary' : 'utf8')
 
