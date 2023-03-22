@@ -9,7 +9,6 @@ import { gatherEnvs } from './env'
 
 const WEBSITE_RUN_FROM_PACKAGE = 'WEBSITE_RUN_FROM_PACKAGE'
 
-// TODO Update cron
 const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
   if (timer.isPastDue) {
     context.log('Timer function is running late!')
