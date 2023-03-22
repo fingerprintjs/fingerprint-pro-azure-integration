@@ -5,11 +5,7 @@ import * as storageBlob from '@azure/storage-blob'
 import { BlobSASPermissions, StorageSharedKeyCredential } from '@azure/storage-blob'
 import { StorageManagementClient } from '@azure/arm-storage'
 import { getLatestFunctionZip } from './github'
-
-// TODO These values must come from ENV
-const resourceGroupName = 'fpjs-proxy-integration'
-const appName = 'fpjs-proxy-integration-test'
-const subscriptionId = 'fb04eab4-40ef-4df0-b1df-4bd5c3dd8eaf'
+import { gatherEnvs } from './env'
 
 const WEBSITE_RUN_FROM_PACKAGE = 'WEBSITE_RUN_FROM_PACKAGE'
 
@@ -17,6 +13,14 @@ const storageBlobTrigger: AzureFunction = async (context: Context, timer: Timer)
   if (timer.isPastDue) {
     context.log('Timer function is running late!')
   }
+
+  const env = gatherEnvs(context.log)
+
+  if (!env) {
+    return
+  }
+
+  const { resourceGroupName, appName, subscriptionId } = env
 
   const latestFunction = await getLatestFunctionZip(context.log, process.env.GITHUB_TOKEN)
 
