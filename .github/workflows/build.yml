@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
@@ -30,5 +33,7 @@ jobs:
         run: yarn test
       - name: Build
         run: yarn build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
       - name: Typecheck
         run: yarn test:dts

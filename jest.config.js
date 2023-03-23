@@ -2,7 +2,7 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testRegex: '/proxy/.+test.tsx?$',
+  testRegex: '/proxy/.+test.tsx?$|/management/.+test.tsx?$',
   passWithNoTests: true,
   collectCoverageFrom: ['./proxy/**/**.ts', '!**/index.ts', '!**/config.ts', './management/**/**.ts'],
   coverageReporters: ['lcov', 'json-summary', ['text', { file: 'coverage.txt', path: './' }]],
