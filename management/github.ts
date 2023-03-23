@@ -17,7 +17,7 @@ export async function getLatestGithubRelease(token?: string) {
     },
   )
 
-  return await response.json()
+  return (await response.json()) as GithubRelease
 }
 
 export async function downloadReleaseAsset(url: string, token?: string, logger?: Logger) {
