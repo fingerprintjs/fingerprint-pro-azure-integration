@@ -6,8 +6,9 @@ import { BlobSASPermissions, StorageSharedKeyCredential } from '@azure/storage-b
 import { StorageManagementClient } from '@azure/arm-storage'
 import { getLatestFunctionZip } from './github'
 import { gatherEnvs } from './env'
-
-const WEBSITE_RUN_FROM_PACKAGE = 'WEBSITE_RUN_FROM_PACKAGE'
+import { getSiteStatusUrl } from './site'
+import { performHealthCheckAfterUpdate } from './healthCheck'
+import { WEBSITE_RUN_FROM_PACKAGE } from './settings'
 
 const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
   if (timer.isPastDue) {
@@ -37,14 +38,16 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
 
     const storageArmClient = new StorageManagementClient(credentials, subscriptionId)
     const client = new WebSiteManagementClient(credentials, subscriptionId)
+    const [settings, statusUrl] = await Promise.all([
+      client.webApps.listApplicationSettings(resourceGroupName, appName),
+      getSiteStatusUrl(client, resourceGroupName, appName, context.log),
+    ])
+    const oldFunctionZipUrl = settings.properties?.[WEBSITE_RUN_FROM_PACKAGE]
 
-    const settings = await client.webApps.listApplicationSettings(resourceGroupName, appName)
-    const setting = settings.properties?.[WEBSITE_RUN_FROM_PACKAGE]
+    if (oldFunctionZipUrl) {
+      context.log.verbose('storageUrl', oldFunctionZipUrl)
 
-    if (setting) {
-      context.log.verbose('storageUrl', setting)
-
-      const storageUrl = new URL(setting)
+      const storageUrl = new URL(oldFunctionZipUrl)
       const storageName = storageUrl.pathname.split('/')[1]
       const accountName = storageUrl.hostname.split('.')[0]
 
@@ -84,8 +87,19 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
 
       settings.properties![WEBSITE_RUN_FROM_PACKAGE] = sas
 
-      // TODO Add healthcheck, if it fails, revert to previous version, otherwise, delete previous version
       await client.webApps.updateApplicationSettings(resourceGroupName, appName, settings)
+
+      await performHealthCheckAfterUpdate({
+        newVersion: latestFunction.version,
+        statusUrl,
+        oldFunctionZipUrl: oldFunctionZipUrl,
+        logger: context.log,
+        resourceGroupName,
+        appName,
+        client,
+        settings,
+        storageClient,
+      })
     }
   } catch (error) {
     context.log.error(error)

@@ -99,6 +99,7 @@ export async function getLatestFunctionZip(logger?: Logger, token?: string) {
     ? {
         file: await downloadReleaseAsset(asset.url, token, logger),
         name: asset.name,
+        version: release.tag_name,
       }
     : null
 }
