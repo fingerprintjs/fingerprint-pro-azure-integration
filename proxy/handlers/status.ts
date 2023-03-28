@@ -65,6 +65,10 @@ function renderHtml({ version, envInfo }: StatusInfo) {
             display: flex;
           }
           
+          .env-info {
+            flex-direction: column;
+          }
+          
           body {
             flex-direction: column;
             align-items: center;
