@@ -7,6 +7,10 @@ jobs:
     name: Lint, build and test
     runs-on: ubuntu-latest
     timeout-minutes: 3
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -55,7 +59,7 @@ jobs:
         uses: fingerprintjs/action-coverage-report-md@v1
         id: coverage-md
         with:
-          srcBasePath: './proxy'
+          srcBasePath: './'
 
       - uses: marocchino/sticky-pull-request-comment@adca94abcaf73c10466a71cc83ae561fd66d1a56
         with:
