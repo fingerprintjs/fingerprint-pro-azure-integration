@@ -100,6 +100,7 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
         client,
         settings,
         storageClient,
+        newFunctionZipUrl: sas,
       })
     }
   } catch (error) {

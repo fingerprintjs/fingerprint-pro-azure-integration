@@ -3,11 +3,12 @@ import { StatusInfo } from '../shared/status'
 import { StringDictionary, WebSiteManagementClient } from '@azure/arm-appservice'
 import { performRollback } from './rollback'
 import { ContainerClient } from '@azure/storage-blob'
-import { removeOldFunctionFromStorage } from './cleanup'
+import { removeOldFunctionFromStorage } from './storage'
 import { eq } from 'semver'
 
 export interface PerformHealthCheckAfterUpdateParams {
   newVersion: string
+  newFunctionZipUrl: string
   oldFunctionZipUrl: string
   logger?: Logger
   statusUrl: string
@@ -32,6 +33,7 @@ export async function performHealthCheckAfterUpdate({
   storageClient,
   waitBetweenRequestsMs,
   timeoutMs,
+  newFunctionZipUrl,
 }: PerformHealthCheckAfterUpdateParams) {
   const timeoutController = new AbortController()
 
@@ -43,7 +45,7 @@ export async function performHealthCheckAfterUpdate({
 
     timeoutController.abort()
 
-    await removeOldFunctionFromStorage(oldFunctionZipUrl, storageClient, logger)
+    await removeOldFunctionFromStorage(oldFunctionZipUrl, newFunctionZipUrl, storageClient, logger)
   } catch (error) {
     logger?.error('Health check failed', error)
 

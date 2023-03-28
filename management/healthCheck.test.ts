@@ -15,6 +15,7 @@ describe('performHealthCheckAfterUpdate', () => {
 
   const statusUrl = 'https://example.org/fpjs/status'
   const oldFunctionZipUrl = 'https://storageaccount.blob.core.windows.net/function-zips/zipname.zip'
+  const newFunctionZipUrl = 'https://storageaccount.blob.core.windows.net/function-zips/v1.0.0.zip'
 
   beforeEach(() => {
     jest.restoreAllMocks()
@@ -38,6 +39,7 @@ describe('performHealthCheckAfterUpdate', () => {
       statusUrl,
       storageClient: mockStorageClient as any,
       timeoutMs: 500,
+      newFunctionZipUrl,
     })
 
     expect(mockStorageClient.deleteBlob).toHaveBeenCalledWith('zipname.zip')
@@ -78,6 +80,7 @@ describe('performHealthCheckAfterUpdate', () => {
       storageClient: mockStorageClient as any,
       waitBetweenRequestsMs: 100,
       timeoutMs: 500,
+      newFunctionZipUrl,
     })
 
     expect(mockStorageClient.deleteBlob).toHaveBeenCalledWith('zipname.zip')
@@ -105,6 +108,7 @@ describe('performHealthCheckAfterUpdate', () => {
         storageClient: mockStorageClient as any,
         waitBetweenRequestsMs: 100,
         timeoutMs: 500,
+        newFunctionZipUrl,
       }),
     ).rejects.toThrow('Operation Timeout')
 
