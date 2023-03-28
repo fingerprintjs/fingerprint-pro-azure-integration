@@ -115,14 +115,12 @@ export default (opts) => {
       'fingerprintjs-pro-azure-function-management',
       'management/function.json',
       (config, isDev) => {
-        if (isDev) {
-          if (typeof config.bindings[0].runOnStartup === 'undefined') {
-            console.info(
-              `Running management function on startup. To disable it, set "runOnStartup" to false in management/function.json.`,
-            )
+        if (!isDev && config.bindings[0].runOnStartup) {
+          console.info(
+            `Management function is configured to run on startup, but this can cause problems when deployed to Azure. Setting to false`,
+          )
 
-            config.bindings[0].runOnStartup = true
-          }
+          config.bindings[0].runOnStartup = false
         }
       },
     ),

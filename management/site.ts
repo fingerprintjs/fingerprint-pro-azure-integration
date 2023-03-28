@@ -6,7 +6,7 @@ export async function getSiteStatusUrl(
   client: WebSiteManagementClient,
   resourceGroupName: string,
   siteName: string,
-  logger: Logger,
+  logger?: Logger,
 ) {
   const proxyFunction = await findProxyFunction(client, resourceGroupName, siteName, logger)
 
@@ -21,16 +21,16 @@ async function findProxyFunction(
   client: WebSiteManagementClient,
   resourceGroupName: string,
   siteName: string,
-  logger: Logger,
+  logger?: Logger,
 ) {
-  const functions = await client.webApps.listFunctions(resourceGroupName, siteName)
+  const functions = client.webApps.listFunctions(resourceGroupName, siteName)
 
   for await (const fn of functions) {
     if (isProxyFunction(fn)) {
       return fn
     }
 
-    logger.verbose(`Function ${fn.name} is not a proxy function`)
+    logger?.verbose(`Function ${fn.name} is not a proxy function`)
   }
 
   throw new Error(`Could not find proxy function for ${siteName} in ${resourceGroupName} resource group`)

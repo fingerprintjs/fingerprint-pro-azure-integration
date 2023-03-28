@@ -9,13 +9,15 @@ import { eq } from 'semver'
 export interface PerformHealthCheckAfterUpdateParams {
   newVersion: string
   oldFunctionZipUrl: string
-  logger: Logger
+  logger?: Logger
   statusUrl: string
   settings: StringDictionary
   client: WebSiteManagementClient
   resourceGroupName: string
   appName: string
   storageClient: ContainerClient
+  waitBetweenRequestsMs?: number
+  timeoutMs?: number
 }
 
 export async function performHealthCheckAfterUpdate({
@@ -28,13 +30,22 @@ export async function performHealthCheckAfterUpdate({
   resourceGroupName,
   oldFunctionZipUrl,
   storageClient,
+  waitBetweenRequestsMs,
+  timeoutMs,
 }: PerformHealthCheckAfterUpdateParams) {
+  const timeoutController = new AbortController()
+
   try {
-    await Promise.race([runHealthCheckSchedule(statusUrl, newVersion, logger), timeout()])
+    await Promise.race([
+      runHealthCheckSchedule(statusUrl, newVersion, waitBetweenRequestsMs, logger),
+      timeout(timeoutMs, timeoutController.signal),
+    ])
+
+    timeoutController.abort()
 
     await removeOldFunctionFromStorage(oldFunctionZipUrl, storageClient, logger)
   } catch (error) {
-    logger.error('Health check failed', error)
+    logger?.error('Health check failed', error)
 
     await performRollback({
       oldFunctionZipUrl,
@@ -49,27 +60,25 @@ export async function performHealthCheckAfterUpdate({
   }
 }
 
-async function runHealthCheckSchedule(url: string, newVersion: string, logger: Logger) {
+async function runHealthCheckSchedule(url: string, newVersion: string, waitBetweenRequestsMs = 5000, logger?: Logger) {
   let isOk = false
 
-  const waitBetweenRequestsMs = 5000
-
-  logger.verbose(`Performing health check on ${url} every ${waitBetweenRequestsMs}ms`)
+  logger?.verbose(`Performing health check on ${url} every ${waitBetweenRequestsMs}ms`)
 
   while (!isOk) {
     try {
       const response = await fetch(url)
       const json = (await response.json()) as StatusInfo
 
-      logger.verbose('Health check response', json)
+      logger?.verbose('Health check response', json)
 
       if (eq(json.version, newVersion)) {
-        logger.info('Health check passed')
+        logger?.info('Health check passed')
 
         isOk = true
       }
     } catch (error) {
-      logger.error('Error while performing health check', error)
+      logger?.error('Error while performing health check', error)
     } finally {
       if (!isOk) {
         await wait(waitBetweenRequestsMs)
@@ -78,19 +87,23 @@ async function runHealthCheckSchedule(url: string, newVersion: string, logger: L
   }
 }
 
-function timeout() {
-  // 2 minutes
-  const ms = 1000 * 60 * 2
-
+function timeout(ms = 1000 * 60 * 2, signal?: AbortSignal) {
   return new Promise((resolve, reject) => {
-    wait(ms).then(() => {
-      reject(new Error('Timeout'))
+    wait(ms, signal).then(() => {
+      reject(new Error('Operation Timeout'))
     })
   })
 }
 
-function wait(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms)
+function wait(ms: number, signal?: AbortSignal) {
+  return new Promise<void>((resolve) => {
+    const timeout = setTimeout(resolve, ms)
+
+    timeout.unref()
+
+    signal?.addEventListener('abort', () => {
+      clearTimeout(timeout)
+      resolve()
+    })
   })
 }

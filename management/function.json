@@ -5,7 +5,8 @@
       "schedule": "*/30 * * * *",
       "name": "timer",
       "type": "timerTrigger",
-      "direction": "in"
+      "direction": "in",
+      "runOnStartup": true
     }
   ],
   "scriptFile": "../dist/fingerprintjs-pro-azure-function-management/fingerprintjs-pro-azure-function-management.js"

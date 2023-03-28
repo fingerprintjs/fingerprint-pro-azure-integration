@@ -8,7 +8,7 @@ export interface PerformRollbackParams {
   resourceGroupName: string
   appName: string
   oldFunctionZipUrl: string
-  logger: Logger
+  logger?: Logger
 }
 
 export async function performRollback({
@@ -25,7 +25,7 @@ export async function performRollback({
 
   settings.properties[WEBSITE_RUN_FROM_PACKAGE] = oldFunctionZipUrl
 
-  logger.verbose(`Rolling back to ${oldFunctionZipUrl}`)
+  logger?.verbose(`Rolling back to ${oldFunctionZipUrl}`)
 
   await client.webApps.updateApplicationSettings(resourceGroupName, appName, settings)
 }

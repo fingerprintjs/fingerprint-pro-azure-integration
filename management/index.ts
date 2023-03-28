@@ -9,6 +9,7 @@ import { gatherEnvs } from './env'
 import { getSiteStatusUrl } from './site'
 import { performHealthCheckAfterUpdate } from './healthCheck'
 import { WEBSITE_RUN_FROM_PACKAGE } from './settings'
+import { config } from './config'
 
 const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
   if (timer.isPastDue) {
@@ -23,7 +24,7 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
 
   const { resourceGroupName, appName, subscriptionId } = env
 
-  const latestFunction = await getLatestFunctionZip(context.log, process.env.GITHUB_TOKEN)
+  const latestFunction = await getLatestFunctionZip(context.log, process.env.GITHUB_TOKEN, config.version)
 
   if (!latestFunction) {
     context.log.info('No new release found')

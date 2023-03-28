@@ -1,7 +1,6 @@
 import { config } from './config'
 import { isSemverGreater } from './semver'
 import { Logger } from '@azure/functions'
-import * as https from 'https'
 
 function bearer(token?: string) {
   return `Bearer ${token}`
@@ -23,57 +22,17 @@ export async function getLatestGithubRelease(token?: string) {
 export async function downloadReleaseAsset(url: string, token?: string, logger?: Logger) {
   logger?.verbose(`Downloading release asset from ${url}`)
 
-  return new Promise<Buffer>((resolve, reject) => {
-    const handleError = (error: Error) => {
-      logger?.error('Unable to download release asset', { error })
-
-      reject(error)
-    }
-
-    const request = https.request(
-      url,
-      {
-        headers: {
-          Authorization: bearer(token),
-          Accept: 'application/octet-stream',
-          'User-Agent': 'fingerprint-pro-azure-integration',
-        },
-        method: 'GET',
-      },
-      (response) => {
-        // TODO For now, the request causes redirect, We need to check it again once repository is public
-        if (response.statusCode === 302) {
-          const downloadUrl = response.headers.location
-
-          if (!downloadUrl) {
-            reject(new Error('Unable to find download url'))
-
-            return
-          }
-
-          const downloadRequest = https.get(downloadUrl, (downloadResponse) => {
-            const chunks: any[] = []
-
-            downloadResponse.on('data', (chunk) => {
-              chunks.push(chunk)
-            })
-
-            downloadResponse.on('end', () => {
-              resolve(Buffer.concat(chunks))
-            })
-          })
-
-          downloadRequest.on('error', handleError)
-          downloadRequest.end()
-        } else {
-          reject(new Error(`Unable to download release asset: ${response.statusCode} ${response.statusMessage}`))
-        }
-      },
-    )
-
-    request.on('error', handleError)
-    request.end()
+  const response = await fetch(url, {
+    headers: {
+      Authorization: bearer(token),
+      Accept: 'application/octet-stream',
+      'User-Agent': 'fingerprint-pro-azure-integration',
+    },
   })
+
+  const arrayBuffer = await response.arrayBuffer()
+
+  return Buffer.from(arrayBuffer)
 }
 
 export async function findFunctionZip(assets: GithubReleaseAsset[]) {
@@ -82,11 +41,11 @@ export async function findFunctionZip(assets: GithubReleaseAsset[]) {
   )
 }
 
-export async function getLatestFunctionZip(logger?: Logger, token?: string) {
+export async function getLatestFunctionZip(logger?: Logger, token?: string, version = config.version) {
   const release = await getLatestGithubRelease(token)
 
-  if (!isSemverGreater(release.tag_name, config.version)) {
-    logger?.verbose(`Latest release ${release.tag_name} is not greater than current version ${config.version}`)
+  if (!isSemverGreater(release.tag_name, version)) {
+    logger?.verbose(`Latest release ${release.tag_name} is not greater than current version ${version}`)
 
     return null
   }
