@@ -1,0 +1,108 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Create a pre-release'
+        default: 'false'
+        required: false
+        type: boolean
+      version_bump:
+        description: 'A type of version bump'
+        default: 'patch'
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  release:
+    name: Release Azure integration distribution
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Install node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+
+      - name: Set git settings
+        uses: fregante/setup-git-user@v1
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
+
+      - name: Disable version tags
+        run: yarn config set version-git-tag false
+
+      - name: Bump version
+        run: yarn version --${{ github.event.inputs.version_bump }}
+
+      - name: Build functions
+        run: yarn build
+
+      - name: Run type check
+        run: yarn test:dts
+
+      - name: Get new version of function
+        id: new_version
+        uses: notiz-dev/github-action-json-property@v0.2.0
+        with:
+          path: 'package.json'
+          prop_path: 'version'
+
+      - name: Zip dist directory
+        run: zip -r v${{steps.new_version.outputs.prop}}.zip dist/
+
+      - name: Commit and push new version of lambda
+        run: |
+          git commit package.json dist/ -m "build: new built function v${{steps.new_version.outputs.prop}}"
+          git push "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git tag -a "v${{steps.new_version.outputs.prop}}" -m "v${{steps.new_version.outputs.prop}}"
+          git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+
+      ## Prepare a release
+      - name: Create a Github release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{steps.new_version.outputs.prop}}
+          name: Release ${{steps.new_version.outputs.prop}}
+          draft: true
+          prerelease: ${{ github.event.inputs.prerelease }}
+          artifacts: v${{steps.new_version.outputs.prop}}.zip
+
+      - name: Create Pull Request from develop to main
+        id: create_pr
+        uses: devops-infra/action-pull-request@v0.5.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: develop
+          target_branch: main
+          title: New version of scripts v${{ steps.new_version.outputs.prop }}
+          body: New version of scripts v${{ steps.new_version.outputs.prop }}
+          label: release
+
+      - name: Check PR outputs
+        if: ${{ steps.create_pr.outputs.url }}
+        run: echo "Pull Request URL - ${{ steps.create_pr.outputs.url }}"
