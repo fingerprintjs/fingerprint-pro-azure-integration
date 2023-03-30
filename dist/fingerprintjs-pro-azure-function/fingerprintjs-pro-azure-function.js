@@ -1,5 +1,5 @@
 /**
- * FingerprintJS Pro Azure function v0.3.0 - Copyright (c) FingerprintJS, Inc, 2023 (https://fingerprint.com)
+ * FingerprintJS Pro Azure function v0.2.0 - Copyright (c) FingerprintJS, Inc, 2023 (https://fingerprint.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
 
@@ -38756,7 +38756,7 @@ function renderHtml({ version, envInfo }) {
 }
 async function getStatusInfo(customerVariables) {
     return {
-        version: '0.3.0',
+        version: '0.2.0',
         envInfo: await getEnvInfo(customerVariables),
     };
 }
