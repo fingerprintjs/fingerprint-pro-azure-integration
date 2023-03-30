@@ -12,9 +12,18 @@ export function getOptions() {
 }
 
 export async function getVisitorData(options: LoadOptions = getOptions()) {
+  const agentStart = Date.now()
   const agent = await fpjs.load(options)
+  const agentEnd = Date.now()
 
-  return await agent.get({
+  const responseStart = Date.now()
+  const response = await agent.get({
     extendedResult: true,
   })
+  const responseEnd = Date.now()
+  return {
+    response,
+    responseLoadTime: responseEnd - responseStart,
+    agentLoadTime: agentEnd - agentStart,
+  }
 }

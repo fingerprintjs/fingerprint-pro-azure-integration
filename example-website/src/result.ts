@@ -24,12 +24,11 @@ async function getAndPrintData(options: LoadOptions) {
   const startTime = Date.now()
 
   try {
-    const response = await getVisitorData(options)
+    const { response, responseLoadTime, agentLoadTime } = await getVisitorData(options)
     const { confidence } = response
 
     console.log('Got response', response)
 
-    const totalTime = Date.now() - startTime
     output.innerHTML = ''
     addOutputSection({
       output,
@@ -41,7 +40,14 @@ async function getAndPrintData(options: LoadOptions) {
     addOutputSection({
       output,
       header: 'Time took to get the identifier:',
-      content: `${totalTime}ms`,
+      content: `${responseLoadTime}ms`,
+      size: 'big',
+      id: 'time',
+    })
+    addOutputSection({
+      output,
+      header: 'Time took to get the agent:',
+      content: `${agentLoadTime}ms`,
       size: 'big',
       id: 'time',
     })
