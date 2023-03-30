@@ -92,7 +92,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: v${{steps.new_version.outputs.prop}}
-          name: ${{steps.new_version.outputs.prop}}
+          name: v${{steps.new_version.outputs.prop}}
           draft: true
           prerelease: ${{ github.event.inputs.prerelease }}
           artifacts: v${{steps.new_version.outputs.prop}}.zip
