@@ -4,9 +4,6 @@ inputs:
   token:
     description: 'The GitHub token'
     required: true
-  tag:
-    description: 'The tag to publish'
-    required: true
 runs:
   using: 'node16'
   main: 'index.js'

@@ -105,7 +105,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_branch: develop
           target_branch: main
-          title: New version of scripts v${{ steps.new_version.outputs.prop }}
+          title: v${{ steps.new_version.outputs.prop }}
           body: New version of scripts v${{ steps.new_version.outputs.prop }}
           label: release
 

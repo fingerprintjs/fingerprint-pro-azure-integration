@@ -26,5 +26,4 @@ jobs:
           uses: ./.github/actions/publish-release
           if: github.event.pull_request.merged == true
           with:
-            tag: ${{ github.event.pull_request.head.ref }}
             token: ${{ secrets.GITHUB_TOKEN }}

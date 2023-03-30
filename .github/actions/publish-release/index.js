@@ -9,21 +9,12 @@ async function main() {
 
   console.log('repo', context.repo)
 
-  const tag = core.getInput('tag', { required: true })
-
-  console.log('tag', tag)
-
-  if (!tag) {
-    console.info('No tag found, skipping release')
-
-    return
-  }
-
   const { data: pr } = await client.rest.pulls.get({
     owner: context.repo.owner,
     repo: context.repo.repo,
     pull_number: context.payload.pull_request.number,
   })
+  const tag = pr.title
   console.log('pr', pr)
 
   console.log('tag', tag)
