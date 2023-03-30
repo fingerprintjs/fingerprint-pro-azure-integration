@@ -4,7 +4,8 @@ name: Publish Release
 on:
   pull_request:
     branches:
-      - main
+      # TODO Change to main
+      - dev-main
     types:
       - closed
 
