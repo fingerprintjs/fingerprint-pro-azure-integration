@@ -25,13 +25,13 @@ async function main() {
   const isRelease = labels.some((label) => label.name === 'release')
 
   if (isRelease && tag) {
-    const release = await client.rest.repos.getReleaseByTag({
+    const releases = await client.rest.repos.listReleases({
       owner: context.repo.owner,
       repo: context.repo.repo,
-      tag,
     })
+    const release = releases.data.find((release) => release.tag_name === tag && release.draft)
 
-    if (release.data.draft) {
+    if (release) {
       await client.rest.repos.updateRelease({
         owner: context.repo.owner,
         repo: context.repo.repo,
