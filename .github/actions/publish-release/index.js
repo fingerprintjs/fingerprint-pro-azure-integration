@@ -7,15 +7,12 @@ async function main() {
 
   const { context } = github
 
-  console.log('repo', context.repo)
-
   const { data: pr } = await client.rest.pulls.get({
     owner: context.repo.owner,
     repo: context.repo.repo,
     pull_number: context.payload.pull_request.number,
   })
   const tag = pr.title
-  console.log('pr', pr)
 
   console.log('tag', tag)
 
@@ -24,8 +21,6 @@ async function main() {
     repo: context.repo.repo,
     issue_number: context.payload.pull_request.number,
   })
-
-  console.log('labels', labels)
 
   const isRelease = labels.some((label) => label.name === 'release')
 
