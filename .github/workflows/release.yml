@@ -79,6 +79,7 @@ jobs:
 
       - name: Commit and push new version of lambda
         run: |
+          git add dist/ -f
           git commit package.json dist/ -m "build: new built function v${{steps.new_version.outputs.prop}}"
           git push "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
           git tag -a "v${{steps.new_version.outputs.prop}}" -m "v${{steps.new_version.outputs.prop}}"
