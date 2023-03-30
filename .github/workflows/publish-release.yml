@@ -1,0 +1,27 @@
+# After PR is merged, if it was release PR, then publish draft release
+name: Publish Release
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
+
+        - run: yarn install
+
+        - name: Publish release
+          uses: ./actions/publish-release
+          if: github.event.pull_request.merged == true
+          with:
+            tag: ${{ github.event.pull_request.head.ref }}
+            token: ${{ secrets.GITHUB_TOKEN }}
