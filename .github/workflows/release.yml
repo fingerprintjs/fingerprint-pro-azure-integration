@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Create a pre-release'
+        default: 'false'
+        required: false
+        type: boolean
+      version_bump:
+        description: 'A type of version bump'
+        default: 'patch'
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  release:
+    name: Release Azure integration distribution
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - run: echo "WIP"
