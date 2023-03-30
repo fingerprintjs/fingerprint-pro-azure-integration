@@ -29,8 +29,8 @@ function _interopNamespaceDefault(e) {
 var https__namespace = /*#__PURE__*/_interopNamespaceDefault(https);
 
 const config = {
-    fpdcdn: 'undefined',
-    ingressApi: 'undefined',
+    fpdcdn: 'fpcdn.io',
+    ingressApi: 'api.fpjs.io',
 };
 
 const CACHE_MAX_AGE = 3600;
