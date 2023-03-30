@@ -35,7 +35,7 @@ async function main() {
       await client.rest.repos.updateRelease({
         owner: context.repo.owner,
         repo: context.repo.repo,
-        release_id: release.data.id,
+        release_id: release.id,
         draft: false,
       })
     }
