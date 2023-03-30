@@ -93,6 +93,7 @@ jobs:
           draft: true
           prerelease: ${{ github.event.inputs.prerelease }}
           artifacts: v${{steps.new_version.outputs.prop}}.zip
+          generateReleaseNotes: true
 
       - name: Create Pull Request from develop to main
         id: create_pr
