@@ -14,3 +14,8 @@ export interface EnvVarInfo {
 }
 
 export const STATUS_PATH = 'status'
+
+export interface StatusInfo {
+  version: string
+  envInfo: EnvVarInfo[]
+}

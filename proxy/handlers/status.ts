@@ -3,16 +3,11 @@ import { CustomerVariables } from '../customer-variables/CustomerVariables'
 import { maybeObfuscateVariable } from '../customer-variables/maybeObfuscateVariable'
 import { CustomerVariableType } from '../customer-variables/types'
 import { HttpResponseSimple } from '@azure/functions/types/http'
-import { EnvVarInfo, StatusFormat } from '../../shared/status'
+import { EnvVarInfo, StatusFormat, StatusInfo } from '../../shared/status'
 
 export interface HandleStatusParams {
   httpRequest: HttpRequest
   customerVariables: CustomerVariables
-}
-
-export interface StatusInfo {
-  version: string
-  envInfo: EnvVarInfo[]
 }
 
 async function getEnvInfo(customerVariables: CustomerVariables) {
@@ -68,6 +63,10 @@ function renderHtml({ version, envInfo }: StatusInfo) {
         <style>
           body, .env-info {
             display: flex;
+          }
+          
+          .env-info {
+            flex-direction: column;
           }
           
           body {

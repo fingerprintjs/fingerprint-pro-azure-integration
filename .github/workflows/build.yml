@@ -1,23 +1,28 @@
 name: Lint, build and test
 on:
-  push:
-    branches:
-      - main
   pull_request:
+
 jobs:
   build:
     name: Lint, build and test
     runs-on: ubuntu-latest
     timeout-minutes: 3
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+
       - uses: actions/cache@v3
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
@@ -25,15 +30,44 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
       - name: Install Node packages
         run: yarn install
+
       - name: Lint
         run: yarn lint
-      - name: Tests
-        run: yarn test
+
       - name: Build
         run: yarn build
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
+
       - name: Typecheck
         run: yarn test:dts
+
+      - name: Tests
+        run: yarn test
+
+      - name: Read coverage text report
+        uses: fingerprintjs/action-coverage-report-md@v1
+        id: coverage-md
+        with:
+          srcBasePath: './'
+
+      - name: Jest coverage comment
+        id: coverage
+        uses: ArtiomTr/jest-coverage-report-action@df2b025553c31d68f84be6337843e277e2576844
+        with:
+          package-manager: yarn
+          output: report-markdown
+
+      - uses: marocchino/sticky-pull-request-comment@adca94abcaf73c10466a71cc83ae561fd66d1a56
+        with:
+          message: |
+            ${{ steps.coverage.outputs.report }}
+            <details>
+              <summary>Show full coverage report</summary>
+
+              ${{ steps.coverage-md.outputs.markdownReport }}
+            </details>
+
