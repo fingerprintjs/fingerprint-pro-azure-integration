@@ -63,6 +63,8 @@ jobs:
         run: yarn build
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
+          FPCDN: fpcdn.io
+          INGRESS_API: api.fpjs.io
 
       - name: Run type check
         run: yarn test:dts
@@ -90,7 +92,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: v${{steps.new_version.outputs.prop}}
-          name: Release ${{steps.new_version.outputs.prop}}
+          name: ${{steps.new_version.outputs.prop}}
           draft: true
           prerelease: ${{ github.event.inputs.prerelease }}
           artifacts: v${{steps.new_version.outputs.prop}}.zip
