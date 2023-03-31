@@ -13,7 +13,7 @@ export interface HandleIngressParams {
 }
 
 export function handleIngress({ httpRequest, logger, preSharedSecret }: HandleIngressParams) {
-  const { region } = httpRequest.query
+  const { region = 'us' } = httpRequest.query
 
   const domain = getEffectiveTLDPlusOne(getHost(httpRequest))
   const url = new URL(getIngressAPIHost(region))
