@@ -6,6 +6,7 @@ import { EnvCustomerVariables } from './customer-variables/EnvCustomerVariables'
 import { CustomerVariableType } from './customer-variables/types'
 import { STATUS_PATH } from '../shared/status'
 import { handleStatus } from './handlers/status'
+import { removeTrailingSlashes } from './utils/routing'
 
 const proxy: AzureFunction = async (context: Context, req: HttpRequest): Promise<void> => {
   context.log.verbose('Handling request', {
@@ -15,7 +16,7 @@ const proxy: AzureFunction = async (context: Context, req: HttpRequest): Promise
 
   const customerVariables = new CustomerVariables([new EnvCustomerVariables()], context.log)
 
-  const path = req.params?.restOfPath
+  const path = removeTrailingSlashes(req.params?.restOfPath)
 
   if (path === STATUS_PATH) {
     context.res = await handleStatus({
