@@ -3,11 +3,6 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      prerelease:
-        description: 'Create a pre-release'
-        default: 'false'
-        required: false
-        type: boolean
       version_bump:
         description: 'A type of version bump'
         default: 'patch'
@@ -26,8 +21,82 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-
+      
     if: github.ref == 'refs/heads/develop'
 
     steps:
-      - run: echo "WIP"
+      - name: Checkout develop branch
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Install node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+        
+      - name: Set git settings
+        uses: fregante/setup-git-user@v1
+      
+      # Build functions
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
+
+      - name: Disable version tags
+        run: yarn config set version-git-tag false
+
+      - name: Bump version
+        run: yarn version --${{ github.event.inputs.version_bump }}
+
+      - name: Build functions
+        run: yarn build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+
+      - name: Run type check
+        run: yarn test:dts
+
+      - name: Get new version of Azure functions
+        id: version_edge
+        uses: notiz-dev/github-action-json-property@v0.2.0
+        with:
+          path: 'package.json'
+          prop_path: 'version'
+      
+      - name: Commit and push new version
+        run: |          
+          git commit package.json -m "build: new Azure function v${{steps.version_edge.outputs.prop}}"          
+          git push "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git tag -a "v${{steps.version_edge.outputs.prop}}" -m "v${{steps.version_edge.outputs.prop}}"
+          git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+      
+      # Prepare a release
+
+      - name: Create a Github release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{steps.version_edge.outputs.prop}}
+          name: Release ${{steps.version_edge.outputs.prop}}
+          artifacts: "dist/fingerprintjs-pro-azure-function/function.json,dist/fingerprintjs-pro-azure-function/fingerprintjs-pro-azure-function.js,dist/fingerprintjs-pro-azure-function-management/function.json,dist/fingerprintjs-pro-azure-function-management/fingerprintjs-pro-azure-function-management.js"
+
+      - name: Create Pull Request from develop to main
+        id: create_pr
+        uses: devops-infra/action-pull-request@v0.5.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: develop
+          target_branch: main
+          title: New version of scripts v${{ steps.version_edge.outputs.prop }}
+          body: New version of scripts v${{ steps.version_edge.outputs.prop }}
+
+      - name: Check PR outputs
+        if: ${{ steps.create_pr.outputs.url }}
+        run: echo "Pull Request URL - ${{ steps.create_pr.outputs.url }}"
