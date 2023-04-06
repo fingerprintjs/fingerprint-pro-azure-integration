@@ -79,13 +79,27 @@ jobs:
           git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
       
       # Prepare a release
+      
+      - name: Prepare a package
+        run: |
+          mkdir package
+          mkdir package/fingerprintjs-pro-azure-function
+          mkdir package/fingerprintjs-pro-azure-function-management
+          cp dist/host.json package/host.json
+          cp dist/fingerprintjs-pro-azure-function/function.json package/fingerprintjs-pro-azure-function/function.json
+          cp dist/fingerprintjs-pro-azure-function/fingerprintjs-pro-azure-function.js package/fingerprintjs-pro-azure-function/fingerprintjs-pro-azure-function.js 
+          cp dist/fingerprintjs-pro-azure-function-management/function.json package/fingerprintjs-pro-azure-function-management/function.json
+          cp dist/fingerprintjs-pro-azure-function-management/fingerprintjs-pro-azure-function-management.js package/fingerprintjs-pro-azure-function-management/fingerprintjs-pro-azure-function-management.js
+          cd package
+          zip -r package.zip *
+          cd ..
 
       - name: Create a Github release
         uses: ncipollo/release-action@v1
         with:
           tag: v${{steps.version_edge.outputs.prop}}
           name: Release ${{steps.version_edge.outputs.prop}}
-          artifacts: "dist/fingerprintjs-pro-azure-function/function.json,dist/fingerprintjs-pro-azure-function/fingerprintjs-pro-azure-function.js,dist/fingerprintjs-pro-azure-function-management/function.json,dist/fingerprintjs-pro-azure-function-management/fingerprintjs-pro-azure-function-management.js"
+          artifacts: "package/package.zip"
 
       - name: Create Pull Request from develop to main
         id: create_pr
