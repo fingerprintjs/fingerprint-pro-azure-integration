@@ -57,8 +57,9 @@
         }
     },
     "variables": {
-        "hostingPlanName": "[parameters('functionAppName')]",
-        "appInsightsName": "AppInsights",
+        "functionAppName": "[format('{0}{1}', parameters('functionAppName'), uniqueString(resourceGroup().id))]",
+        "hostingPlanName": "[variables('functionAppName')]",
+        "appInsightsName": "[format('AppInsights -{0}', uniqueString(resourceGroup().id))]",
         "storageAccountName": "[format('fnstor{0}', uniqueString(resourceGroup().id))]",
         "functionNameComputed": "fingerprint-pro-azure-integration",
         "functionRuntime": "node"
@@ -81,7 +82,7 @@
             "location": "[parameters('location')]",
             "kind": "web",
             "tags": {
-                "[format('hidden-link:{0}', resourceId('Microsoft.Web/sites', parameters('functionAppName')))]": "Resource"
+                "[format('hidden-link:{0}', resourceId('Microsoft.Web/sites', variables('functionAppName')))]": "Resource"
             },
             "properties": {
                 "Application_Type": "web"                
@@ -106,7 +107,7 @@
         {
             "type": "Microsoft.Web/sites",
             "apiVersion": "2022-03-01",
-            "name": "[parameters('functionAppName')]",
+            "name": "[variables('functionAppName')]",
             "location": "[parameters('location')]",
             "kind": "functionapp,linux",
             "properties": {
@@ -139,7 +140,7 @@
                         },
                         {
                             "name": "WEBSITE_CONTENTSHARE",
-                            "value": "[toLower(parameters('functionAppName'))]"
+                            "value": "[toLower(variables('functionAppName'))]"
                         },
                         {
                             "name": "WEBSITE_RUN_FROM_PACKAGE",
@@ -159,7 +160,7 @@
     "outputs": {
         "functionAppHostName": {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')), '2020-12-01').defaultHostName]"
+            "value": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppName')), '2020-12-01').defaultHostName]"
         },
         "functionName": {
             "type": "string",
