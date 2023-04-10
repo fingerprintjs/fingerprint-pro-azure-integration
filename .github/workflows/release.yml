@@ -65,6 +65,7 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=4096"
           FPCDN: fpcdn.io
           INGRESS_API: api.fpjs.io
+          IS_RELEASE_BUILD: true
 
       - name: Run type check
         run: yarn test:dts
@@ -76,13 +77,17 @@ jobs:
           path: 'package.json'
           prop_path: 'version'
 
-      - name: Zip dist directory
-        run: zip -r v${{steps.new_version.outputs.prop}}.zip dist/
+      - name: Prepare a package
+        run: |
+          cd dist
+          zip -r package.zip *
+          mv package.zip ../
+          cd ../
+          cp package.zip v${{steps.new_version.outputs.prop}}.zip
 
       - name: Commit and push new version of lambda
         run: |
-          git add dist/ -f
-          git commit package.json dist/ -m "build: new built function v${{steps.new_version.outputs.prop}}"
+          git commit package.json -m "chore: release v${{steps.new_version.outputs.prop}}"
           git push "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
           git tag -a "v${{steps.new_version.outputs.prop}}" -m "v${{steps.new_version.outputs.prop}}"
           git push --tags "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
@@ -95,7 +100,7 @@ jobs:
           name: v${{steps.new_version.outputs.prop}}
           draft: true
           prerelease: ${{ github.event.inputs.prerelease }}
-          artifacts: v${{steps.new_version.outputs.prop}}.zip
+          artifacts: v${{steps.new_version.outputs.prop}}.zip,package.zip
           generateReleaseNotes: true
 
       - name: Create Pull Request from develop to main

@@ -16,6 +16,14 @@ const outputDirectory = 'dist'
 function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFunctionJson) {
   const isDev = opts.watch
 
+  const buildFlags = {
+    isForRelease: !isDev && process.env.IS_RELEASE_BUILD === 'true',
+  }
+
+  if (buildFlags.isForRelease) {
+    console.info('Building for release')
+  }
+
   const commonBanner = licensePlugin({
     banner: {
       content: {
@@ -75,13 +83,10 @@ function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFu
    * */
   const commonOutput = {
     exports: 'named',
-    sourcemap: true,
+    sourcemap: !buildFlags.isForRelease,
   }
 
-  /**
-   * @type {import('rollup').RollupOptions[]}
-   * */
-  return [
+  const output = [
     {
       ...commonInput,
       output: [
@@ -92,15 +97,20 @@ function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFu
         },
       ],
     },
-    {
+  ]
+
+  if (!buildFlags.isForRelease) {
+    output.push({
       ...commonInput,
       plugins: [dtsPlugin(), commonBanner],
       output: {
         file: `${outputDirectory}/${artifactName}/${artifactName}.d.ts`,
         format: 'es',
       },
-    },
-  ]
+    })
+  }
+
+  return output
 }
 
 export default (opts) => {
