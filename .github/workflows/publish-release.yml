@@ -15,6 +15,7 @@ permissions:
 
 jobs:
     publish:
+        if: github.event.pull_request.merged == true
         runs-on: ubuntu-latest
         steps:
         - name: Checkout
@@ -28,6 +29,5 @@ jobs:
 
         - name: Publish release
           uses: ./.github/actions/publish-release
-          if: github.event.pull_request.merged == true
           with:
             token: ${{ secrets.GITHUB_TOKEN }}
