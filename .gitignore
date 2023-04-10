@@ -116,3 +116,6 @@ appsettings.json
 local.settings.json
 storage/*
 !storage/.gitkeep
+
+# Local pipelines agent
+azure-agent
