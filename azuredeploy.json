@@ -54,6 +54,36 @@
             "metadata": {
                 "description": "Suffix for function app, storage account, and key vault names."
             }
+        },
+        "routePrefix": {
+            "type": "string",
+            "defaultValue": "fpjs",
+            "minLength": 1,
+            "metadata": {
+                "description": "Route prefix"
+            }
+        },
+        "agentDownloadPath": {
+            "type": "string",
+            "defaultValue": "agent",          
+            "minLength": 1,  
+            "metadata": {
+                "description": "Agent download path"
+            }
+        },
+        "getResultPath": {
+            "type": "string",
+            "defaultValue": "result",
+            "minLength": 1,
+            "metadata": {
+                "description": "Get result path"
+            }
+        },
+        "preSharedSecret": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Pre-shared proxy secret issued in Fingerprint Pro dashboard"
+            }
         }
     },
     "variables": {
@@ -145,6 +175,22 @@
                         {
                             "name": "WEBSITE_RUN_FROM_PACKAGE",
                             "value": "https://fpjsdeploymentstorage.blob.core.windows.net/funcs/package.zip"
+                        },
+                        {
+                            "name": "fpjs_route_prefix",
+                            "value": "[parameters('routePrefix')]"
+                        },
+                        {
+                            "name": "fpjs_agent_download_path",
+                            "value": "[parameters('agentDownloadPath')]"
+                        },                    
+                        {
+                            "name": "fpjs_get_result_path",
+                            "value": "[parameters('getResultPath')]"
+                        },
+                        {
+                            "name": "fpjs_pre_shared_secret",
+                            "value": "[parameters('preSharedSecret')]"
                         }
                     ]
                 },
