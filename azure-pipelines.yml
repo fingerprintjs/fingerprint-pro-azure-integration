@@ -2,7 +2,6 @@
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
-
 trigger:
   batch: 'false'
   branches:
@@ -11,6 +10,8 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+  # TODO - Remove after repository is made public
+  name: 'Pz local'
 
 steps:
 - script: echo Hello, world!
