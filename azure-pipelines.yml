@@ -11,7 +11,7 @@ trigger:
 pool:
   vmImage: ubuntu-latest
   # TODO - Remove after repository is made public
-  name: 'Pz local'
+  name: 'Local pz'
 
 steps:
 - script: echo Hello, world!
