@@ -7,12 +7,31 @@ async function main() {
 
   const { context } = github
 
+<<<<<<< HEAD
+=======
+  console.log('repo', context.repo)
+
+  const tag = core.getInput('tag', { required: true })
+
+  console.log('tag', tag)
+
+  if (!tag) {
+    console.info('No tag found, skipping release')
+
+    return
+  }
+
+>>>>>>> 90a0121 (ci: add release workflow)
   const { data: pr } = await client.rest.pulls.get({
     owner: context.repo.owner,
     repo: context.repo.repo,
     pull_number: context.payload.pull_request.number,
   })
+<<<<<<< HEAD
   const tag = pr.title
+=======
+  console.log('pr', pr)
+>>>>>>> 90a0121 (ci: add release workflow)
 
   console.log('tag', tag)
 
@@ -22,6 +41,7 @@ async function main() {
     issue_number: context.payload.pull_request.number,
   })
 
+<<<<<<< HEAD
   const isRelease = labels.some((label) => label.name === 'release')
 
   if (isRelease && tag) {
@@ -36,6 +56,24 @@ async function main() {
         owner: context.repo.owner,
         repo: context.repo.repo,
         release_id: release.id,
+=======
+  console.log('labels', labels)
+
+  const isRelease = labels.some((label) => label.name === 'release')
+
+  if (isRelease && tag) {
+    const release = await client.rest.repos.getReleaseByTag({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      tag,
+    })
+
+    if (release.data.draft) {
+      await client.rest.repos.updateRelease({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        release_id: release.data.id,
+>>>>>>> 90a0121 (ci: add release workflow)
         draft: false,
       })
     }
