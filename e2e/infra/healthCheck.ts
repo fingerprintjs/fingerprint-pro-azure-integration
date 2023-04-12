@@ -8,12 +8,12 @@ export function doHealthCheck(siteName: string) {
   console.info(`Site url: ${url}`)
 
   const policy = wrap(
+    timeout(30_000, TimeoutStrategy.Aggressive),
     retry(handleAll, {
       backoff: new ExponentialBackoff({
         initialDelay: 500,
       }),
     }),
-    timeout(30_000, TimeoutStrategy.Aggressive),
   )
 
   return policy.execute(async ({ attempt }) => {

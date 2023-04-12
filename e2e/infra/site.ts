@@ -16,11 +16,11 @@ export function getStatusUrl(baseUrl: string) {
 
 export async function getWebApp(resourceGroup: string, appName: string) {
   const policy = wrap(
+    timeout(30_000, TimeoutStrategy.Aggressive),
     retry(handleAll, {
       maxAttempts: 10,
       backoff: new ExponentialBackoff(),
     }),
-    timeout(30_000, TimeoutStrategy.Aggressive),
   )
 
   return policy.execute(async ({ attempt }) => {

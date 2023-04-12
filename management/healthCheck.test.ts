@@ -2,6 +2,7 @@ import fetchMock from 'fetch-mock'
 import { StatusInfo } from '../shared/status'
 import { performHealthCheckAfterUpdate } from './healthCheck'
 import { WEBSITE_RUN_FROM_PACKAGE } from './settings'
+import { TaskCancelledError } from 'cockatiel'
 
 describe('performHealthCheckAfterUpdate', () => {
   const mockClient = {
@@ -78,7 +79,6 @@ describe('performHealthCheckAfterUpdate', () => {
       newVersion: '1.0.0',
       statusUrl,
       storageClient: mockStorageClient as any,
-      waitBetweenRequestsMs: 100,
       timeoutMs: 500,
       newFunctionZipUrl,
     })
@@ -106,11 +106,10 @@ describe('performHealthCheckAfterUpdate', () => {
         newVersion: '1.0.0',
         statusUrl,
         storageClient: mockStorageClient as any,
-        waitBetweenRequestsMs: 100,
         timeoutMs: 500,
         newFunctionZipUrl,
       }),
-    ).rejects.toThrow('Operation Timeout')
+    ).rejects.toThrow(TaskCancelledError)
 
     expect(mockStorageClient.deleteBlob).toHaveBeenCalledTimes(0)
     expect(mockClient.webApps.updateApplicationSettings).toHaveBeenCalledWith('test-resource', 'test-app', {
@@ -118,5 +117,5 @@ describe('performHealthCheckAfterUpdate', () => {
         [WEBSITE_RUN_FROM_PACKAGE]: oldFunctionZipUrl,
       },
     })
-  })
+  }, 30_000)
 })
