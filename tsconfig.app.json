@@ -1,13 +1,15 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": ["node"]
+    "types": ["node"],
+    "module": "ES2020"
   },
   "exclude": [
     "dist",
     "node_modules",
     "**/*.test.ts",
-    "test"
+    "test",
+    "e2e"
   ],
   "include": [
     "**/*.ts"

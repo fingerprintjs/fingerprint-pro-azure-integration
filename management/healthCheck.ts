@@ -5,6 +5,8 @@ import { performRollback } from './rollback'
 import { ContainerClient } from '@azure/storage-blob'
 import { removeOldFunctionFromStorage } from './storage'
 import { eq } from 'semver'
+import { wait } from '../shared/wait'
+import { timeout } from '../shared/timeout'
 
 export interface PerformHealthCheckAfterUpdateParams {
   newVersion: string
@@ -87,25 +89,4 @@ async function runHealthCheckSchedule(url: string, newVersion: string, waitBetwe
       }
     }
   }
-}
-
-function timeout(ms = 1000 * 60 * 2, signal?: AbortSignal) {
-  return new Promise((resolve, reject) => {
-    wait(ms, signal).then(() => {
-      reject(new Error('Operation Timeout'))
-    })
-  })
-}
-
-function wait(ms: number, signal?: AbortSignal) {
-  return new Promise<void>((resolve) => {
-    const timeout = setTimeout(resolve, ms)
-
-    timeout.unref()
-
-    signal?.addEventListener('abort', () => {
-      clearTimeout(timeout)
-      resolve()
-    })
-  })
 }
