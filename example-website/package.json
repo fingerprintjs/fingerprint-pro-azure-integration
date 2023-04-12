@@ -1,0 +1,13 @@
+{
+  "name": "example-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "link:../node_modules/vite"
+  }
+}

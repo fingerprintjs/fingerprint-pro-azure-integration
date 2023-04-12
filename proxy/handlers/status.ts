@@ -42,25 +42,27 @@ function renderEnvInfo(envInfo: EnvVarInfo[]) {
     .filter((info) => !info.isSet || !info.resolvedBy)
     .map(
       (info) => `
-        <div class="env-info-item">
+        <div class='env-info-item'>
             ⚠️ <strong>${info.envVarName} </strong> is not defined${info.isSet ? ' and uses default value' : ''}
         </div>`,
     )
 
   return `
-    <div class="env-info">
+    <div class='env-info'>
       ${children.join('')}
     </div>
   `
 }
 
 function renderHtml({ version, envInfo }: StatusInfo) {
-  return `
-    <html lang="en-US">
+  const styleNonce = Math.random().toString(36).substring(2, 15)
+
+  const html = `
+    <html lang='en-US'>
       <head>
         <title>Azure integration status</title>
-        <meta charset="utf-8">
-        <style>
+        <meta charset='utf-8'>
+        <style nonce='${styleNonce}'>
           body, .env-info {
             display: flex;
           }
@@ -86,11 +88,16 @@ function renderHtml({ version, envInfo }: StatusInfo) {
         </div>
         ${renderEnvInfo(envInfo)}
           <span>
-            Please reach out our support via <a href="mailto:support@fingerprint.com">support@fingerprint.com</a> if you have any issues
+            Please reach out our support via <a href='mailto:support@fingerprint.com'>support@fingerprint.com</a> if you have any issues
           </span>
       </body>
     </html>
   `
+
+  return {
+    html,
+    styleNonce,
+  }
 }
 
 export async function getStatusInfo(customerVariables: CustomerVariables): Promise<StatusInfo> {
@@ -118,11 +125,14 @@ export async function handleStatus({
     }
   }
 
+  const { html, styleNonce } = renderHtml(info)
+
   return {
     status: '200',
-    body: renderHtml(info).trim(),
+    body: html,
     headers: {
       'Content-Type': 'text/html',
+      'Content-Security-Policy': `default-src 'none'; img-src https://fingerprint.com; style-src 'nonce-${styleNonce}'`,
     },
   }
 }
