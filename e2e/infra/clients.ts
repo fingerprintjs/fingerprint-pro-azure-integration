@@ -4,7 +4,7 @@ import config from './config'
 import { StorageManagementClient } from '@azure/arm-storage'
 import { WebSiteManagementClient } from '@azure/arm-appservice'
 
-const credentials = new DefaultAzureCredential()
+export const credentials = new DefaultAzureCredential()
 
 export const storageClient = new StorageManagementClient(credentials, config.subscriptionId)
 export const resourcesClient = new ResourceManagementClient(credentials, config.subscriptionId)

@@ -1,5 +1,6 @@
 import { createResourceGroup, removeResourceGroup } from './resourceGroup'
 import { deployFunctionApp, deployAppToTempStorage, getUpdatedDeployTemplate } from './deploy'
+import { deployWebsite } from './website'
 
 async function main() {
   const resourceGroup = await createResourceGroup()
@@ -7,6 +8,8 @@ async function main() {
   const cleanupFns: Array<() => Promise<void>> = []
 
   try {
+    await deployWebsite(resourceGroup)
+
     const { url, removeBlob } = await deployAppToTempStorage()
 
     cleanupFns.push(removeBlob)

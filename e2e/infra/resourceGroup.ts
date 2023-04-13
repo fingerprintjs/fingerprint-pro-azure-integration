@@ -5,6 +5,9 @@ export async function createResourceGroup() {
 
   await resourcesClient.resourceGroups.createOrUpdate(name, {
     location: 'westus2',
+    tags: {
+      'fpjs-dev-e2e': 'true',
+    },
   })
 
   return name

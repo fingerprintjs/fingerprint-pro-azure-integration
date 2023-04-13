@@ -16,8 +16,12 @@ pool:
 steps:
 - script: yarn install
   displayName: 'Install dependencies'
-- script: yarn build
+- script: yarn build && yarn build:example-website
   displayName: 'Build'
+  env:
+    VITE_API_KEY: $(API_KEY)
+    VITE_ENDPOINT: '/fpjs/visitorId?region=eu'
+    VITE_SCRIPT_URL_PATTERN: '/fpjs/agent?apiKey=<apiKey>&version=<version>&loaderVersion=<loaderVersion>'
 - script: |
     cd dist
     zip -r package.zip *
