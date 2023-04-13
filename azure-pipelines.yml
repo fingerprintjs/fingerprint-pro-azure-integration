@@ -15,13 +15,17 @@ pool:
 
 steps:
 - script: yarn install
+  displayName: 'Install dependencies'
 - script: yarn build
+  displayName: 'Build'
 - script: |
     cd dist
     zip -r package.zip *
     mv package.zip ../
     cd ..
+  displayName: 'Zip'
 - script: yarn e2e-deploy-infra
+  displayName: 'Deploy infrastructure'
   env:
     AZURE_STORAGE_ACCOUNT_NAME: $(AZURE_STORAGE_ACCOUNT_NAME)
     AZURE_STORAGE_CONTAINER_NAME: $(AZURE_STORAGE_CONTAINER_NAME)
