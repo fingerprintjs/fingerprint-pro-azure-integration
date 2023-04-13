@@ -14,10 +14,17 @@ pool:
   name: 'Local pz'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
+- script: yarn install
+- script: yarn build
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    cd dist
+    zip -r package.zip *
+    mv package.zip ../
+    cd ..
+- script: yarn e2e-deploy-infra
+  env:
+    AZURE_STORAGE_ACCOUNT_NAME: $(AZURE_STORAGE_ACCOUNT_NAME)
+    AZURE_STORAGE_CONTAINER_NAME: $(AZURE_STORAGE_CONTAINER_NAME)
+    AZURE_STORAGE_RESOURCE_GROUP: $(AZURE_STORAGE_RESOURCE_GROUP)
+    AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+    FPJS_PRE_SHARED_SECRET: $(FPJS_PRE_SHARED_SECRET)
