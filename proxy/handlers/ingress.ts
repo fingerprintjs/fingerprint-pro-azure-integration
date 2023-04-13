@@ -5,6 +5,7 @@ import { getHost, prepareHeadersForIngressAPI, updateResponseHeaders } from '../
 import { HttpResponseSimple } from '@azure/functions/types/http'
 import { generateErrorResponse } from '../utils/errorResponse'
 import { getEffectiveTLDPlusOne } from '../domain/tld'
+import { addTrafficMonitoringSearchParamsForVisitorIdRequest } from '../utils/traffic'
 
 export interface HandleIngressParams {
   httpRequest: HttpRequest
@@ -21,6 +22,7 @@ export function handleIngress({ httpRequest, logger, preSharedSecret }: HandleIn
   Object.entries(httpRequest.query).forEach(([key, value]) => {
     url.searchParams.append(key, value)
   })
+  addTrafficMonitoringSearchParamsForVisitorIdRequest(url)
 
   logger.verbose('Performing request', url.toString())
 
