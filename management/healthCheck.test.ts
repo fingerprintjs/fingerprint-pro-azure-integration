@@ -79,7 +79,7 @@ describe('performHealthCheckAfterUpdate', () => {
       newVersion: '1.0.0',
       statusUrl,
       storageClient: mockStorageClient as any,
-      timeoutMs: 500,
+      timeoutMs: 5000,
       newFunctionZipUrl,
     })
 
