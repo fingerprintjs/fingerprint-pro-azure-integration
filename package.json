@@ -14,7 +14,7 @@
     "emulate-storage": "azurite -l ./storage -L",
     "start": "func start",
     "start:example-website": "cd example-website && vite",
-    "build:example-website": "cd example-website && vite build"
+    "build:example-website": "cd example-website && vite build",
     "e2e-deploy-infra": "ts-node --project e2e/tsconfig.json e2e/infra/main.ts"
   },
   "dependencies": {
