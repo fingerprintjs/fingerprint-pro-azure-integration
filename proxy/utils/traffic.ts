@@ -1,4 +1,4 @@
-const LAMBDA_FUNC_VERSION = '__lambda_func_version__'
+const FUNCTION_VERSION = '__azure_function_version__'
 const PARAM_NAME = 'ii'
 
 export function addTrafficMonitoringSearchParamsForProCDN(url: URL) {
@@ -10,5 +10,5 @@ export function addTrafficMonitoringSearchParamsForVisitorIdRequest(url: URL) {
 }
 
 function getTrafficMonitoringValue(type: 'procdn' | 'ingress'): string {
-  return `fingerprintjs-pro-azure/${LAMBDA_FUNC_VERSION}/${type}`
+  return `fingerprintjs-pro-azure/${FUNCTION_VERSION}/${type}`
 }
