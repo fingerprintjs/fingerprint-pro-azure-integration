@@ -2,7 +2,6 @@ import fetchMock from 'fetch-mock'
 import { StatusInfo } from '../shared/status'
 import { performHealthCheckAfterUpdate } from './healthCheck'
 import { WEBSITE_RUN_FROM_PACKAGE } from './settings'
-import { TaskCancelledError } from 'cockatiel'
 
 describe('performHealthCheckAfterUpdate', () => {
   const mockClient = {
@@ -39,7 +38,7 @@ describe('performHealthCheckAfterUpdate', () => {
       newVersion: '1.0.0',
       statusUrl,
       storageClient: mockStorageClient as any,
-      timeoutMs: 500,
+      maxHealthCheckDelayMs: 500,
       newFunctionZipUrl,
     })
 
@@ -79,7 +78,7 @@ describe('performHealthCheckAfterUpdate', () => {
       newVersion: '1.0.0',
       statusUrl,
       storageClient: mockStorageClient as any,
-      timeoutMs: 5000,
+      maxHealthCheckDelayMs: 5000,
       newFunctionZipUrl,
     })
 
@@ -106,10 +105,10 @@ describe('performHealthCheckAfterUpdate', () => {
         newVersion: '1.0.0',
         statusUrl,
         storageClient: mockStorageClient as any,
-        timeoutMs: 500,
+        maxHealthCheckDelayMs: 100,
         newFunctionZipUrl,
       }),
-    ).rejects.toThrow(TaskCancelledError)
+    ).rejects.toThrow('Version mismatch, expected: 1.0.0, received: 0.0.1')
 
     expect(mockStorageClient.deleteBlob).toHaveBeenCalledTimes(0)
     expect(mockClient.webApps.updateApplicationSettings).toHaveBeenCalledWith('test-resource', 'test-app', {

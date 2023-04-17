@@ -5,7 +5,7 @@ import { performRollback } from './rollback'
 import { ContainerClient } from '@azure/storage-blob'
 import { removeOldFunctionFromStorage } from './storage'
 import { eq } from 'semver'
-import { ExponentialBackoff, handleAll, retry, timeout, TimeoutStrategy, wrap } from 'cockatiel'
+import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
 
 export interface PerformHealthCheckAfterUpdateParams {
   newVersion: string
@@ -18,7 +18,7 @@ export interface PerformHealthCheckAfterUpdateParams {
   resourceGroupName: string
   appName: string
   storageClient: ContainerClient
-  timeoutMs?: number
+  maxHealthCheckDelayMs?: number
 }
 
 export async function performHealthCheckAfterUpdate({
@@ -31,11 +31,11 @@ export async function performHealthCheckAfterUpdate({
   resourceGroupName,
   oldFunctionZipUrl,
   storageClient,
-  timeoutMs,
+  maxHealthCheckDelayMs,
   newFunctionZipUrl,
 }: PerformHealthCheckAfterUpdateParams) {
   try {
-    await runHealthCheckSchedule(statusUrl, newVersion, timeoutMs, logger)
+    await runHealthCheckSchedule(statusUrl, newVersion, maxHealthCheckDelayMs, logger)
 
     await removeOldFunctionFromStorage(oldFunctionZipUrl, newFunctionZipUrl, storageClient, logger)
   } catch (error) {
@@ -54,16 +54,14 @@ export async function performHealthCheckAfterUpdate({
   }
 }
 
-async function runHealthCheckSchedule(url: string, newVersion: string, timeoutMs = 120_000, logger?: Logger) {
-  const policy = wrap(
-    timeout(timeoutMs, TimeoutStrategy.Aggressive).dangerouslyUnref(),
-    retry(handleAll, {
-      backoff: new ExponentialBackoff({
-        initialDelay: 500,
-      }),
+async function runHealthCheckSchedule(url: string, newVersion: string, maxDelay = 120_000, logger?: Logger) {
+  const policy = retry(handleAll, {
+    maxAttempts: 20,
+    backoff: new ExponentialBackoff({
+      initialDelay: 500,
+      maxDelay,
     }),
-  )
-
+  })
   return policy.execute(async ({ attempt, signal }) => {
     if (attempt > 1) {
       logger?.verbose(`Attempt ${attempt} at health check...`)
