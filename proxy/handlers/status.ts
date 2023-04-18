@@ -60,7 +60,7 @@ function renderHtml({ version, envInfo }: StatusInfo) {
   const html = `
     <html lang='en-US'>
       <head>
-        <title>Azure integration status</title>
+        <title>Fingerprint Pro Azure integration status</title>
         <meta charset='utf-8'>
         <style nonce='${styleNonce}'>
           body, .env-info {
@@ -82,9 +82,9 @@ function renderHtml({ version, envInfo }: StatusInfo) {
         </style>
       </head>
       <body>
-        <h1>Azure integration status</h1>
+        <h1>Fingerprint Pro Azure integration status</h1>
         <div>
-          Lambda function version: ${version}
+          Fingerprint Pro Azure Function App version: ${version}
         </div>
         ${renderEnvInfo(envInfo)}
           <span>
