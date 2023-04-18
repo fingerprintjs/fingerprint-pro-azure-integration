@@ -83,7 +83,7 @@ export async function deployFunctionApp(resourceGroup: string, template: Record<
 
   console.info(`Deploying app ${appName} to ${resourceGroup} resource group`)
 
-  const poll = await resourcesClient.deployments.beginCreateOrUpdate(resourceGroup, `${resourceGroup}-deployment`, {
+  await resourcesClient.deployments.beginCreateOrUpdateAndWait(resourceGroup, `${resourceGroup}-deployment`, {
     properties: {
       template,
       parameters: {
@@ -97,8 +97,6 @@ export async function deployFunctionApp(resourceGroup: string, template: Record<
       mode: 'Incremental',
     },
   })
-
-  await poll.pollUntilDone()
 
   console.info(`App deployed, requesting details from Azure...`)
 

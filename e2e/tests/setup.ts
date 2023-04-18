@@ -1,0 +1,36 @@
+import { chromium, FullConfig } from '@playwright/test'
+import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
+
+export default async function setup(config: FullConfig) {
+  const { baseURL, headless } = config.projects[0].use
+  const browser = await chromium.launch({
+    headless,
+  })
+
+  try {
+    const page = await browser.newPage()
+    await page.goto(baseURL!)
+
+    const policy = retry(handleAll, {
+      maxAttempts: 10,
+      backoff: new ExponentialBackoff({
+        maxDelay: 20_000,
+        initialDelay: 1000,
+      }),
+    })
+
+    await policy.execute(async ({ attempt }) => {
+      if (attempt > 1) {
+        await page.reload()
+      }
+
+      const info = await page.waitForSelector('.integration-info')
+
+      if ((await info.getAttribute('data-ok')) !== 'true') {
+        throw new Error('Integration is not running correctly')
+      }
+    })
+  } finally {
+    await browser.close()
+  }
+}
