@@ -9,7 +9,7 @@ describe('test procdn call', () => {
     addTrafficMonitoringSearchParamsForProCDN(url)
 
     const param = url.searchParams.get('ii')
-    expect(param).toBe('fingerprintjs-pro-azure/__lambda_func_version__/procdn')
+    expect(param).toBe('fingerprintjs-pro-azure/__azure_function_version__/procdn')
   })
 })
 
@@ -19,6 +19,6 @@ describe('test visitor call', () => {
     addTrafficMonitoringSearchParamsForVisitorIdRequest(url)
 
     const param = url.searchParams.get('ii')
-    expect(param).toBe('fingerprintjs-pro-azure/__lambda_func_version__/ingress')
+    expect(param).toBe('fingerprintjs-pro-azure/__azure_function_version__/ingress')
   })
 })

@@ -3,6 +3,7 @@ import { config } from '../utils/config'
 import * as https from 'https'
 import { filterRequestHeaders, updateResponseHeaders } from '../utils/headers'
 import { HttpResponseSimple } from '@azure/functions/types/http'
+import { addTrafficMonitoringSearchParamsForProCDN } from '../utils/traffic'
 
 export interface DownloadAgentParams {
   httpRequest: HttpRequest
@@ -18,6 +19,7 @@ export async function downloadAgent({ httpRequest, logger }: DownloadAgentParams
 
   const url = new URL(`https://${config.fpdcdn}`)
   url.pathname = getEndpoint(apiKey, version, loaderVersion)
+  addTrafficMonitoringSearchParamsForProCDN(url)
 
   logger.verbose('Downloading agent from', url.toString())
 

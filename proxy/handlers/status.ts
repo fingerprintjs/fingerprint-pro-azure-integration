@@ -102,7 +102,7 @@ function renderHtml({ version, envInfo }: StatusInfo) {
 
 export async function getStatusInfo(customerVariables: CustomerVariables): Promise<StatusInfo> {
   return {
-    version: '__lambda_func_version__',
+    version: '__azure_function_version__',
     envInfo: await getEnvInfo(customerVariables),
   }
 }

@@ -1,5 +1,5 @@
 export const config = {
   repository: 'fingerprint-pro-azure-integration',
   repositoryOwner: 'fingerprintjs',
-  version: '__lambda_func_version__',
+  version: '__azure_function_version__',
 }
