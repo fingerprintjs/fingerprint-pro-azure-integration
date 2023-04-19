@@ -93,6 +93,15 @@ export async function deployFunctionApp(resourceGroup: string, template: Record<
         functionAppName: {
           value: appName,
         },
+        getResultPath: {
+          value: config.getResultPath,
+        },
+        agentDownloadPath: {
+          value: config.agentDownloadPath,
+        },
+        routePrefix: {
+          value: config.routePrefix,
+        },
       },
       mode: 'Incremental',
     },

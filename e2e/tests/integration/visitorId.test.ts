@@ -28,16 +28,15 @@ test.describe('visitorId', () => {
     await checkResponse(page)
 
     const requests = getRequests()
-    expect(requests).toHaveLength(5)
+    expect(requests).toHaveLength(6)
 
-    const [, , agentRequest, , apiRequest] = requests
+    const [, , , agentRequest, , apiRequest] = requests
 
     const agentRequestUrl = new URL(agentRequest.url())
     expect(agentRequestUrl.hostname).toBe(rootUrl.hostname)
 
     const apiRequestUrl = new URL(apiRequest.url())
     expect(apiRequestUrl.hostname).toBe(rootUrl.hostname)
-    expect(apiRequestUrl.searchParams.get('ii')).toContain(`fingerprintjs-pro-azure/`)
-    expect(apiRequestUrl.searchParams.get('ii')).toContain(`/procdn`)
+    expect(apiRequestUrl.searchParams.get('ci')).toContain(`js/`)
   })
 })

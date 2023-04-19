@@ -7,6 +7,7 @@ const isCi = process.env.CI === 'true'
 const config: Config = {
   testDir: path.resolve(__dirname, 'tests'),
   retries: isCi ? 3 : 0,
+  forbidOnly: isCi,
   timeout: isCi ? 60_000 : 30_000,
   projects: [
     {
