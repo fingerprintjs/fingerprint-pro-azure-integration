@@ -17,7 +17,6 @@ const config: Config = {
     },
   ],
   globalSetup: path.resolve(__dirname, 'tests/setup.ts'),
-  globalTeardown: path.resolve(__dirname, 'tests/teardown.ts'),
 }
 
 export default config

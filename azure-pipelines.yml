@@ -20,16 +20,31 @@ steps:
   displayName: 'Build'
   env:
     VITE_API_KEY: $(API_KEY)
-    VITE_ENDPOINT: '/fpjs/visitorId?region=eu'
-    VITE_SCRIPT_URL_PATTERN: '/fpjs/agent?apiKey=<apiKey>&version=<version>&loaderVersion=<loaderVersion>'
+    VITE_ENDPOINT: $(VITE_ENDPOINT)
+    VITE_SCRIPT_URL_PATTERN: $(VITE_SCRIPT_URL_PATTERN)
+
 - script: |
     cd dist
     zip -r package.zip *
     mv package.zip ../
     cd ..
   displayName: 'Zip'
+
 - script: yarn e2e-deploy-infra
   displayName: 'Deploy infrastructure'
+  env:
+    AZURE_STORAGE_ACCOUNT_NAME: $(AZURE_STORAGE_ACCOUNT_NAME)
+    AZURE_STORAGE_CONTAINER_NAME: $(AZURE_STORAGE_CONTAINER_NAME)
+    AZURE_STORAGE_RESOURCE_GROUP: $(AZURE_STORAGE_RESOURCE_GROUP)
+    AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+    FPJS_PRE_SHARED_SECRET: $(FPJS_PRE_SHARED_SECRET)
+
+- script: yarn test:e2e
+  displayName: 'Run e2e tests'
+
+- script: yarn e2e-destroy-infra
+  displayName: 'Destroy infrastructure'
+  condition: always()
   env:
     AZURE_STORAGE_ACCOUNT_NAME: $(AZURE_STORAGE_ACCOUNT_NAME)
     AZURE_STORAGE_CONTAINER_NAME: $(AZURE_STORAGE_CONTAINER_NAME)
