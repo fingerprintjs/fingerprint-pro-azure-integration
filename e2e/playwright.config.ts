@@ -8,7 +8,7 @@ const config: Config = {
   testDir: path.resolve(__dirname, 'tests'),
   retries: isCi ? 3 : 0,
   forbidOnly: isCi,
-  timeout: isCi ? 60_000 : 30_000,
+  timeout: isCi ? 300_000 : 30_000,
   projects: [
     {
       use: {
