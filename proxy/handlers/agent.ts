@@ -12,9 +12,11 @@ export interface DownloadAgentParams {
   path: string
 }
 
+const DEFAULT_VERSION = '3'
+
 export async function downloadAgent({ httpRequest, logger, path }: DownloadAgentParams) {
   const apiKey = httpRequest.query.apiKey
-  const version = httpRequest.query.version
+  const version = httpRequest.query.version ?? DEFAULT_VERSION
   const loaderVersion = httpRequest.query.loaderVersion
 
   if (!apiKey) {
