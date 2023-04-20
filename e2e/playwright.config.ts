@@ -4,6 +4,12 @@ import { readTestInfo } from './shared/testInfo'
 
 const isCi = process.env.CI === 'true'
 
+if (isCi) {
+  console.info('CI environment detected')
+} else {
+  console.info('Local environment detected')
+}
+
 const config: Config = {
   testDir: path.resolve(__dirname, 'tests'),
   retries: isCi ? 3 : 0,
