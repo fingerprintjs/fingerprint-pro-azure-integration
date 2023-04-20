@@ -18,7 +18,21 @@ const proxy: AzureFunction = async (context: Context, req: HttpRequest): Promise
 
   const customerVariables = new CustomerVariables([new EnvCustomerVariables()], context.log)
 
-  const path = removeTrailingSlashes(req.params?.restOfPath)
+  const restOfPath = req.params?.restOfPath
+
+  if (!restOfPath) {
+    context.res = {
+      status: 200,
+      body: 'OK',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    }
+
+    return
+  }
+
+  const path = removeTrailingSlashes(restOfPath)
 
   const get404 = () =>
     ({
