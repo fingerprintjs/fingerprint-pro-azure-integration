@@ -4,16 +4,28 @@ import * as https from 'https'
 import { filterRequestHeaders, updateResponseHeaders } from '../utils/headers'
 import { HttpResponseSimple } from '@azure/functions/types/http'
 import { addTrafficMonitoringSearchParamsForProCDN } from '../utils/traffic'
+import { IntegrationError } from '../errors/IntegrationError'
 
 export interface DownloadAgentParams {
   httpRequest: HttpRequest
   logger: Logger
+  path: string
 }
 
-export async function downloadAgent({ httpRequest, logger }: DownloadAgentParams) {
+export async function downloadAgent({ httpRequest, logger, path }: DownloadAgentParams) {
   const apiKey = httpRequest.query.apiKey
   const version = httpRequest.query.version
   const loaderVersion = httpRequest.query.loaderVersion
+
+  if (!apiKey) {
+    return {
+      status: '500',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: new IntegrationError('API Key is missing', path).toBody(),
+    }
+  }
 
   const domain = new URL(httpRequest.url).hostname
 
