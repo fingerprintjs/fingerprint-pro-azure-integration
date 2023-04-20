@@ -6,6 +6,7 @@ export interface TestInfo {
   functionAppUrl: string
   websiteUrl: string
   frontdoorUrl: string
+  functionBlobUrl: string
 }
 
 const filePath = path.join(__dirname, '..', 'test-info.json')

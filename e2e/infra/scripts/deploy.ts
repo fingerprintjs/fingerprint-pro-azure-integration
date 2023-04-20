@@ -41,9 +41,8 @@ async function main() {
       frontdoorUrl,
       functionAppUrl: `https://${functionAppHost}`,
       websiteUrl: website.url,
+      functionBlobUrl: tmpStorageUrl,
     })
-
-    await removeBlob()
   } catch (error) {
     console.error(`Error deploying resources: ${error}`)
 
