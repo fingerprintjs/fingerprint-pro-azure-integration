@@ -12,10 +12,10 @@ export default async function setup(config: FullConfig) {
     await page.goto(baseURL!)
 
     const policy = retry(handleAll, {
-      maxAttempts: 10,
+      maxAttempts: 30,
       backoff: new ExponentialBackoff({
-        maxDelay: 20_000,
-        initialDelay: 1000,
+        maxDelay: 60_000,
+        initialDelay: 3000,
       }),
     })
 
