@@ -22,6 +22,8 @@ steps:
     VITE_API_KEY: $(API_KEY)
     VITE_ENDPOINT: $(VITE_ENDPOINT)
     VITE_SCRIPT_URL_PATTERN: $(VITE_SCRIPT_URL_PATTERN)
+    FPCDN: fpcdn.io
+    INGRESS_API: api.fpjs.io
 
 - script: |
     cd dist
