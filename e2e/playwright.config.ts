@@ -9,6 +9,9 @@ const config: Config = {
   retries: isCi ? 3 : 0,
   forbidOnly: isCi,
   timeout: isCi ? 600_000 : 30_000,
+  expect: {
+    timeout: isCi ? 100_000 : 30_000,
+  },
   projects: [
     {
       use: {
