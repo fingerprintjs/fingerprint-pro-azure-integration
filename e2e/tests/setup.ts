@@ -19,9 +19,15 @@ export default async function setup(config: FullConfig) {
       }),
     })
 
+    console.info('Waiting for website...')
+
     await policy.execute(async ({ attempt }) => {
       if (attempt > 1) {
-        await page.reload()
+        console.info('Attempt', attempt)
+
+        await page.reload({
+          waitUntil: 'networkidle',
+        })
       }
 
       const info = await page.waitForSelector('.integration-info')
