@@ -14,14 +14,14 @@ export interface DownloadAgentParams {
 
 const DEFAULT_VERSION = '3'
 
-export async function downloadAgent({ httpRequest, logger, path }: DownloadAgentParams) {
+export async function downloadAgent({ httpRequest, logger, path }: DownloadAgentParams): Promise<HttpResponseSimple> {
   const apiKey = httpRequest.query.apiKey
   const version = httpRequest.query.version ?? DEFAULT_VERSION
   const loaderVersion = httpRequest.query.loaderVersion
 
   if (!apiKey) {
     return {
-      status: '500',
+      status: 500,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -60,7 +60,7 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
           const responseHeaders = updateResponseHeaders(response.headers, domain)
 
           resolve({
-            status: response.statusCode ? response.statusCode.toString() : '500',
+            status: response.statusCode ?? 500,
             headers: responseHeaders,
             body: new Uint8Array(body),
           })
@@ -72,7 +72,7 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
       logger.error('unable to download agent', { error })
 
       resolve({
-        status: '500',
+        status: 500,
         headers: {
           'Content-Type': 'text/plain',
         },
