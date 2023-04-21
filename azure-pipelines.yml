@@ -43,6 +43,8 @@ steps:
 
 - script: yarn test:e2e
   displayName: 'Run e2e tests'
+  env:
+    CI: 'true'
 
 - script: yarn e2e-destroy-infra
   displayName: 'Destroy infrastructure'
