@@ -23,7 +23,8 @@
 # Fingerprint Pro Azure Integration
 
 > **Warning**
-> This project is in the Private Beta phase. For more information, reach out to [support@fingerprint.com](mailto:support@fingerprint.com).
+> 
+> This project is a **work in progress** and not available for public usage. For more information, reach out to [support@fingerprint.com](mailto:support@fingerprint.com).
 
 [![Deploy To Azure](https://raw.githubusercontent.com/fingeprintjs/fingerprint-pro-azure-integration/main/assets/azure/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
 [![Visualize](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/visualizebutton.svg?sanitize=true)](http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
