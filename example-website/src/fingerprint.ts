@@ -4,10 +4,12 @@ import { LoadOptions } from '@fingerprintjs/fingerprintjs-pro'
 export type FingerprintOptions = ReturnType<typeof getOptions>
 
 export function getOptions() {
+  const search = new URLSearchParams(location.search)
+
   return {
-    apiKey: import.meta.env.VITE_API_KEY as string,
-    endpoint: import.meta.env.VITE_ENDPOINT as string,
-    scriptUrlPattern: import.meta.env.VITE_SCRIPT_URL_PATTERN as string,
+    apiKey: search.get('apiKey') ?? (import.meta.env.VITE_API_KEY as string),
+    endpoint: search.get('endpoint') ?? (import.meta.env.VITE_ENDPOINT as string),
+    scriptUrlPattern: search.get('scriptUrlPattern') ?? (import.meta.env.VITE_SCRIPT_URL_PATTERN as string),
   } satisfies LoadOptions
 }
 
