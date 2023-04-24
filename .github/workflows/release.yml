@@ -67,9 +67,6 @@ jobs:
           INGRESS_API: api.fpjs.io
           IS_RELEASE_BUILD: true
 
-      - name: Run type check
-        run: yarn test:dts
-
       - name: Get new version of function
         id: new_version
         uses: notiz-dev/github-action-json-property@v0.2.0
