@@ -71,7 +71,7 @@ function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFu
       replace({
         __FPCDN__: process.env.FPCDN,
         __INGRESS_API__: process.env.INGRESS_API,
-        __lambda_func_version__: packageJson.version,
+        __azure_function_version__: packageJson.version,
         preventAssignment: true,
       }),
       commonBanner,
