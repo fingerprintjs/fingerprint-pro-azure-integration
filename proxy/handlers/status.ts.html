@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/24</span>
+                <span class='fraction'>0/27</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/23</span>
+                <span class='fraction'>0/26</span>
             </div>
         
             
@@ -191,7 +191,17 @@
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
 <a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -250,6 +260,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -287,6 +298,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -312,6 +329,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -363,25 +383,27 @@ function <span class="fstat-no" title="function not covered" >renderEnvInfo(</sp
     .filter(<span class="fstat-no" title="function not covered" >(i</span>nfo) =&gt; <span class="cstat-no" title="statement not covered" >!info.isSet || !info.resolvedBy)</span>
     .map(
 <span class="fstat-no" title="function not covered" >      (i</span>nfo) =&gt; <span class="cstat-no" title="statement not covered" >`</span>
-        &lt;div class="env-info-item"&gt;
+        &lt;div class='env-info-item'&gt;
             ⚠️ &lt;strong&gt;${info.envVarName} &lt;/strong&gt; is not defined${info.isSet ? ' and uses default value' : ''}
         &lt;/div&gt;`,
     )
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return `</span>
-    &lt;div class="env-info"&gt;
+    &lt;div class='env-info'&gt;
       ${children.join('')}
     &lt;/div&gt;
   `
 }
 &nbsp;
 function <span class="fstat-no" title="function not covered" >renderHtml(</span>{ version, envInfo }: StatusInfo) {
-<span class="cstat-no" title="statement not covered" >  return `</span>
-    &lt;html lang="en-US"&gt;
+  const styleNonce = <span class="cstat-no" title="statement not covered" >Math.random().toString(36).substring(2, 15)</span>
+&nbsp;
+  const html = <span class="cstat-no" title="statement not covered" >`</span>
+    &lt;html lang='en-US'&gt;
       &lt;head&gt;
-        &lt;title&gt;Azure integration status&lt;/title&gt;
-        &lt;meta charset="utf-8"&gt;
-        &lt;style&gt;
+        &lt;title&gt;Fingerprint Pro Azure integration status&lt;/title&gt;
+        &lt;meta charset='utf-8'&gt;
+        &lt;style nonce='${styleNonce}'&gt;
           body, .env-info {
             display: flex;
           }
@@ -401,22 +423,27 @@ function <span class="fstat-no" title="function not covered" >renderHtml(</span>
         &lt;/style&gt;
       &lt;/head&gt;
       &lt;body&gt;
-        &lt;h1&gt;Azure integration status&lt;/h1&gt;
+        &lt;h1&gt;Fingerprint Pro Azure integration status&lt;/h1&gt;
         &lt;div&gt;
-          Lambda function version: ${version}
+          Fingerprint Pro Azure Function App version: ${version}
         &lt;/div&gt;
         ${renderEnvInfo(envInfo)}
           &lt;span&gt;
-            Please reach out our support via &lt;a href="mailto:support@fingerprint.com"&gt;support@fingerprint.com&lt;/a&gt; if you have any issues
+            Please reach out our support via &lt;a href='mailto:support@fingerprint.com'&gt;support@fingerprint.com&lt;/a&gt; if you have any issues
           &lt;/span&gt;
       &lt;/body&gt;
     &lt;/html&gt;
   `
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return {</span>
+    html,
+    styleNonce,
+  }
 }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >export a</span>sync function <span class="fstat-no" title="function not covered" >getStatusInfo(</span>customerVariables: CustomerVariables): Promise&lt;StatusInfo&gt; {
 <span class="cstat-no" title="statement not covered" >  return {</span>
-    version: '__lambda_func_version__',
+    version: '__azure_function_version__',
     envInfo: await getEnvInfo(customerVariables),
   }
 }
@@ -439,11 +466,14 @@ function <span class="fstat-no" title="function not covered" >renderHtml(</span>
     }
   }
 &nbsp;
+  const { html, styleNonce } = <span class="cstat-no" title="statement not covered" >renderHtml(info)</span>
+&nbsp;
 <span class="cstat-no" title="statement not covered" >  return {</span>
     status: '200',
-    body: renderHtml(info).trim(),
+    body: html,
     headers: {
       'Content-Type': 'text/html',
+      'Content-Security-Policy': `default-src 'none'; img-src https://fingerprint.com; style-src 'nonce-${styleNonce}'`,
     },
   }
 }
@@ -454,7 +484,7 @@ function <span class="fstat-no" title="function not covered" >renderHtml(</span>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-10T11:08:45.756Z
+                at 2023-04-24T09:29:49.677Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
