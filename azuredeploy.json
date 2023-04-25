@@ -174,7 +174,7 @@
                         },
                         {
                             "name": "WEBSITE_RUN_FROM_PACKAGE",
-                            "value": "https://fpjsdeploymentstorage.blob.core.windows.net/funcs/package.zip"
+                            "value": "https://github.com/fingerprintjs/fingerprint-pro-azure-integration/releases/latest/download/package.zip"
                         },
                         {
                             "name": "fpjs_route_prefix",

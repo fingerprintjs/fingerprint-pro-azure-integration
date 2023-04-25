@@ -7,6 +7,8 @@ import { CustomerVariableType } from './customer-variables/types'
 import { handleStatus } from './handlers/status'
 import { removeTrailingSlashes } from './utils/routing'
 import { getAgentDownloadUri, getResultUri, getStatusUri } from './customer-variables/selectors'
+import { IntegrationError } from './errors/IntegrationError'
+import { HttpResponseSimple } from '@azure/functions/types/http'
 
 const proxy: AzureFunction = async (context: Context, req: HttpRequest): Promise<void> => {
   context.log.verbose('Handling request', {
@@ -18,19 +20,17 @@ const proxy: AzureFunction = async (context: Context, req: HttpRequest): Promise
 
   const path = removeTrailingSlashes(req.params?.restOfPath)
 
-  const get404 = () => ({
-    status: 404,
-    body: JSON.stringify({
-      message: 'Invalid route',
-      path,
-    }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  const get404 = () =>
+    ({
+      status: 404,
+      body: new IntegrationError('Invalid route', path).toBody(),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    } satisfies HttpResponseSimple)
 
   if (path === (await getAgentDownloadUri(customerVariables))) {
-    context.res = await downloadAgent({ httpRequest: req, logger: context.log })
+    context.res = await downloadAgent({ httpRequest: req, logger: context.log, path })
   } else if (path === (await getResultUri(customerVariables))) {
     context.res = await handleIngress({
       httpRequest: req,
