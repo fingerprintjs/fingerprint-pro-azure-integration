@@ -13,7 +13,11 @@ export interface HandleIngressParams {
   preSharedSecret?: string
 }
 
-export function handleIngress({ httpRequest, logger, preSharedSecret }: HandleIngressParams) {
+export function handleIngress({
+  httpRequest,
+  logger,
+  preSharedSecret,
+}: HandleIngressParams): Promise<HttpResponseSimple> {
   const { region = 'us' } = httpRequest.query
 
   const domain = getEffectiveTLDPlusOne(getHost(httpRequest))
@@ -52,7 +56,7 @@ export function handleIngress({ httpRequest, logger, preSharedSecret }: HandleIn
           logger.verbose('Response from Ingress API', response.statusCode, payload.toString('utf-8'))
 
           resolve({
-            status: response.statusCode ? response.statusCode.toString() : '500',
+            status: response.statusCode ? response.statusCode : 500,
             headers: updateResponseHeaders(response.headers, domain),
             body: payload,
           })
@@ -64,7 +68,7 @@ export function handleIngress({ httpRequest, logger, preSharedSecret }: HandleIn
       logger.error('unable to handle result', { error })
 
       resolve({
-        status: '500',
+        status: 500,
         headers: {
           'Content-Type': 'application/json',
         },
