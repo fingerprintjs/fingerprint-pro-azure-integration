@@ -60,6 +60,7 @@ export async function deployAppToTempStorage() {
   await blobClient.uploadData(zip)
 
   return {
+    blobName,
     url: await blobClient.generateSasUrl({
       permissions: BlobSASPermissions.from({
         read: true,

@@ -18,7 +18,7 @@ async function main() {
   try {
     const website = await deployWebsite(resourceGroup)
 
-    const { url: tmpStorageUrl, removeBlob } = await deployAppToTempStorage()
+    const { url: tmpStorageUrl, removeBlob, blobName } = await deployAppToTempStorage()
 
     cleanupFns.push(removeBlob)
 
@@ -42,6 +42,7 @@ async function main() {
       functionAppUrl: `https://${functionAppHost}`,
       websiteUrl: website.url,
       functionBlobUrl: tmpStorageUrl,
+      functionBlobName: blobName,
     })
   } catch (error) {
     console.error(`Error deploying resources: ${error}`)
