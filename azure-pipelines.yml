@@ -10,8 +10,6 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
-  # TODO - Remove after repository is made public
-  name: 'Local pz'
 
 steps:
 - script: yarn install
