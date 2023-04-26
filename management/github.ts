@@ -10,9 +10,11 @@ export async function getLatestGithubRelease(token?: string) {
   const response = await fetch(
     `https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases/latest`,
     {
-      headers: {
-        Authorization: bearer(token),
-      },
+      headers: token
+        ? {
+            Authorization: bearer(token),
+          }
+        : undefined,
     },
   )
 
