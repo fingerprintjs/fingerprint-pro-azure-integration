@@ -4,6 +4,7 @@ import { deployWebsite } from '../website'
 import { provisionFrontDoor } from '../frontdoor'
 import invariant from 'tiny-invariant'
 import { writeTestInfo } from '../../shared/testInfo'
+import { STATUS_PATH } from '../../../shared/status'
 
 async function main() {
   const resourceGroup = await createResourceGroup()
@@ -32,6 +33,7 @@ async function main() {
       resourceGroup,
       websiteHost: new URL(website.url).host,
       functionAppHost,
+      functionHealthStatusPath: `/fpjs/${STATUS_PATH}`,
     })
 
     console.info(`Front door URL: ${frontdoorUrl}`)

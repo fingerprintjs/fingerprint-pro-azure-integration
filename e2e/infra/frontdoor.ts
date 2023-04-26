@@ -15,9 +15,15 @@ export interface ProvisionFrontDoorParams {
   resourceGroup: string
   functionAppHost: string
   websiteHost: string
+  functionHealthStatusPath: string
 }
 
-export async function provisionFrontDoor({ functionAppHost, websiteHost, resourceGroup }: ProvisionFrontDoorParams) {
+export async function provisionFrontDoor({
+  functionAppHost,
+  websiteHost,
+  resourceGroup,
+  functionHealthStatusPath,
+}: ProvisionFrontDoorParams) {
   const profileName = `e2e-frontdoor-${Date.now()}`
 
   console.info(`Creating front door profile`, profileName)
@@ -43,7 +49,7 @@ export async function provisionFrontDoor({ functionAppHost, websiteHost, resourc
         additionalLatencyInMilliseconds: 50,
       },
       healthProbeSettings: {
-        probePath: '/',
+        probePath: functionHealthStatusPath,
         probeRequestType: 'GET',
         probeProtocol: 'Https',
         probeIntervalInSeconds: 100,
