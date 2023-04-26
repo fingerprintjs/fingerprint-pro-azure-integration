@@ -65,8 +65,8 @@
         },
         "agentDownloadPath": {
             "type": "string",
-            "defaultValue": "agent",          
-            "minLength": 1,  
+            "defaultValue": "agent",
+            "minLength": 1,
             "metadata": {
                 "description": "Agent download path"
             }
@@ -103,7 +103,7 @@
             "sku": {
                 "name": "Standard_LRS"
             },
-            "kind": "StorageV2"            
+            "kind": "StorageV2"
         },
         {
             "type": "Microsoft.Insights/components",
@@ -115,7 +115,7 @@
                 "[format('hidden-link:{0}', resourceId('Microsoft.Web/sites', variables('functionAppName')))]": "Resource"
             },
             "properties": {
-                "Application_Type": "web"                
+                "Application_Type": "web"
             }
         },
         {
@@ -183,7 +183,7 @@
                         {
                             "name": "fpjs_agent_download_path",
                             "value": "[parameters('agentDownloadPath')]"
-                        },                    
+                        },
                         {
                             "name": "fpjs_get_result_path",
                             "value": "[parameters('getResultPath')]"
@@ -191,6 +191,18 @@
                         {
                             "name": "fpjs_pre_shared_secret",
                             "value": "[parameters('preSharedSecret')]"
+                        },
+                        {
+                            "name": "RESOURCE_GROUP_NAME",
+                            "value": "resourceGroup().id"
+                        },
+                        {
+                            "name": "AZURE_SUBSCRIPTION_ID",
+                            "value": "subscription().subscriptionId"
+                        },
+                        {
+                            "name": "APP_NAME",
+                            "value": "[variables('functionAppName')]"
                         }
                     ]
                 },

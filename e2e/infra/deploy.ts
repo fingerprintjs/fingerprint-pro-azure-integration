@@ -22,6 +22,14 @@ export async function getUpdatedDeployTemplate(functionUrl: string) {
     ...deploymentTemplate,
   }
 
+  /**
+   * Maps to following property in azuredeploy.json:
+   * {
+   *     "name": "WEBSITE_RUN_FROM_PACKAGE",
+   *     "value": "https://fpjsdeploymentstorage.blob.core.windows.net/funcs/package.zip"
+   * },
+   * We have to overwrite it, in order to use function built locally in the infrastructure
+   * */
   deployConfig.resources[3].properties.siteConfig.appSettings[6].value = functionUrl
 
   return deployConfig
