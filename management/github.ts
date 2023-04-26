@@ -50,6 +50,8 @@ export async function getLatestFunctionZip(logger?: Logger, token?: string, vers
     return null
   }
 
+  logger?.verbose(`Found new release ${release.tag_name}`, release.assets)
+
   const asset = await findFunctionZip(release.assets)
 
   logger?.verbose(`Found asset ${asset?.name} for release ${release.tag_name}`, asset)
