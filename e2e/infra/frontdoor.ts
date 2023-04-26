@@ -172,9 +172,6 @@ async function waitForFrontDoor(url: string) {
 
     const response = await fetch(url)
     const text = await response.text()
-    const headers = response.headers
-
-    console.log(text, headers)
 
     if (response.status !== 200) {
       throw new Error(`Response not ok: ${response.status}`)
