@@ -1,10 +1,11 @@
 import { createResourceGroup, removeResourceGroup } from '../resourceGroup'
-import { deployFunctionApp, deployAppToTempStorage, getUpdatedDeployTemplate } from '../deploy'
+import { deployAppToTempStorage, getUpdatedDeployTemplate } from '../tmpStorage'
 import { deployWebsite } from '../website'
 import { provisionFrontDoor } from '../frontdoor'
 import invariant from 'tiny-invariant'
 import { writeTestInfo } from '../../shared/testInfo'
 import { STATUS_PATH } from '../../../shared/status'
+import { deployFunctionApp } from '../deployFunctionApp'
 
 async function main() {
   const resourceGroup = await createResourceGroup()

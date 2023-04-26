@@ -4,10 +4,8 @@ import * as storageBlob from '@azure/storage-blob'
 import { BlobSASPermissions, StorageSharedKeyCredential } from '@azure/storage-blob'
 import invariant from 'tiny-invariant'
 import deploymentTemplate from '../../azuredeploy.json'
-import { doHealthCheck } from './healthCheck'
 import config from './config'
-import { resourcesClient, storageClient } from './clients'
-import { getWebApp } from './site'
+import { storageClient } from './clients'
 
 const functionZipPath = path.resolve(__dirname, '../../package.zip')
 if (!fs.existsSync(functionZipPath)) {
@@ -35,23 +33,22 @@ export async function getUpdatedDeployTemplate(functionUrl: string) {
   return deployConfig
 }
 
-/**
- * Deploy built package.zip to temporary storage account, so that the deployment can access it.
- * */
-export async function deployAppToTempStorage() {
+export async function getTmpStorageContainerClient() {
   const url = `https://${config.storageAccountName}.blob.core.windows.net/${config.storageContainerName}`
-
-  console.info(`Deploying package.zip to ${url}...`)
 
   const { keys } = await storageClient.storageAccounts.listKeys(config.storageResourceGroup, config.storageAccountName)
 
   const key = keys?.[0].value
   invariant(key, 'Storage key not found')
 
-  const containerClient = new storageBlob.ContainerClient(
-    url,
-    new StorageSharedKeyCredential(config.storageAccountName, key),
-  )
+  return new storageBlob.ContainerClient(url, new StorageSharedKeyCredential(config.storageAccountName, key))
+}
+
+/**
+ * Deploy built package.zip to temporary storage account, so that the deployment can access it.
+ * */
+export async function deployAppToTempStorage() {
+  const containerClient = await getTmpStorageContainerClient()
   const blobName = `package-${Date.now()}.zip`
   const blobClient = containerClient.getBlockBlobClient(blobName)
 
@@ -74,51 +71,4 @@ export async function deployAppToTempStorage() {
       await blobClient.delete()
     },
   }
-}
-
-/**
- * Deploys function app to resource group using given template
- * */
-export async function deployFunctionApp(resourceGroup: string, template: Record<string, unknown>) {
-  const appName = `fpjs-dev-e2e-app-${Date.now()}`
-
-  console.info(`Deploying app ${appName} to ${resourceGroup} resource group`)
-
-  await resourcesClient.deployments.beginCreateOrUpdateAndWait(resourceGroup, `${resourceGroup}-deployment`, {
-    properties: {
-      template,
-      parameters: {
-        preSharedSecret: {
-          value: config.preSharedSecret,
-        },
-        functionAppName: {
-          value: appName,
-        },
-        getResultPath: {
-          value: config.getResultPath,
-        },
-        agentDownloadPath: {
-          value: config.agentDownloadPath,
-        },
-        routePrefix: {
-          value: config.routePrefix,
-        },
-      },
-      mode: 'Incremental',
-    },
-  })
-
-  console.info(`App deployed, requesting details from Azure...`)
-
-  const website = await getWebApp(resourceGroup, appName)
-  invariant(website.name, 'Website name is required')
-
-  console.info(`App deployed with id #${website.id} 🎉`)
-  console.info('Performing health check...')
-
-  await doHealthCheck(website.name)
-
-  console.info('Health check passed!')
-
-  return website
 }
