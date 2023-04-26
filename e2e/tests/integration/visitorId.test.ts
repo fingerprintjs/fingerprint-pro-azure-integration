@@ -30,8 +30,24 @@ test.describe('visitorId', () => {
     },
   ]
 
+  test('should return error when trying to get agent without passing apiKey', async ({ page }) => {
+    await page.goto('/fpjs/agent', {
+      waitUntil: 'networkidle',
+    })
+
+    const body = await page.evaluate(() => document.body.innerText)
+
+    const jsonBody = JSON.parse(body ?? '')
+
+    expect(jsonBody).toEqual({
+      vendor: 'Fingerprint Pro Azure Function',
+      message: 'API Key is missing',
+      path: 'fpjs/agent',
+    })
+  })
+
   testCases.forEach((testCase, index) => {
-    test(`should show correct visitorId using function endpoints #${index + 1}`, async ({ page, baseURL }) => {
+    test.only(`should show correct visitorId using function endpoints #${index + 1}`, async ({ page, baseURL }) => {
       if (testCase.queryParams) {
         const queryParams = new URLSearchParams(testCase.queryParams)
         await page.goto(`/?${queryParams.toString()}`, {
