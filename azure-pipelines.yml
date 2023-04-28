@@ -12,6 +12,12 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- script: az login --service-principal -u $(AZURE_CLIENT_ID) -p $(AZURE_SECRET) --tenant $(AZURE_TENANT_ID)
+  displayName: 'Login to Azure'
+  env:
+    AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+    AZURE_TENANT_ID: $(AZURE_TENANT_ID)
+    AZURE_SECRET: $(AZURE_SECRET)
 - script: yarn install
   displayName: 'Install dependencies'
 - script: yarn build && yarn build:example-website
