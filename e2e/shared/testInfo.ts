@@ -8,15 +8,18 @@ export interface TestInfo {
   frontdoorUrl: string
   functionBlobUrl: string
   functionBlobName: string
+  getResultPath: string
+  agentDownloadPath: string
+  routePrefix: string
 }
 
 const filePath = path.join(__dirname, '..', 'test-info.json')
 
-export function writeTestInfo(info: TestInfo) {
+export function writeTestInfo(info: TestInfo[]) {
   fs.writeFileSync(filePath, JSON.stringify(info))
 }
 
-export function readTestInfo(): TestInfo {
+export function readTestInfo(): TestInfo[] {
   if (!fs.existsSync(filePath)) {
     throw new Error('Test info file does not exist')
   }

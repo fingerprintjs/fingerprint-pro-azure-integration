@@ -1,56 +1,48 @@
 import { createResourceGroup, removeResourceGroup } from '../resourceGroup'
-import { deployAppToTempStorage, getUpdatedDeployTemplate } from '../tmpStorage'
-import { deployWebsite } from '../website'
-import { provisionFrontDoor } from '../frontdoor'
-import invariant from 'tiny-invariant'
 import { writeTestInfo } from '../../shared/testInfo'
-import { STATUS_PATH } from '../../../shared/status'
-import { deployFunctionApp } from '../deployFunctionApp'
+import { deployE2EInfrastructure, DeployE2EInfrastructureOptions, DeployE2EInfrastructureResult } from '../infra'
+import { destroyTestInfo } from '../destroyTestInfo'
+
+function getId() {
+  return Math.random().toString(36).substring(2, 15)
+}
 
 async function main() {
   const resourceGroup = await createResourceGroup()
 
-  const cleanupFns: Array<() => Promise<void>> = []
-
-  const cleanup = async () => {
-    await Promise.all(cleanupFns.map((fn) => fn()))
-    await removeResourceGroup(resourceGroup)
-  }
+  const results: DeployE2EInfrastructureResult[] = []
 
   try {
-    const website = await deployWebsite(resourceGroup)
+    const variants: DeployE2EInfrastructureOptions[] = [
+      {
+        resourceGroup,
+        routePrefix: 'fpjs',
+        agentDownloadPath: 'agent',
+        getResultPath: 'result',
+      },
+      {
+        resourceGroup,
+        routePrefix: getId(),
+        agentDownloadPath: getId(),
+        getResultPath: getId(),
+      },
+    ]
 
-    const { url: tmpStorageUrl, removeBlob, blobName } = await deployAppToTempStorage()
+    for (const variant of variants) {
+      const result = await deployE2EInfrastructure(variant)
 
-    cleanupFns.push(removeBlob)
+      results.push(result)
+    }
 
-    const template = await getUpdatedDeployTemplate(tmpStorageUrl)
+    await Promise.all(results.map((r) => r.waitForFrontDoor()))
 
-    const functionApp = await deployFunctionApp(resourceGroup, template)
-    const functionAppHost = functionApp.hostNames?.[0]
-    invariant(functionAppHost, 'functionAppHost is required')
-
-    const { url: frontdoorUrl } = await provisionFrontDoor({
-      resourceGroup,
-      websiteHost: new URL(website.url).host,
-      functionAppHost,
-      functionHealthStatusPath: `/fpjs/${STATUS_PATH}`,
-    })
-
-    console.info(`Front door URL: ${frontdoorUrl}`)
-
-    await writeTestInfo({
-      resourceGroup,
-      frontdoorUrl,
-      functionAppUrl: `https://${functionAppHost}`,
-      websiteUrl: website.url,
-      functionBlobUrl: tmpStorageUrl,
-      functionBlobName: blobName,
-    })
+    writeTestInfo(results.map((r) => r.testInfo))
   } catch (error) {
-    console.error(`Error deploying resources: ${error}`)
+    for (const result of results) {
+      await destroyTestInfo(result.testInfo)
+    }
 
-    await cleanup()
+    await removeResourceGroup(resourceGroup)
 
     throw error
   }

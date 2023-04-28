@@ -1,42 +1,65 @@
 import { chromium, FullConfig } from '@playwright/test'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
+import { readTestInfo } from '../shared/testInfo'
+import invariant from 'tiny-invariant'
 
 export default async function setup(config: FullConfig) {
-  const { baseURL, headless } = config.projects[0].use
-  const browser = await chromium.launch({
-    headless,
-  })
+  const testInfo = readTestInfo()
 
-  try {
-    const page = await browser.newPage()
-    await page.goto(baseURL!)
+  const targets = config.projects.map((p) => ({
+    name: p.name,
+    url: p.use.baseURL,
+    testInfo: testInfo.find((info) => info.frontdoorUrl === p.use.baseURL),
+    headless: p.use.headless,
+  }))
 
-    const policy = retry(handleAll, {
-      maxAttempts: 30,
-      backoff: new ExponentialBackoff({
-        maxDelay: 60_000,
-        initialDelay: 3000,
-      }),
+  for (const target of targets) {
+    const browser = await chromium.launch({
+      headless: target.headless,
     })
 
-    console.info('Waiting for website...')
+    invariant(target.testInfo, `Test info for ${target.name} not found`)
+    invariant(target.url, `URL for ${target.name} not found`)
 
-    await policy.execute(async ({ attempt }) => {
-      if (attempt > 1) {
-        console.info('Attempt', attempt)
-
-        await page.reload({
-          waitUntil: 'networkidle',
-        })
-      }
-
-      const info = await page.waitForSelector('.integration-info')
-
-      if ((await info.getAttribute('data-ok')) !== 'true') {
-        throw new Error('Integration is not running correctly')
-      }
+    const queryParams = new URLSearchParams({
+      scriptUrlPattern: `/${target.testInfo.routePrefix}/${target.testInfo.agentDownloadPath}?apiKey=<apiKey>&loaderVersion=<loaderVersion>`,
+      endpoint: `/${target.testInfo.routePrefix}/${target.testInfo.getResultPath}`,
     })
-  } finally {
-    await browser.close()
+
+    const url = new URL(target.url)
+    url.search = queryParams.toString()
+
+    try {
+      const page = await browser.newPage()
+      await page.goto(url.toString())
+
+      const policy = retry(handleAll, {
+        maxAttempts: 30,
+        backoff: new ExponentialBackoff({
+          maxDelay: 60_000,
+          initialDelay: 3000,
+        }),
+      })
+
+      console.info('Waiting for website...')
+
+      await policy.execute(async ({ attempt }) => {
+        if (attempt > 1) {
+          console.info('Attempt', attempt)
+
+          await page.reload({
+            waitUntil: 'networkidle',
+          })
+        }
+
+        const info = await page.waitForSelector('.integration-info')
+
+        if ((await info.getAttribute('data-ok')) !== 'true') {
+          throw new Error('Integration is not running correctly')
+        }
+      })
+    } finally {
+      await browser.close()
+    }
   }
 }

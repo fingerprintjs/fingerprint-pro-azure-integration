@@ -1,9 +1,10 @@
 import { test } from '../pwTest'
 import { expect } from '@playwright/test'
+import { STATUS_PATH } from '../../../shared/status'
 
 test.describe('Status check', () => {
-  test('should return correct status info', async ({ page }) => {
-    await page.goto('/fpjs/status', {
+  test('should return correct status info', async ({ page, azureTestInfo }) => {
+    await page.goto(`/${azureTestInfo.routePrefix}/${STATUS_PATH}`, {
       waitUntil: 'networkidle',
     })
 

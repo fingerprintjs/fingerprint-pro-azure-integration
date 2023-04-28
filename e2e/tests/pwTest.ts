@@ -1,10 +1,15 @@
 import { test as baseTest } from '@playwright/test'
 import { readTestInfo, TestInfo } from '../shared/testInfo'
+import invariant from 'tiny-invariant'
 
 // For future, in case if we need to extend the base test
 export const test = baseTest.extend<{ azureTestInfo: TestInfo }>({
-  azureTestInfo: async ({}, use) => {
+  azureTestInfo: async ({ baseURL }, use) => {
     const testInfo = readTestInfo()
-    await use(testInfo)
+    const project = testInfo.find((info) => info.frontdoorUrl === baseURL)
+
+    invariant(project, 'project is required')
+
+    await use(project)
   },
 })
