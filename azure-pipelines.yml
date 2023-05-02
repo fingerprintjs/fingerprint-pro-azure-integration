@@ -12,18 +12,12 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: 'azure-e2e'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'az login --identity'
-- script: az login --service-principal -u $(AZURE_CLIENT_ID) -p $(AZURE_SECRET) --tenant $(AZURE_TENANT_ID)
-  displayName: 'Login to Azure'
-  env:
-    AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
-    AZURE_TENANT_ID: $(AZURE_TENANT_ID)
-    AZURE_SECRET: $(AZURE_SECRET)
+#- script: az login --service-principal -u $(AZURE_CLIENT_ID) -p $(AZURE_SECRET) --tenant $(AZURE_TENANT_ID)
+#  displayName: 'Login to Azure'
+#  env:
+#    AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+#    AZURE_TENANT_ID: $(AZURE_TENANT_ID)
+#    AZURE_SECRET: $(AZURE_SECRET)
 - script: yarn install
   displayName: 'Install dependencies'
 - script: yarn build && yarn build:example-website
@@ -43,7 +37,7 @@ steps:
     cd ..
   displayName: 'Zip'
 
-- script: yarn e2e-deploy-infra
+- task: AzureCLI@2
   displayName: 'Deploy infrastructure'
   env:
     AZURE_STORAGE_ACCOUNT_NAME: $(AZURE_STORAGE_ACCOUNT_NAME)
@@ -51,13 +45,28 @@ steps:
     AZURE_STORAGE_RESOURCE_GROUP: $(AZURE_STORAGE_RESOURCE_GROUP)
     AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
     FPJS_PRE_SHARED_SECRET: $(FPJS_PRE_SHARED_SECRET)
+  inputs:
+    azureSubscription: 'azure-e2e'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'yarn e2e-deploy-infra'
 
-- script: yarn test:e2e
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'azure-e2e'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'yarn test:e2e'
   displayName: 'Run e2e tests'
   env:
     CI: 'true'
 
-- script: yarn e2e-destroy-infra
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'azure-e2e'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'yarn e2e-destroy-infra'
   displayName: 'Destroy infrastructure'
   condition: always()
   env:
