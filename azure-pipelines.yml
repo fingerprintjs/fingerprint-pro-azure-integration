@@ -14,7 +14,7 @@ pool:
 steps:
 - task: AzureCLI@2
   inputs:
-    azureSubscription: '9ea37369-e041-4f5b-8b24-2e1bbf02694c'
+    azureSubscription: 'azure-e2e'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: 'az login --identity'
