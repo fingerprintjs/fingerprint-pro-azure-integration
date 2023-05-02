@@ -1,7 +1,4 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+
 trigger:
   batch: 'false'
   branches:
@@ -12,13 +9,7 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-#- script: az login --service-principal -u $(AZURE_CLIENT_ID) -p $(AZURE_SECRET) --tenant $(AZURE_TENANT_ID)
-#  displayName: 'Login to Azure'
-#  env:
-#    AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
-#    AZURE_TENANT_ID: $(AZURE_TENANT_ID)
-#    AZURE_SECRET: $(AZURE_SECRET)
-- script: yarn install
+- script: yarn install && npx playwright install
   displayName: 'Install dependencies'
 - script: yarn build && yarn build:example-website
   displayName: 'Build'
