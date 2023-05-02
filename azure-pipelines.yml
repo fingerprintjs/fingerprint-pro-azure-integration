@@ -46,14 +46,14 @@ steps:
     AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
     FPJS_PRE_SHARED_SECRET: $(FPJS_PRE_SHARED_SECRET)
   inputs:
-    azureSubscription: 'azure-e2e'
+    azureSubscription: 'azure-proxy-integration-e2e-tests'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: 'yarn e2e-deploy-infra'
 
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'azure-e2e'
+    azureSubscription: 'azure-proxy-integration-e2e-tests'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: 'yarn test:e2e'
@@ -63,7 +63,7 @@ steps:
 
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'azure-e2e'
+    azureSubscription: 'azure-proxy-integration-e2e-tests'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: 'yarn e2e-destroy-infra'
