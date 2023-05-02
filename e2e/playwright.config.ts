@@ -20,7 +20,7 @@ const config: Config = {
   expect: {
     timeout: isCi ? 100_000 : 30_000,
   },
-  projects: [testInfo[1]].map((info) => ({
+  projects: testInfo.map((info) => ({
     use: {
       name: info.frontdoorUrl,
       baseURL: info.frontdoorUrl,

@@ -10,6 +10,8 @@ export const test = baseTest.extend<{ azureTestInfo: TestInfo }>({
 
     invariant(project, 'project is required')
 
+    console.info(`Using ${project.frontdoorUrl} for tests`)
+
     await use(project)
   },
 })
