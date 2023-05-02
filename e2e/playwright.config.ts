@@ -24,7 +24,7 @@ const config: Config = {
     use: {
       name: info.frontdoorUrl,
       baseURL: info.frontdoorUrl,
-      headless: false,
+      headless: true,
     },
   })),
   globalSetup: path.resolve(__dirname, 'tests/setup.ts'),
