@@ -41,11 +41,11 @@ export default async function setup(config: FullConfig) {
         }),
       })
 
-      console.info('Waiting for website...')
+      console.info('Waiting for website at', url.toString())
 
       await policy.execute(async ({ attempt }) => {
         if (attempt > 1) {
-          console.info('Attempt', attempt)
+          console.info('Attempt', attempt, 'at', url.toString())
 
           await page.reload({
             waitUntil: 'networkidle',
