@@ -5,49 +5,49 @@ import { handleStatus } from './status'
 import { HttpRequest, Form, FormPart } from '@azure/functions'
 
 const fp: FormPart = {
-    value: Buffer.from("")
+  value: Buffer.from(''),
 }
 const form: Form = {
-    get: (_: string) => fp,
-    getAll: (_: string) => [fp],
-    has: (_: string) => true,
-    length: 0,
-    *[Symbol.iterator]() {}
+  get: (_: string) => fp,
+  getAll: (_: string) => [fp],
+  has: (_: string) => true,
+  length: 0,
+  *[Symbol.iterator]() {},
 }
 const req: HttpRequest = {
-    method: 'GET',
-    url: 'https://fp.domain.com/fpjs/status',
-    headers: {},
-    query: {},
-    params: {},
-    user: null,
-    get: (x) => { return x },
-    parseFormBody: () => form
+  method: 'GET',
+  url: 'https://fp.domain.com/fpjs/status',
+  headers: {},
+  query: {},
+  params: {},
+  user: null,
+  get: (x) => x,
+  parseFormBody: () => form,
 }
 
-function removeNonce(body: string): string {    
-    const nonceParam = ' nonce=\''
-    const begin = body.indexOf(nonceParam)
-    const end = body.indexOf('\'', begin + nonceParam.length) + 1
+function removeNonce(body: string): string {
+  const nonceParam = " nonce='"
+  const begin = body.indexOf(nonceParam)
+  const end = body.indexOf("'", begin + nonceParam.length) + 1
 
-    return body.replace(body.substring(begin, end), '')    
+  return body.replace(body.substring(begin, end), '')
 }
 
 describe('Handle status', () => {
   it('returns correct status info in html if all variables are set', async () => {
     const getHeaderCustomerVariables = (env: typeof process.env) =>
-      new CustomerVariables([new EnvCustomerVariables(env)]) 
+      new CustomerVariables([new EnvCustomerVariables(env)])
     const env = {
-        [CustomerVariableType.AgentDownloadPath]: 'qwertyt',
-        [CustomerVariableType.RoutePrefix]: 'dsgfkjdfs',
-        [CustomerVariableType.GetResultPath]: 'fdgvdsfgfds',
-        [CustomerVariableType.PreSharedSecret]: 'aadddddd'
+      [CustomerVariableType.AgentDownloadPath]: 'qwertyt',
+      [CustomerVariableType.RoutePrefix]: 'dsgfkjdfs',
+      [CustomerVariableType.GetResultPath]: 'fdgvdsfgfds',
+      [CustomerVariableType.PreSharedSecret]: 'aadddddd',
     }
     const customerVariables = getHeaderCustomerVariables(env)
 
     const result = await handleStatus({
-        httpRequest: req,
-        customerVariables: customerVariables
+      httpRequest: req,
+      customerVariables: customerVariables,
     })
 
     expect(removeNonce(result.body)).toMatchInlineSnapshot(`
@@ -96,12 +96,12 @@ describe('Handle status', () => {
 
   it('returns correct status info in html if some variables are using default values', async () => {
     const getHeaderCustomerVariables = (env: typeof process.env) =>
-      new CustomerVariables([new EnvCustomerVariables(env)])     
+      new CustomerVariables([new EnvCustomerVariables(env)])
     const customerVariables = getHeaderCustomerVariables({})
 
     const result = await handleStatus({
-        httpRequest: req,
-        customerVariables: customerVariables
+      httpRequest: req,
+      customerVariables: customerVariables,
     })
 
     expect(removeNonce(result.body)).toMatchInlineSnapshot(`
@@ -158,6 +158,5 @@ describe('Handle status', () => {
         </html>
       "
     `)
-
   })
 })
