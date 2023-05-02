@@ -31,7 +31,7 @@ test.describe('visitorId', () => {
     })
   })
 
-  test.only(`should show correct visitorId using function endpoints`, async ({ page, baseURL, azureTestInfo }) => {
+  test(`should show correct visitorId using function endpoints`, async ({ page, baseURL, azureTestInfo }) => {
     const queryParams = new URLSearchParams({
       scriptUrlPattern: `/${azureTestInfo.routePrefix}/${azureTestInfo.agentDownloadPath}?apiKey=<apiKey>&loaderVersion=<loaderVersion>`,
       endpoint: `/${azureTestInfo.routePrefix}/${azureTestInfo.getResultPath}`,
