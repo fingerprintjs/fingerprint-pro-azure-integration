@@ -1,9 +1,4 @@
 # Starter pipeline
-- task: AzureCLI@2
-  inputs:
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'az login --identity'
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -17,6 +12,12 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: '9ea37369-e041-4f5b-8b24-2e1bbf02694c'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az login --identity'
 - script: az login --service-principal -u $(AZURE_CLIENT_ID) -p $(AZURE_SECRET) --tenant $(AZURE_TENANT_ID)
   displayName: 'Login to Azure'
   env:
