@@ -24,7 +24,7 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     'prefer-const': 'error',
     'prettier/prettier': 'error',
-    '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     curly: [2, 'all'],
   },
 }
