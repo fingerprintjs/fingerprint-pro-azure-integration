@@ -12,7 +12,7 @@ module.exports = {
     '!**/config.ts',
     '!**/env.ts',
     '!**/handlers/**',
-    '!**/peoxy/app.ts',
+    '!**/proxy/app.ts',
     '!**/management/app.ts',
   ],
   coverageReporters: ['lcov', 'json-summary', ['text', { file: 'coverage.txt', path: './' }]],
