@@ -38,8 +38,8 @@ async function findProxyFunction(
 
 export function isProxyFunction(fn: FunctionEnvelope) {
   return (
-    fn.config?.scriptFile === './fingerprintjs-pro-azure-function.js' ||
-    fn.name?.endsWith('fingerprintjs-pro-azure-function')
+    fn.config?.scriptFile === './fingerprint-pro-azure-function.js' ||
+    fn.name?.endsWith('fingerprint-pro-azure-function')
   )
 }
 

@@ -118,11 +118,11 @@ export default (opts) => {
    * @type {import('rollup').RollupOptions[]}
    * */
   return [
-    ...makeConfig(opts, 'proxy/index.ts', 'fingerprintjs-pro-azure-function', 'proxy/function.json'),
+    ...makeConfig(opts, 'proxy/index.ts', 'fingerprint-pro-azure-function', 'proxy/function.json'),
     ...makeConfig(
       opts,
       'management/index.ts',
-      'fingerprintjs-pro-azure-function-management',
+      'fingerprint-pro-azure-function-management',
       'management/function.json',
       (config, isDev) => {
         if (!isDev && config.bindings[0].runOnStartup) {

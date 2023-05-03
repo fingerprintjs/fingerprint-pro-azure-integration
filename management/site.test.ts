@@ -15,13 +15,13 @@ describe('getSiteStatusUrl', () => {
     client.webApps.listFunctions.mockImplementation(async function* () {
       yield {
         config: {
-          scriptFile: './fingerprintjs-pro-azure-function-management.js',
+          scriptFile: './fingerprint-pro-azure-function-management.js',
         },
       }
 
       yield {
         config: {
-          scriptFile: './fingerprintjs-pro-azure-function.js',
+          scriptFile: './fingerprint-pro-azure-function.js',
         },
         invokeUrlTemplate: 'https://example.com/fpjs/{*restofpath}',
       }
@@ -36,7 +36,7 @@ describe('getSiteStatusUrl', () => {
     client.webApps.listFunctions.mockImplementation(async function* () {
       yield {
         config: {
-          scriptFile: './fingerprintjs-pro-azure-function-management.js',
+          scriptFile: './fingerprint-pro-azure-function-management.js',
         },
       }
     })
