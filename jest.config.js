@@ -7,11 +7,13 @@ module.exports = {
   collectCoverageFrom: [
     './proxy/**/**.ts',
     './management/**/**.ts',
+    './proxy/handlers/status.ts',
     '!**/index.ts',
-    '!**/errors/**',
     '!**/config.ts',
     '!**/env.ts',
     '!**/handlers/**',
+    '!**/proxy/app.ts',
+    '!**/management/app.ts',
   ],
   coverageReporters: ['lcov', 'json-summary', ['text', { file: 'coverage.txt', path: './' }]],
   transform: {

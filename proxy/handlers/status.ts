@@ -66,16 +66,16 @@ function renderHtml({ version, envInfo }: StatusInfo) {
           body, .env-info {
             display: flex;
           }
-          
+
           .env-info {
             flex-direction: column;
           }
-          
+
           body {
             flex-direction: column;
             align-items: center;
           }
-          
+
           body > * {
             margin-bottom: 1em;
           }
