@@ -9,5 +9,5 @@
       "runOnStartup": true
     }
   ],
-  "scriptFile": "../dist/fingerprintjs-pro-azure-function-management/fingerprintjs-pro-azure-function-management.js"
+  "scriptFile": "../dist/fingerprint-pro-azure-function-management/fingerprint-pro-azure-function-management.js"
 }

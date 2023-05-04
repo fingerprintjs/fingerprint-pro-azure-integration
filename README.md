@@ -33,4 +33,4 @@
 Fingerprint Pro Azure Integration is responsible for proxying identification and agent-download requests that are performed on your Azure infrastructure.
 
 ## License
-This project is licensed under the MIT license. See the [LICENSE](https://github.com/fingerprintjs/fingerprintjs-pro-azure-integration/blob/main/LICENSE) file for more info.
+This project is licensed under the MIT license. See the [LICENSE](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/blob/main/LICENSE) file for more info.

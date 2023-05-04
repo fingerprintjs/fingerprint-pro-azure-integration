@@ -38,7 +38,7 @@ describe('performHealthCheckAfterUpdate', () => {
       newVersion: '1.0.0',
       statusUrl,
       storageClient: mockStorageClient as any,
-      timeoutMs: 500,
+      maxHealthCheckDelayMs: 500,
       newFunctionZipUrl,
     })
 
@@ -78,8 +78,7 @@ describe('performHealthCheckAfterUpdate', () => {
       newVersion: '1.0.0',
       statusUrl,
       storageClient: mockStorageClient as any,
-      waitBetweenRequestsMs: 100,
-      timeoutMs: 500,
+      maxHealthCheckDelayMs: 5000,
       newFunctionZipUrl,
     })
 
@@ -106,11 +105,10 @@ describe('performHealthCheckAfterUpdate', () => {
         newVersion: '1.0.0',
         statusUrl,
         storageClient: mockStorageClient as any,
-        waitBetweenRequestsMs: 100,
-        timeoutMs: 500,
+        maxHealthCheckDelayMs: 100,
         newFunctionZipUrl,
       }),
-    ).rejects.toThrow('Operation Timeout')
+    ).rejects.toThrow('Version mismatch, expected: 1.0.0, received: 0.0.1')
 
     expect(mockStorageClient.deleteBlob).toHaveBeenCalledTimes(0)
     expect(mockClient.webApps.updateApplicationSettings).toHaveBeenCalledWith('test-resource', 'test-app', {
@@ -118,5 +116,5 @@ describe('performHealthCheckAfterUpdate', () => {
         [WEBSITE_RUN_FROM_PACKAGE]: oldFunctionZipUrl,
       },
     })
-  })
+  }, 30_000)
 })

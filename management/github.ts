@@ -10,9 +10,11 @@ export async function getLatestGithubRelease(token?: string) {
   const response = await fetch(
     `https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases/latest`,
     {
-      headers: {
-        Authorization: bearer(token),
-      },
+      headers: token
+        ? {
+            Authorization: bearer(token),
+          }
+        : undefined,
     },
   )
 
@@ -49,6 +51,8 @@ export async function getLatestFunctionZip(logger?: Logger, token?: string, vers
 
     return null
   }
+
+  logger?.verbose(`Found new release ${release.tag_name}`, release.assets)
 
   const asset = await findFunctionZip(release.assets)
 
