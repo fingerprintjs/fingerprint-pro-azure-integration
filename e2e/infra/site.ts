@@ -1,5 +1,5 @@
 import { StatusFormat } from '../../shared/status'
-import { ExponentialBackoff, handleAll, retry, timeout, TimeoutStrategy, wrap } from 'cockatiel'
+import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
 import { websiteManagementClient } from './clients'
 
 export function getSiteUrl(siteName: string) {
@@ -15,14 +15,10 @@ export function getStatusUrl(baseUrl: string) {
 }
 
 export async function getWebApp(resourceGroup: string, appName: string) {
-  const policy = wrap(
-    timeout(30_000, TimeoutStrategy.Aggressive),
-    retry(handleAll, {
-      maxAttempts: 10,
-      backoff: new ExponentialBackoff(),
-    }),
-  )
-
+  const policy = retry(handleAll, {
+    maxAttempts: 10,
+    backoff: new ExponentialBackoff(),
+  })
   return policy.execute(async ({ attempt }) => {
     if (attempt > 0) {
       console.info(`Attempt ${attempt}...`)

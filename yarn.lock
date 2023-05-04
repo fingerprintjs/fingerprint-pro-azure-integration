@@ -55,6 +55,19 @@
     "@azure/core-rest-pipeline" "^1.8.0"
     tslib "^2.2.0"
 
+"@azure/arm-cdn@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@azure/arm-cdn/-/arm-cdn-8.0.0.tgz#ea63cd995724df59180f9819443f0f6a072db768"
+  integrity sha512-LUK/1IykE2JBbmX7hxSvek9RWZ+MIAdZMZ7NP9cgBzcVQgDH7/NH85BtBvIKBnbfHB8bsQFvO+dCyX1BTfALaA==
+  dependencies:
+    "@azure/abort-controller" "^1.0.0"
+    "@azure/core-auth" "^1.3.0"
+    "@azure/core-client" "^1.6.1"
+    "@azure/core-lro" "^2.2.0"
+    "@azure/core-paging" "^1.2.0"
+    "@azure/core-rest-pipeline" "^1.8.0"
+    tslib "^2.2.0"
+
 "@azure/arm-frontdoor@^5.1.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@azure/arm-frontdoor/-/arm-frontdoor-5.1.0.tgz#c433cee6b7284c08a3f49bfabdbdbd501de94d82"
@@ -1244,6 +1257,16 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@opentelemetry/api/-/api-1.4.0.tgz#2c91791a9ba6ca0a0f4aaac5e45d58df13639ac8"
   integrity sha512-IgMK9i3sFGNUqPMbjABm0G26g0QCKCUBfglhQ7rQq6WcxbKfEHRcmwsoER4hZcuYqJgkYn2OeuoJIv7Jsftp7g==
+
+"@playwright/test@^1.32.3":
+  version "1.32.3"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.32.3.tgz#75be8346d4ef289896835e1d2a86fdbe3d9be92a"
+  integrity sha512-BvWNvK0RfBriindxhLVabi8BRe3X0J9EVjKlcmhxjg4giWBD/xleLcg2dz7Tx0agu28rczjNIPQWznwzDwVsZQ==
+  dependencies:
+    "@types/node" "*"
+    playwright-core "1.32.3"
+  optionalDependencies:
+    fsevents "2.3.2"
 
 "@rollup/plugin-commonjs@^24.0.0":
   version "24.0.1"
@@ -2864,7 +2887,7 @@ fs.realpath@^1.0.0:
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
 
-fsevents@^2.3.2, fsevents@~2.3.2:
+fsevents@2.3.2, fsevents@^2.3.2, fsevents@~2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
@@ -4542,6 +4565,11 @@ pkg-dir@^4.1.0, pkg-dir@^4.2.0:
   integrity sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==
   dependencies:
     find-up "^4.0.0"
+
+playwright-core@1.32.3:
+  version "1.32.3"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.32.3.tgz#e6dc7db0b49e9b6c0b8073c4a2d789a96f519c48"
+  integrity sha512-SB+cdrnu74ZIn5Ogh/8278ngEh9NEEV0vR4sJFmK04h2iZpybfbqBY0bX6+BLYWVdV12JLLI+JEFtSnYgR+mWg==
 
 postcss@^8.4.21:
   version "8.4.21"

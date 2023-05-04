@@ -18,6 +18,9 @@ const config = {
   storageContainerName,
   storageResourceGroup,
   preSharedSecret,
+  getResultPath: process.env.FPJS_GET_RESULT_PATH ?? 'result',
+  agentDownloadPath: process.env.FPJS_AGENT_DOWNLOAD_PATH ?? 'agent',
+  routePrefix: process.env.FPJS_ROUTE_PREFIX ?? 'fpjs',
 } satisfies Record<string, string>
 
 export default config

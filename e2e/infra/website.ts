@@ -6,7 +6,7 @@ import { execSync } from 'child_process'
 import invariant from 'tiny-invariant'
 import { ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob'
 import glob from 'glob'
-import { ExponentialBackoff, handleAll, retry, timeout, TimeoutStrategy, wrap } from 'cockatiel'
+import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
 
 const websiteDistPath = path.resolve(__dirname, '../../example-website/dist')
 if (!fs.existsSync(websiteDistPath)) {
@@ -63,15 +63,11 @@ export async function deployWebsite(resourceGroup: string) {
 async function doHealthCheck(url: string) {
   console.info(`Performing website health check at ${url}`)
 
-  const policy = wrap(
-    timeout(30_000, TimeoutStrategy.Aggressive),
-    retry(handleAll, {
-      backoff: new ExponentialBackoff({
-        initialDelay: 500,
-      }),
+  const policy = retry(handleAll, {
+    backoff: new ExponentialBackoff({
+      initialDelay: 500,
     }),
-  )
-
+  })
   return policy.execute(async ({ attempt }) => {
     if (attempt > 1) {
       console.info(`Health check attempt ${attempt}`)
