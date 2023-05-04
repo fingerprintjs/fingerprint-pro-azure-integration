@@ -10,5 +10,5 @@ export function addTrafficMonitoringSearchParamsForVisitorIdRequest(url: URL) {
 }
 
 function getTrafficMonitoringValue(type: 'procdn' | 'ingress'): string {
-  return `fingerprintjs-pro-azure/${FUNCTION_VERSION}/${type}`
+  return `fingerprint-pro-azure/${FUNCTION_VERSION}/${type}`
 }
