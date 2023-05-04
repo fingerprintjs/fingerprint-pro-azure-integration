@@ -6,7 +6,8 @@
   "exclude": [
     "dist",
     "node_modules",
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "e2e"
   ],
   "include": [
     "**/*.test.ts",

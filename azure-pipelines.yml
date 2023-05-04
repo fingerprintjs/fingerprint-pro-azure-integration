@@ -1,0 +1,38 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger:
+  batch: 'false'
+  branches:
+    include:
+      - '*'
+
+pool:
+  vmImage: ubuntu-latest
+  # TODO - Remove after repository is made public
+  name: 'Local pz'
+
+steps:
+- script: yarn install
+  displayName: 'Install dependencies'
+- script: yarn build && yarn build:example-website
+  displayName: 'Build'
+  env:
+    VITE_API_KEY: $(API_KEY)
+    VITE_ENDPOINT: '/fpjs/visitorId?region=eu'
+    VITE_SCRIPT_URL_PATTERN: '/fpjs/agent?apiKey=<apiKey>&version=<version>&loaderVersion=<loaderVersion>'
+- script: |
+    cd dist
+    zip -r package.zip *
+    mv package.zip ../
+    cd ..
+  displayName: 'Zip'
+- script: yarn e2e-deploy-infra
+  displayName: 'Deploy infrastructure'
+  env:
+    AZURE_STORAGE_ACCOUNT_NAME: $(AZURE_STORAGE_ACCOUNT_NAME)
+    AZURE_STORAGE_CONTAINER_NAME: $(AZURE_STORAGE_CONTAINER_NAME)
+    AZURE_STORAGE_RESOURCE_GROUP: $(AZURE_STORAGE_RESOURCE_GROUP)
+    AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+    FPJS_PRE_SHARED_SECRET: $(FPJS_PRE_SHARED_SECRET)

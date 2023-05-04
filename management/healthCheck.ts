@@ -5,6 +5,7 @@ import { performRollback } from './rollback'
 import { ContainerClient } from '@azure/storage-blob'
 import { removeOldFunctionFromStorage } from './storage'
 import { eq } from 'semver'
+import { ExponentialBackoff, handleAll, retry, timeout, TimeoutStrategy, wrap } from 'cockatiel'
 
 export interface PerformHealthCheckAfterUpdateParams {
   newVersion: string
@@ -17,7 +18,6 @@ export interface PerformHealthCheckAfterUpdateParams {
   resourceGroupName: string
   appName: string
   storageClient: ContainerClient
-  waitBetweenRequestsMs?: number
   timeoutMs?: number
 }
 
@@ -31,19 +31,11 @@ export async function performHealthCheckAfterUpdate({
   resourceGroupName,
   oldFunctionZipUrl,
   storageClient,
-  waitBetweenRequestsMs,
   timeoutMs,
   newFunctionZipUrl,
 }: PerformHealthCheckAfterUpdateParams) {
-  const timeoutController = new AbortController()
-
   try {
-    await Promise.race([
-      runHealthCheckSchedule(statusUrl, newVersion, waitBetweenRequestsMs, logger),
-      timeout(timeoutMs, timeoutController.signal),
-    ])
-
-    timeoutController.abort()
+    await runHealthCheckSchedule(statusUrl, newVersion, timeoutMs, logger)
 
     await removeOldFunctionFromStorage(oldFunctionZipUrl, newFunctionZipUrl, storageClient, logger)
   } catch (error) {
@@ -62,50 +54,32 @@ export async function performHealthCheckAfterUpdate({
   }
 }
 
-async function runHealthCheckSchedule(url: string, newVersion: string, waitBetweenRequestsMs = 5000, logger?: Logger) {
-  let isOk = false
+async function runHealthCheckSchedule(url: string, newVersion: string, timeoutMs = 120_000, logger?: Logger) {
+  const policy = wrap(
+    timeout(timeoutMs, TimeoutStrategy.Aggressive).dangerouslyUnref(),
+    retry(handleAll, {
+      backoff: new ExponentialBackoff({
+        initialDelay: 500,
+      }),
+    }),
+  )
 
-  logger?.verbose(`Performing health check on ${url} every ${waitBetweenRequestsMs}ms`)
-
-  while (!isOk) {
-    try {
-      const response = await fetch(url)
-      const json = (await response.json()) as StatusInfo
-
-      logger?.verbose('Health check response', json)
-
-      if (eq(json.version, newVersion)) {
-        logger?.info('Health check passed')
-
-        isOk = true
-      }
-    } catch (error) {
-      logger?.error('Error while performing health check', error)
-    } finally {
-      if (!isOk) {
-        await wait(waitBetweenRequestsMs)
-      }
+  return policy.execute(async ({ attempt, signal }) => {
+    if (attempt > 1) {
+      logger?.verbose(`Attempt ${attempt} at health check...`)
     }
-  }
-}
 
-function timeout(ms = 1000 * 60 * 2, signal?: AbortSignal) {
-  return new Promise((resolve, reject) => {
-    wait(ms, signal).then(() => {
-      reject(new Error('Operation Timeout'))
-    })
-  })
-}
+    const response = await fetch(url, { signal })
+    const json = (await response.json()) as StatusInfo
 
-function wait(ms: number, signal?: AbortSignal) {
-  return new Promise<void>((resolve) => {
-    const timeout = setTimeout(resolve, ms)
+    logger?.verbose('Health check response', json)
 
-    timeout.unref()
+    if (eq(json.version, newVersion)) {
+      logger?.info('Health check passed')
 
-    signal?.addEventListener('abort', () => {
-      clearTimeout(timeout)
-      resolve()
-    })
+      return
+    }
+
+    throw new Error(`Version mismatch, expected: ${newVersion}, received: ${json.version}`)
   })
 }
