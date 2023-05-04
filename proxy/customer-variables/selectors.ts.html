@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/19</span>
+                <span class='fraction'>19/19</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -86,49 +86,49 @@
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { CustomerVariables, GetVariableResult } from './CustomerVariables'
-<span class="cstat-no" title="statement not covered" >import { CustomerVariableType } from './types'</span>
-<span class="cstat-no" title="statement not covered" >import { STATUS_PATH } from '../../shared/status'</span>
+import { CustomerVariableType } from './types'
+import { STATUS_PATH } from '../../shared/status'
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >getAgentDownloadUri = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >a</span>sync </span>(variables: CustomerVariables) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >  `${await getRoutePrefix(variables)}/${await getAgentDownloadPath(variables)}`</span>
+export const getAgentDownloadUri = async (variables: CustomerVariables) =&gt;
+  `${await getRoutePrefix(variables)}/${await getAgentDownloadPath(variables)}`
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >getResultUri = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >a</span>sync </span>(variables: CustomerVariables) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >  `${await getRoutePrefix(variables)}/${await getResultPath(variables)}`</span>
+export const getResultUri = async (variables: CustomerVariables) =&gt;
+  `${await getRoutePrefix(variables)}/${await getResultPath(variables)}`
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >getStatusUri = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >a</span>sync </span>(variables: CustomerVariables) =&gt; <span class="cstat-no" title="statement not covered" >`${await getRoutePrefix(variables)}/${STATUS_PATH}`</span></span>
+export const getStatusUri = async (variables: CustomerVariables) =&gt; `${await getRoutePrefix(variables)}/${STATUS_PATH}`
 &nbsp;
-const extractVariable = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(r</span>esult: GetVariableResult) =&gt; <span class="cstat-no" title="statement not covered" >result.value</span></span>
+const extractVariable = (result: GetVariableResult) =&gt; result.value
 &nbsp;
-const getRoutePrefix = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(variables: CustomerVariables) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >  variables.getVariable(CustomerVariableType.RoutePrefix).then(extractVariable)</span>
+const getRoutePrefix = async (variables: CustomerVariables) =&gt;
+  variables.getVariable(CustomerVariableType.RoutePrefix).then(extractVariable)
 &nbsp;
-const getAgentDownloadPath = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(variables: CustomerVariables) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >  variables.getVariable(CustomerVariableType.AgentDownloadPath).then(extractVariable)</span>
+const getAgentDownloadPath = async (variables: CustomerVariables) =&gt;
+  variables.getVariable(CustomerVariableType.AgentDownloadPath).then(extractVariable)
 &nbsp;
-const getResultPath = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async </span>(variables: CustomerVariables) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >  variables.getVariable(CustomerVariableType.GetResultPath).then(extractVariable)</span>
+const getResultPath = async (variables: CustomerVariables) =&gt;
+  variables.getVariable(CustomerVariableType.GetResultPath).then(extractVariable)
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -136,7 +136,7 @@ const getResultPath = <span class="cstat-no" title="statement not covered" ><spa
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-25T19:49:50.923Z
+                at 2023-05-04T13:05:25.760Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
