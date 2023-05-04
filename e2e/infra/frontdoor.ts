@@ -16,6 +16,7 @@ export interface ProvisionFrontDoorParams {
   functionAppHost: string
   websiteHost: string
   functionHealthStatusPath: string
+  functionAppRoutePrefix: string
 }
 
 export async function provisionFrontDoor({
@@ -23,6 +24,7 @@ export async function provisionFrontDoor({
   websiteHost,
   resourceGroup,
   functionHealthStatusPath,
+  functionAppRoutePrefix,
 }: ProvisionFrontDoorParams) {
   const profileName = `e2e-frontdoor-${Date.now()}`
 
@@ -121,7 +123,7 @@ export async function provisionFrontDoor({
         id: functionAppOriginGroup.id,
       },
       supportedProtocols: [KnownAFDEndpointProtocols.Http, KnownAFDEndpointProtocols.Https],
-      patternsToMatch: ['/fpjs/*'],
+      patternsToMatch: [`/${functionAppRoutePrefix}/*`],
       cacheConfiguration: {
         queryStringCachingBehavior: KnownAfdQueryStringCachingBehavior.UseQueryString,
       },
@@ -146,11 +148,10 @@ export async function provisionFrontDoor({
 
   const url = `https://${endpoint.hostName}`
 
-  await waitForFrontDoor(url)
-
   return {
     profile,
     url,
+    waitForFrontDoor: () => waitForFrontDoor(url),
   }
 }
 

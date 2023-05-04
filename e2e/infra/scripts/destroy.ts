@@ -1,21 +1,19 @@
 import { removeResourceGroup } from '../resourceGroup'
 import { deleteTestInfo, readTestInfo } from '../../shared/testInfo'
-import { getTmpStorageContainerClient } from '../tmpStorage'
+import { destroyTestInfo } from '../destroyTestInfo'
 
 async function main() {
   const testInfo = readTestInfo()
 
-  try {
-    const containerClient = await getTmpStorageContainerClient()
-    const blobClient = containerClient.getBlockBlobClient(testInfo.functionBlobName)
-    await blobClient.delete()
+  const resourceGroups = new Set(testInfo.map((t) => t.resourceGroup))
 
-    console.info(`Deleted blob ${testInfo.functionBlobName}`)
-  } catch (error) {
-    console.error(`Failed to delete blob ${testInfo.functionBlobName}`, error)
+  for (const info of testInfo) {
+    await destroyTestInfo(info)
   }
 
-  await removeResourceGroup(testInfo.resourceGroup)
+  for (const resourceGroup of resourceGroups) {
+    await removeResourceGroup(resourceGroup)
+  }
 
   deleteTestInfo()
 }

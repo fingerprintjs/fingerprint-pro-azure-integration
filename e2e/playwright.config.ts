@@ -10,6 +10,8 @@ if (isCi) {
   console.info('Local environment detected')
 }
 
+const testInfo = readTestInfo()
+
 const config: Config = {
   testDir: path.resolve(__dirname, 'tests'),
   retries: isCi ? 3 : 0,
@@ -18,14 +20,13 @@ const config: Config = {
   expect: {
     timeout: isCi ? 100_000 : 30_000,
   },
-  projects: [
-    {
-      use: {
-        baseURL: readTestInfo().frontdoorUrl,
-        headless: true,
-      },
+  projects: testInfo.map((info) => ({
+    use: {
+      name: info.frontdoorUrl,
+      baseURL: info.frontdoorUrl,
+      headless: true,
     },
-  ],
+  })),
   globalSetup: path.resolve(__dirname, 'tests/setup.ts'),
 }
 

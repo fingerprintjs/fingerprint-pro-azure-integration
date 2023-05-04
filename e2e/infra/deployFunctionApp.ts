@@ -3,11 +3,25 @@ import config from './config'
 import { getWebApp } from './site'
 import invariant from 'tiny-invariant'
 import { doHealthCheck } from './healthCheck'
+import { TestInfo } from '../shared/testInfo'
+
+export type FunctionAppDeploymentParameters = Pick<TestInfo, 'routePrefix' | 'agentDownloadPath' | 'getResultPath'>
+
+export interface DeployFunctionAppOptions extends FunctionAppDeploymentParameters {
+  resourceGroup: string
+  template: Record<string, unknown>
+}
 
 /**
  * Deploys function app to resource group using given template
  * */
-export async function deployFunctionApp(resourceGroup: string, template: Record<string, unknown>) {
+export async function deployFunctionApp({
+  resourceGroup,
+  template,
+  getResultPath,
+  routePrefix,
+  agentDownloadPath,
+}: DeployFunctionAppOptions) {
   const appName = `fpjs-dev-e2e-app-${Date.now()}`
 
   console.info(`Deploying app ${appName} to ${resourceGroup} resource group`)
@@ -23,13 +37,13 @@ export async function deployFunctionApp(resourceGroup: string, template: Record<
           value: appName,
         },
         getResultPath: {
-          value: config.getResultPath,
+          value: getResultPath,
         },
         agentDownloadPath: {
-          value: config.agentDownloadPath,
+          value: agentDownloadPath,
         },
         routePrefix: {
-          value: config.routePrefix,
+          value: routePrefix,
         },
       },
       mode: 'Incremental',
