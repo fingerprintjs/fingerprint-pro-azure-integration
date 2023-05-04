@@ -42,15 +42,15 @@
   dependencies:
     tslib "^2.2.0"
 
-"@azure/arm-appservice@13.0.3":
-  version "13.0.3"
-  resolved "https://registry.yarnpkg.com/@azure/arm-appservice/-/arm-appservice-13.0.3.tgz#cd732861a069ddc87ff57da316b2aec6596c46bd"
-  integrity sha512-Vu011o3/bikQNwtjouwmUJud+Z6Brcjij2D0omPWClRGg8i5gBfOYSpDkFGkHbhGlaky4fgvfkxD0uHGq34uYA==
+"@azure/arm-appservice@14.0.0":
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/@azure/arm-appservice/-/arm-appservice-14.0.0.tgz#188b2b65baa6e66203217efb5e4b86ee98f6a729"
+  integrity sha512-tU0ld4B230qsPrk7pmcpiQWkufB/SfON5If8sUR3nsWcEvprB6iZqr1OC4ETjgtAYabNCq22OFquuUizGCoAYQ==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-auth" "^1.3.0"
-    "@azure/core-client" "^1.6.1"
-    "@azure/core-lro" "^2.2.0"
+    "@azure/core-client" "^1.7.0"
+    "@azure/core-lro" "^2.5.0"
     "@azure/core-paging" "^1.2.0"
     "@azure/core-rest-pipeline" "^1.8.0"
     tslib "^2.2.0"
@@ -157,16 +157,7 @@
     uuid "^8.3.0"
     xml2js "^0.4.19"
 
-"@azure/core-lro@^2.2.0":
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/@azure/core-lro/-/core-lro-2.5.1.tgz#9c6be24b84f8a8c8e8ac376c5018460c5a585d0b"
-  integrity sha512-JHQy/bA3NOz2WuzOi5zEk6n/TJdAropupxUT521JIJvW7EXV2YN2SFYZrf/2RHeD28QAClGdynYadZsbmP+nyQ==
-  dependencies:
-    "@azure/abort-controller" "^1.0.0"
-    "@azure/logger" "^1.0.0"
-    tslib "^2.2.0"
-
-"@azure/core-lro@^2.5.0":
+"@azure/core-lro@^2.2.0", "@azure/core-lro@^2.5.0":
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/@azure/core-lro/-/core-lro-2.5.2.tgz#712439f12b39ade7576f55780a4e005472c67b19"
   integrity sha512-tucUutPhBwCPu6v16KEFYML81npEL6gnT+iwewXvK5ZD55sr0/Vw2jfQETMiKVeARRrXHB2QQ3SpxxGi1zAUWg==
