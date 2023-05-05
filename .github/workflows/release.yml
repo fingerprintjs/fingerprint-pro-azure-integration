@@ -98,6 +98,7 @@ jobs:
           draft: true
           prerelease: ${{ github.event.inputs.prerelease }}
           artifacts: v${{steps.new_version.outputs.prop}}.zip,package.zip
+          artifactContentType: 'application/zip'
           generateReleaseNotes: true
 
       - name: Create Pull Request from develop to main
