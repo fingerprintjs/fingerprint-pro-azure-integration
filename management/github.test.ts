@@ -13,6 +13,12 @@ const mockRelease = {
   name: 'v1.0.0',
   assets: [
     {
+      name: 'package.zip',
+      url: 'https://api.github.com/repos/owner/repo/releases/assets/124',
+      state: 'uploaded',
+      content_type: 'application/zip',
+    },
+    {
       name: 'v1.0.0.zip',
       url: 'https://api.github.com/repos/owner/repo/releases/assets/123',
       state: 'uploaded',
