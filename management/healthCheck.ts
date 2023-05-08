@@ -54,7 +54,7 @@ export async function performHealthCheckAfterUpdate({
   }
 }
 
-async function runHealthCheckSchedule(url: string, newVersion: string, maxDelay = 120_000, logger?: Logger) {
+async function runHealthCheckSchedule(url: string, newVersion: string, maxDelay = 15_000, logger?: Logger) {
   const policy = retry(handleAll, {
     maxAttempts: 20,
     backoff: new ExponentialBackoff({
