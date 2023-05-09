@@ -5,7 +5,7 @@ import { performRollback } from './rollback'
 import { ContainerClient } from '@azure/storage-blob'
 import { removeOldFunctionFromStorage } from './storage'
 import { eq } from 'semver'
-import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
+import { ConstantBackoff, handleAll, retry } from 'cockatiel'
 
 export interface PerformHealthCheckAfterUpdateParams {
   newVersion: string
@@ -54,13 +54,12 @@ export async function performHealthCheckAfterUpdate({
   }
 }
 
-async function runHealthCheckSchedule(url: string, newVersion: string, maxDelay = 15_000, logger?: Logger) {
+async function runHealthCheckSchedule(url: string, newVersion: string, checkInterval = 10_000, logger?: Logger) {
+  logger?.verbose(`Starting health check at ${url}`)
+
   const policy = retry(handleAll, {
     maxAttempts: 20,
-    backoff: new ExponentialBackoff({
-      initialDelay: 500,
-      maxDelay,
-    }),
+    backoff: new ConstantBackoff(checkInterval),
   })
   return policy.execute(async ({ attempt, signal }) => {
     if (attempt > 1) {

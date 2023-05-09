@@ -1,6 +1,9 @@
 import { FunctionEnvelope, WebSiteManagementClient } from '@azure/arm-appservice'
-import { STATUS_PATH, StatusFormat } from '../shared/status'
+import { StatusFormat } from '../shared/status'
 import { Logger } from '@azure/functions'
+import { CustomerVariables } from '../shared/customer-variables/CustomerVariables'
+import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables'
+import { getStatusUri } from '../shared/customer-variables/selectors'
 
 export async function getSiteStatusUrl(
   client: WebSiteManagementClient,
@@ -8,10 +11,12 @@ export async function getSiteStatusUrl(
   siteName: string,
   logger?: Logger,
 ) {
+  const customerVariables = new CustomerVariables([new EnvCustomerVariables()], logger)
+
   const proxyFunction = await findProxyFunction(client, resourceGroupName, siteName, logger)
 
   const functionUrl = parseFunctionUrl(proxyFunction)
-  functionUrl.pathname = `${functionUrl.pathname}/${STATUS_PATH}`
+  functionUrl.pathname = `${functionUrl.pathname}/${await getStatusUri(customerVariables)}`
   functionUrl.searchParams.set('format', StatusFormat.JSON)
 
   return functionUrl.toString()

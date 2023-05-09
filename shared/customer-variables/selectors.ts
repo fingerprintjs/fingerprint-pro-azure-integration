@@ -1,6 +1,6 @@
 import { CustomerVariables, GetVariableResult } from './CustomerVariables'
 import { CustomerVariableType } from './types'
-import { STATUS_PATH } from '../../shared/status'
+import { STATUS_PATH } from '../status'
 
 export const getAgentDownloadUri = async (variables: CustomerVariables) =>
   `${await getRoutePrefix(variables)}/${await getAgentDownloadPath(variables)}`
