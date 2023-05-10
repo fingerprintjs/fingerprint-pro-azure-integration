@@ -86,16 +86,8 @@
             }
         }
     },
-    "variables": {        
-        "functionActions": [
-            "Microsoft.Storage/storageAccounts/listKeys/action",
-            "Microsoft.Storage/storageAccounts/blobServices/containers/read",
-            "Microsoft.Storage/storageAccounts/blobServices/generateUserDelegationKey/action",
-            "Microsoft.Web/sites/config/list/action",
-            "Microsoft.Web/sites/config/write",
-            "Microsoft.Web/sites/functions/read"
-        ],
-        "roleDefinitionName": "[guid(subscription().id, string(variables('functionActions')), uniqueString(resourceGroup().id))]",
+    "variables": {
+        "roleDefinitionName": "[guid(subscription().id, uniqueString(resourceGroup().id))]",
         "functionRoleName": "[format('fingerprint-pro-function-app-role-{0}', uniqueString(resourceGroup().id))]",
         "userAssignedIdentityName": "[concat('fingerprint-pro-ua-', uniqueString(resourceGroup().id))]",
         "roleAssignmentName": "[guid(concat(variables('userAssignedIdentityName'), resourceGroup().id, 'contributor'))]",
@@ -109,7 +101,7 @@
         "packageZipUri": "https://github.com/fingerprintjs/fingerprint-pro-azure-integration/releases/latest/download/package.zip",
         "packageName": "package.zip",
         "copyPackageScriptName": "copyPackage",
-        "$fxv#0": "# copy the file to the local disk\r\nInvoke-WebRequest -Uri \"${env:packageZipUri}\" -OutFile \"${env:packageName}\"\r\n\r\n# get storageAccount context using the key\r\n$ctx = New-AzStorageContext -StorageAccountName \"${Env:storageAccountName}\" -StorageAccountKey \"${Env:storageAccountKey}\"\r\n\r\nNew-AzStorageContainer -Context $ctx -Name \"${env:containerName}\" -Verbose\r\n\r\n# copy blob\r\nSet-AzStorageBlobContent -Context $ctx `\r\n                         -Container \"${Env:containerName}\" `\r\n                         -Blob \"${env:packageName}\" `\r\n                         -StandardBlobTier 'Hot' `\r\n                         -File \"${env:packageName}\"\r\n"
+        "deploymentScript": "# copy the file to the local disk\r\nInvoke-WebRequest -Uri \"${env:packageZipUri}\" -OutFile \"${env:packageName}\"\r\n\r\n# get storageAccount context using the key\r\n$ctx = New-AzStorageContext -StorageAccountName \"${Env:storageAccountName}\" -StorageAccountKey \"${Env:storageAccountKey}\"\r\n\r\nNew-AzStorageContainer -Context $ctx -Name \"${env:containerName}\" -Verbose\r\n\r\n# copy blob\r\nSet-AzStorageBlobContent -Context $ctx `\r\n                         -Container \"${Env:containerName}\" `\r\n                         -Blob \"${env:packageName}\" `\r\n                         -StandardBlobTier 'Hot' `\r\n                         -File \"${env:packageName}\"\r\n"
     },
     "resources": [
         {
@@ -123,12 +115,24 @@
                 "description": "Role for Fingerprint Pro Function App",
                 "permissions": [
                     {
-                        "actions": "[variables('functionActions')]",
+                        "actions": [
+                            "*/read",
+                            "Microsoft.Storage/storageAccounts/listKeys/action",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/delete",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/write",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/read",
+                            "Microsoft.Storage/storageAccounts/blobServices/generateUserDelegationKey/action",
+                            "Microsoft.Web/sites/config/list/action",
+                            "Microsoft.Web/sites/config/write",
+                            "Microsoft.Web/sites/functions/read"
+                        ],
                         "notActions": [],
                         "dataActions": [
                             "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/delete",
                             "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read",
-                            "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/write"
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/write",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/move/action",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/add/action"
                         ],
                         "notDataActions": []
                     }
@@ -208,7 +212,7 @@
                         "value": "[variables('packageName')]"
                     }
                 ],
-            "scriptContent": "[variables('$fxv#0')]",
+            "scriptContent": "[variables('deploymentScript')]",
             "timeout": "PT4H",
             "cleanupPreference": "OnSuccess",
             "retentionInterval": "P1D"
@@ -293,7 +297,7 @@
                         },
                         {
                             "name": "WEBSITE_RUN_FROM_PACKAGE_BLOB_MI_RESOURCE_ID",
-                            "value": "[format('/subscriptions/{0}/resourcegroups/{1}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{2}', subscription().subscriptionId, resourceGroup().id, variables('userAssignedIdentityName'))]"
+                            "value": "[format('{0}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{1}', resourceGroup().id, variables('userAssignedIdentityName'))]"                            
                         },
                         {
                             "name": "WEBSITE_RUN_FROM_PACKAGE",
