@@ -18,7 +18,7 @@ export interface PerformHealthCheckAfterUpdateParams {
   resourceGroupName: string
   appName: string
   storageClient: ContainerClient
-  maxHealthCheckDelayMs?: number
+  checkInterval?: number
 }
 
 export async function performHealthCheckAfterUpdate({
@@ -31,11 +31,11 @@ export async function performHealthCheckAfterUpdate({
   resourceGroupName,
   oldFunctionZipUrl,
   storageClient,
-  maxHealthCheckDelayMs,
+  checkInterval,
   newFunctionZipUrl,
 }: PerformHealthCheckAfterUpdateParams) {
   try {
-    await runHealthCheckSchedule(statusUrl, newVersion, maxHealthCheckDelayMs, logger)
+    await runHealthCheckSchedule(statusUrl, newVersion, checkInterval, logger)
 
     await removeOldFunctionFromStorage(oldFunctionZipUrl, newFunctionZipUrl, storageClient, logger)
   } catch (error) {

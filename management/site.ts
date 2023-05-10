@@ -4,6 +4,7 @@ import { Logger } from '@azure/functions'
 import { CustomerVariables } from '../shared/customer-variables/CustomerVariables'
 import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables'
 import { getStatusUri } from '../shared/customer-variables/selectors'
+import { removeTrailingSlashes } from '../shared/routing'
 
 export async function getSiteStatusUrl(
   client: WebSiteManagementClient,
@@ -16,7 +17,9 @@ export async function getSiteStatusUrl(
   const proxyFunction = await findProxyFunction(client, resourceGroupName, siteName, logger)
 
   const functionUrl = parseFunctionUrl(proxyFunction)
-  functionUrl.pathname = `${functionUrl.pathname}/${await getStatusUri(customerVariables)}`
+  const statusPath = removeTrailingSlashes(await getStatusUri(customerVariables))
+
+  functionUrl.pathname = `${removeTrailingSlashes(functionUrl.pathname)}/${statusPath}`
   functionUrl.searchParams.set('format', StatusFormat.JSON)
 
   return functionUrl.toString()

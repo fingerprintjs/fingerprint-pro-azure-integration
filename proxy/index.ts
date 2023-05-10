@@ -5,7 +5,7 @@ import { CustomerVariables } from '../shared/customer-variables/CustomerVariable
 import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables'
 import { CustomerVariableType } from '../shared/customer-variables/types'
 import { handleStatus } from './handlers/status'
-import { removeTrailingSlashes } from './utils/routing'
+import { removeTrailingSlashes } from '../shared/routing'
 import { getAgentDownloadUri, getResultUri, getStatusUri } from '../shared/customer-variables/selectors'
 import { IntegrationError } from './errors/IntegrationError'
 import { HttpResponseSimple } from '@azure/functions/types/http'

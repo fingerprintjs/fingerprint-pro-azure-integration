@@ -38,7 +38,7 @@ describe('performHealthCheckAfterUpdate', () => {
       newVersion: '1.0.0',
       statusUrl,
       storageClient: mockStorageClient as any,
-      maxHealthCheckDelayMs: 500,
+      checkInterval: 500,
       newFunctionZipUrl,
     })
 
@@ -78,7 +78,7 @@ describe('performHealthCheckAfterUpdate', () => {
       newVersion: '1.0.0',
       statusUrl,
       storageClient: mockStorageClient as any,
-      maxHealthCheckDelayMs: 5000,
+      checkInterval: 500,
       newFunctionZipUrl,
     })
 
@@ -105,7 +105,7 @@ describe('performHealthCheckAfterUpdate', () => {
         newVersion: '1.0.0',
         statusUrl,
         storageClient: mockStorageClient as any,
-        maxHealthCheckDelayMs: 100,
+        checkInterval: 100,
         newFunctionZipUrl,
       }),
     ).rejects.toThrow('Version mismatch, expected: 1.0.0, received: 0.0.1')
