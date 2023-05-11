@@ -20,7 +20,7 @@
     "e2e-destroy-infra": "ts-node --project e2e/tsconfig.json e2e/infra/scripts/destroy.ts"
   },
   "dependencies": {
-    "@azure/arm-appservice": "13.0.3",
+    "@azure/arm-appservice": "14.0.0",
     "@azure/arm-cdn": "^8.0.0",
     "@azure/arm-resources": "5.2.0",
     "@azure/arm-storage": "18.1.0",
