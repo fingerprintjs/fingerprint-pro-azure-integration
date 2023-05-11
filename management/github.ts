@@ -24,13 +24,15 @@ export async function getLatestGithubRelease(token?: string) {
 export async function downloadReleaseAsset(url: string, token?: string, logger?: Logger) {
   logger?.verbose(`Downloading release asset from ${url}`)
 
-  const response = await fetch(url, {
-    headers: {
-      Authorization: bearer(token),
-      Accept: 'application/octet-stream',
-      'User-Agent': 'fingerprint-pro-azure-integration',
-    },
-  })
+  const headers: Record<string, string> = {
+    Accept: 'application/octet-stream',
+    'User-Agent': 'fingerprint-pro-azure-integration',
+  }
+  if (token) {
+    headers['Authorization'] = bearer(token)
+  }
+
+  const response = await fetch(url, { headers })
 
   const arrayBuffer = await response.arrayBuffer()
 

@@ -23,7 +23,7 @@ describe('getSiteStatusUrl', () => {
         config: {
           scriptFile: './fingerprint-pro-azure-function.js',
         },
-        invokeUrlTemplate: 'https://example.com/fpjs/{*restofpath}',
+        invokeUrlTemplate: 'https://example.com/{*restofpath}',
       }
     })
 

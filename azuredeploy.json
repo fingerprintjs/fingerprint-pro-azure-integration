@@ -87,14 +87,80 @@
         }
     },
     "variables": {
+        "roleDefinitionName": "[guid(subscription().id, uniqueString(resourceGroup().id))]",
+        "functionRoleName": "[format('fingerprint-pro-function-app-role-{0}', uniqueString(resourceGroup().id))]",
+        "userAssignedIdentityName": "[concat('fingerprint-pro-ua-', uniqueString(resourceGroup().id))]",
+        "roleAssignmentName": "[guid(concat(variables('userAssignedIdentityName'), resourceGroup().id, 'contributor'))]",
         "functionAppName": "[format('{0}{1}', parameters('functionAppName'), uniqueString(resourceGroup().id))]",
         "hostingPlanName": "[variables('functionAppName')]",
-        "appInsightsName": "[format('AppInsights -{0}', uniqueString(resourceGroup().id))]",
+        "appInsightsName": "[format('AppInsights-{0}', uniqueString(resourceGroup().id))]",
         "storageAccountName": "[format('fnstor{0}', uniqueString(resourceGroup().id))]",
+        "containerName": "function-releases",
         "functionNameComputed": "fingerprint-pro-azure-integration",
-        "functionRuntime": "node"
+        "functionRuntime": "node",
+        "packageZipUri": "https://github.com/fingerprintjs/fingerprint-pro-azure-integration/releases/latest/download/package.zip",
+        "packageName": "package.zip",
+        "copyPackageScriptName": "copyPackage",
+        "deploymentScript": "# copy the file to the local disk\r\nInvoke-WebRequest -Uri \"${env:packageZipUri}\" -OutFile \"${env:packageName}\"\r\n\r\n# get storageAccount context using the key\r\n$ctx = New-AzStorageContext -StorageAccountName \"${Env:storageAccountName}\" -StorageAccountKey \"${Env:storageAccountKey}\"\r\n\r\nNew-AzStorageContainer -Context $ctx -Name \"${env:containerName}\" -Verbose\r\n\r\n# copy blob\r\nSet-AzStorageBlobContent -Context $ctx `\r\n                         -Container \"${Env:containerName}\" `\r\n                         -Blob \"${env:packageName}\" `\r\n                         -StandardBlobTier 'Hot' `\r\n                         -File \"${env:packageName}\"\r\n"
     },
     "resources": [
+        {
+            "type": "Microsoft.Authorization/roleDefinitions",
+            "apiVersion": "2022-04-01",
+            "name": "[variables('roleDefinitionName')]",
+            "properties": {
+                "assignableScopes": [
+                    "[resourceGroup().id]"
+                ],
+                "description": "Role for Fingerprint Pro Function App",
+                "permissions": [
+                    {
+                        "actions": [
+                            "*/read",
+                            "Microsoft.Storage/storageAccounts/listKeys/action",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/delete",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/write",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/read",
+                            "Microsoft.Storage/storageAccounts/blobServices/generateUserDelegationKey/action",
+                            "Microsoft.Web/sites/config/list/action",
+                            "Microsoft.Web/sites/config/write",
+                            "Microsoft.Web/sites/functions/read"
+                        ],
+                        "notActions": [],
+                        "dataActions": [
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/delete",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/write",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/move/action",
+                            "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/add/action"
+                        ],
+                        "notDataActions": []
+                    }
+                ],
+                "roleName": "[variables('functionRoleName')]"
+            }
+        },
+        {
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "apiVersion": "2023-01-31",
+            "name": "[variables('userAssignedIdentityName')]",
+            "location": "[parameters('location')]"
+        },
+        {
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2022-04-01",
+            "name": "[variables('roleAssignmentName')]",            
+            "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionName'))]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName')), '2023-01-31').principalId]",
+                "scope": "[resourceGroup().id]",
+                "principalType": "ServicePrincipal"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName'))]",
+                "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionName'))]"
+            ]
+        },
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-09-01",
@@ -103,7 +169,54 @@
             "sku": {
                 "name": "Standard_LRS"
             },
-            "kind": "StorageV2"
+            "kind": "StorageV2",
+            "properties": {
+                "accessTier": "Hot"
+            }
+        },        
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2022-05-01",
+            "name": "[format('{0}/default/{1}', variables('storageAccountName'), variables('containerName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Resources/deploymentScripts",
+            "apiVersion": "2020-10-01",
+            "name": "[variables('copyPackageScriptName')]",
+            "location": "[parameters('location')]",
+            "kind": "AzurePowerShell",
+            "properties": {
+                "azPowerShellVersion": "8.0",
+                "environmentVariables": [
+                    {
+                        "name": "storageAccountKey",
+                        "secureValue": "[format('{0}', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-01-01').keys[0].value)]"
+                    },
+                    {
+                        "name": "storageAccountName",
+                        "value": "[variables('storageAccountName')]"
+                    },
+                    {
+                        "name": "containerName",
+                        "value": "[variables('containerName')]"
+                    },
+                    {
+                        "name": "packageZipUri",
+                        "value": "[variables('packageZipUri')]"
+                    },
+                    {
+                        "name": "packageName",
+                        "value": "[variables('packageName')]"
+                    }
+                ],
+            "scriptContent": "[variables('deploymentScript')]",
+            "timeout": "PT4H",
+            "cleanupPreference": "OnSuccess",
+            "retentionInterval": "P1D"
+            }
         },
         {
             "type": "Microsoft.Insights/components",
@@ -140,6 +253,12 @@
             "name": "[variables('functionAppName')]",
             "location": "[parameters('location')]",
             "kind": "functionapp,linux",
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName'))]": {}
+                }
+            },
             "properties": {
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
                 "reserved": true,
@@ -171,10 +290,18 @@
                         {
                             "name": "WEBSITE_CONTENTSHARE",
                             "value": "[toLower(variables('functionAppName'))]"
+                        },                        
+                        {
+                            "name": "USER_ASSIGNED_ENTITY_CLIENT_ID",
+                            "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName')), '2023-01-31').clientId]"
+                        },
+                        {
+                            "name": "WEBSITE_RUN_FROM_PACKAGE_BLOB_MI_RESOURCE_ID",
+                            "value": "[format('{0}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{1}', resourceGroup().id, variables('userAssignedIdentityName'))]"                            
                         },
                         {
                             "name": "WEBSITE_RUN_FROM_PACKAGE",
-                            "value": "https://github.com/fingerprintjs/fingerprint-pro-azure-integration/releases/latest/download/package.zip"
+                            "value": "[format('https://{0}.blob.core.windows.net/{1}/{2}', variables('storageAccountName'), variables('containerName'), variables('packageName'))]"
                         },
                         {
                             "name": "fpjs_route_prefix",
@@ -194,11 +321,11 @@
                         },
                         {
                             "name": "RESOURCE_GROUP_NAME",
-                            "value": "resourceGroup().id"
+                            "value": "[resourceGroup().name]"
                         },
                         {
                             "name": "AZURE_SUBSCRIPTION_ID",
-                            "value": "subscription().subscriptionId"
+                            "value": "[subscription().subscriptionId]"
                         },
                         {
                             "name": "APP_NAME",
@@ -211,7 +338,9 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Insights/components', variables('appInsightsName'))]",
                 "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+                "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionName'))]",
+                "[resourceId('Microsoft.Resources/deploymentScripts', variables('copyPackageScriptName'))]"
             ]
         }
     ],

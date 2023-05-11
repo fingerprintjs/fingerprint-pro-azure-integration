@@ -1,4 +1,4 @@
-import { CustomerVariableValue } from '../proxy/customer-variables/types'
+import { CustomerVariableValue } from './customer-variables/types'
 
 export enum StatusFormat {
   HTML = 'html',
