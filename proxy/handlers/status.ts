@@ -1,7 +1,7 @@
 import { HttpRequest } from '@azure/functions'
-import { CustomerVariables } from '../customer-variables/CustomerVariables'
-import { maybeObfuscateVariable } from '../customer-variables/maybeObfuscateVariable'
-import { CustomerVariableType } from '../customer-variables/types'
+import { CustomerVariables } from '../../shared/customer-variables/CustomerVariables'
+import { maybeObfuscateVariable } from '../../shared/customer-variables/maybeObfuscateVariable'
+import { CustomerVariableType } from '../../shared/customer-variables/types'
 import { HttpResponseSimple } from '@azure/functions/types/http'
 import { EnvVarInfo, StatusFormat, StatusInfo } from '../../shared/status'
 

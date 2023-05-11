@@ -1,4 +1,4 @@
-import { removeTrailingSlashes } from './routing'
+import { removeTrailingSlashes } from '../../shared/routing'
 
 describe('removeTrailingSlashes', () => {
   it('returns /path for /path', () => {

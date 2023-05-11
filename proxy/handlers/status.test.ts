@@ -1,6 +1,6 @@
-import { CustomerVariables } from '../customer-variables/CustomerVariables'
-import { CustomerVariableType } from '../customer-variables/types'
-import { EnvCustomerVariables } from '../customer-variables/EnvCustomerVariables'
+import { CustomerVariables } from '../../shared/customer-variables/CustomerVariables'
+import { CustomerVariableType } from '../../shared/customer-variables/types'
+import { EnvCustomerVariables } from '../../shared/customer-variables/EnvCustomerVariables'
 import { handleStatus } from './status'
 import { HttpRequest, Form, FormPart } from '@azure/functions'
 
