@@ -28,7 +28,7 @@ export async function getUpdatedDeployTemplate(functionUrl: string) {
    * },
    * We have to overwrite it, in order to use function built locally in the infrastructure
    * */
-  deployConfig.resources[3].properties.siteConfig.appSettings[6].value = functionUrl
+  deployConfig.resources[8].properties.siteConfig.appSettings[8].value = functionUrl
 
   return deployConfig
 }

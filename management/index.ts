@@ -1,6 +1,6 @@
 import { AzureFunction, Context, Timer } from '@azure/functions'
 import { WebSiteManagementClient } from '@azure/arm-appservice'
-import { DefaultAzureCredential } from '@azure/identity'
+import { ManagedIdentityCredential } from '@azure/identity'
 import * as storageBlob from '@azure/storage-blob'
 import { BlobSASPermissions, StorageSharedKeyCredential } from '@azure/storage-blob'
 import { StorageManagementClient } from '@azure/arm-storage'
@@ -8,7 +8,7 @@ import { getLatestFunctionZip } from './github'
 import { gatherEnvs } from './env'
 import { getSiteStatusUrl } from './site'
 import { performHealthCheckAfterUpdate } from './healthCheck'
-import { WEBSITE_RUN_FROM_PACKAGE } from './settings'
+import { WEBSITE_RUN_FROM_PACKAGE, USER_ASSIGNED_ENTITY_CLIENT_ID } from './settings'
 import { config } from './config'
 
 const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
@@ -35,7 +35,11 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
   context.log.verbose('latestFunction', latestFunction)
 
   try {
-    const credentials = new DefaultAzureCredential()
+    const clientId = process.env[USER_ASSIGNED_ENTITY_CLIENT_ID]
+    const credentials = new ManagedIdentityCredential({
+      clientId: clientId,
+    })
+    context.log.info('Got client id', clientId)
 
     const storageArmClient = new StorageManagementClient(credentials, subscriptionId)
     const client = new WebSiteManagementClient(credentials, subscriptionId)
@@ -43,6 +47,7 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
       client.webApps.listApplicationSettings(resourceGroupName, appName),
       getSiteStatusUrl(client, resourceGroupName, appName, context.log),
     ])
+
     const oldFunctionZipUrl = settings.properties?.[WEBSITE_RUN_FROM_PACKAGE]
 
     if (oldFunctionZipUrl) {
