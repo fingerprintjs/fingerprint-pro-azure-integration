@@ -37,7 +37,7 @@
     "@azure/arm-frontdoor": "^5.1.0",
     "@playwright/test": "^1.32.3",
     "@rollup/plugin-commonjs": "^24.0.0",
-    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-replace": "^5.0.1",
     "@types/jest": "^29.4.1",
