@@ -27,7 +27,7 @@ For proposing changes, use the standard [pull request approach](https://docs.git
     ```shell
     func azure functionapp publish <AppFunctionName>
     ```
-    where `<AppFunctionName> is a Azure Function App name in the Azure account.
+    where `<AppFunctionName>` is a Azure Function App name in the Azure account.
 
 
 You can invoke the function from your local environment using the [start command](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cmacos%2Ccsharp%2Cportal%2Cbash#start) in Azure Functions Core Tools.
