@@ -7,6 +7,11 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: NodeTool@0
+  inputs:
+    versionSource: 'spec'
+    versionSpec: '20.x'
+    checkLatest: true
 - script: yarn install && npx playwright install
   displayName: 'Install dependencies'
 - script: yarn build && yarn build:example-website
