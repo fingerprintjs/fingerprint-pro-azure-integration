@@ -17,7 +17,7 @@ steps:
     VITE_SCRIPT_URL_PATTERN: $(VITE_SCRIPT_URL_PATTERN)
     FPCDN: fpcdn.io
     INGRESS_API: api.fpjs.io
-    NODE_OPTIONS: "--max_old_space_size=4096"
+    NODE_OPTIONS: "--max_old_space_size=8000"
 
 - script: |
     cd dist
