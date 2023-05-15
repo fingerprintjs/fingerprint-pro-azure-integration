@@ -21,7 +21,9 @@ For proposing changes, use the standard [pull request approach](https://docs.git
 
 2. Install the [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cmacos%2Ccsharp%2Cportal%2Cbash#install-the-azure-functions-core-tools).
 
-3. Run
+3. Build the project.
+
+4. Go to `dist` directory and run
     ```shell
     func azure functionapp publish <AppFunctionName>
     ```
@@ -29,6 +31,12 @@ For proposing changes, use the standard [pull request approach](https://docs.git
 
 
 You can invoke the function from your local environment using the [start command](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cmacos%2Ccsharp%2Cportal%2Cbash#start) in Azure Functions Core Tools.
+
+
+### How to run function locally
+
+* You can run and debug the function locally via [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-develop-local). The project has a command `yarn start` to do that.
+* [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio) could be used to emulate Azure Storage account. The project's command is `yarn emulate-storage`. 
 
 
 ### Code style
