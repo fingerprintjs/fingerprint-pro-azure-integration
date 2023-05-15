@@ -33,7 +33,7 @@ For proposing changes, use the standard [pull request approach](https://docs.git
 You can invoke the function from your local environment using the [start command](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=v4%2Cmacos%2Ccsharp%2Cportal%2Cbash#start) in Azure Functions Core Tools.
 
 
-### How to run function locally
+### How to run the function locally
 
 * Run `yarn start` to run and debug the function locally via [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-develop-local).
 * You can run `yarn emulate-storage` to locally emulate your Azure Storage account using [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio). 
