@@ -18,6 +18,7 @@ steps:
     FPCDN: fpcdn.io
     INGRESS_API: api.fpjs.io
     NODE_OPTIONS: "--max_old_space_size=8000"
+    IS_RELEASE_BUILD: true
 
 - script: |
     cd dist
