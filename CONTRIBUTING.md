@@ -57,4 +57,4 @@ You are required to follow [conventional commits](https://www.conventionalcommit
 
 ### How to release a new version
 
-The workflow `release.yml` is responsible for releasing a new version. It has to be run on `develop` branch, and at the end it will create a release and a PR to `main` branch.
+The workflow `release.yml` is responsible for releasing a new version. It has to be run on the `develop` branch, and at the end, it will create a release and a PR to the `main` branch.
