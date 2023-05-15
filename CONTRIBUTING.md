@@ -23,7 +23,7 @@ For proposing changes, use the standard [pull request approach](https://docs.git
 
 3. Build the project.
 
-4. Go to `dist` directory and run
+4. Go to the `dist` directory and run
     ```shell
     func azure functionapp publish <AppFunctionName>
     ```
