@@ -36,7 +36,7 @@ You can invoke the function from your local environment using the [start command
 ### How to run function locally
 
 * You can run and debug the function locally via [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-develop-local). The project has a command `yarn start` to do that.
-* [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio) could be used to emulate Azure Storage account. The project's command is `yarn emulate-storage`. 
+* You can run `yarn emulate-storage` to locally emulate your Azure Storage account using [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio). 
 
 
 ### Code style
