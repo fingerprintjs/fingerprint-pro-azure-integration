@@ -22,15 +22,24 @@
 
 # Fingerprint Pro Azure Integration
 
-> **Warning**
-> 
-> This project is a **work in progress** and not available for public usage. For more information, reach out to [support@fingerprint.com](mailto:support@fingerprint.com).
-
 [![Deploy To Azure](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
 [![Visualize](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/visualizebutton.svg?sanitize=true)](http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
+  
+Fingerprint Pro CloudFront Integration is responsible for:
 
+* Proxying download requests of the latest Fingerprint Pro JS Agent between your site and Fingerprint CDN.
+* Proxying identification requests and responses between your site and Fingerprint Pro API.
+  
+This [improves](https://dev.fingerprint.com/docs/azure-proxy-integration#the-benefits-of-using-the-azure-integration) both accurancy and reliability of visitor identification and bot detection on your site.
 
-Fingerprint Pro Azure Integration is responsible for proxying identification and agent-download requests that are performed on your Azure infrastructure.
+## Setup
+
+To set up the Azure integration, you need to:
+  
+1. Create the required resources in your Azure infrastructure - a deployment template is available.
+2. Configure the Fingerprint Pro JS Agent on your site to communicate with your created Azure function using the [endpoint](https://dev.fingerprint.com/docs/js-agent#endpoint) parameter.
+
+See [Azure Proxy Integration guide](https://dev.fingerprint.com/docs/azure-proxy-integration) in our documentation for step-by-step instructions. If you have any questions, reach out to our [support team](https://fingerprint.com/support/). 
 
 ## License
 This project is licensed under the MIT license. See the [LICENSE](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/blob/main/LICENSE) file for more info.
