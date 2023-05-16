@@ -25,7 +25,7 @@
 [![Deploy To Azure](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
 [![Visualize](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/visualizebutton.svg?sanitize=true)](http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
   
-Fingerprint Pro CloudFront Integration is responsible for:
+Fingerprint Pro Azure Integration is responsible for:
 
 * Proxying download requests of the latest Fingerprint Pro JS Agent between your site and Fingerprint CDN.
 * Proxying identification requests and responses between your site and Fingerprint Pro API.
