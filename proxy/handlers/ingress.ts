@@ -11,17 +11,19 @@ export interface HandleIngressParams {
   httpRequest: HttpRequest
   logger: Logger
   preSharedSecret?: string
+  suffix?: string
 }
 
 export function handleIngress({
   httpRequest,
   logger,
   preSharedSecret,
+  suffix,
 }: HandleIngressParams): Promise<HttpResponseSimple> {
   const { region = 'us' } = httpRequest.query
 
   const domain = getEffectiveTLDPlusOne(getHost(httpRequest))
-  const url = new URL(getIngressAPIHost(region))
+  const url = new URL(getIngressAPIHost(region) + suffix)
 
   Object.entries(httpRequest.query).forEach(([key, value]) => {
     url.searchParams.append(key, value)
