@@ -34,6 +34,10 @@ const proxy: AzureFunction = async (context: Context, req: HttpRequest): Promise
 
   const path = removeTrailingSlashes(restOfPath)
 
+  const resultUri = await getResultUri(customerVariables)
+  const resultUriRegex = new RegExp(`^${resultUri}(/.*)?$`)
+  const resultPathMatches = path.match(resultUriRegex)
+
   const get404 = () =>
     ({
       status: 404,
@@ -45,13 +49,18 @@ const proxy: AzureFunction = async (context: Context, req: HttpRequest): Promise
 
   if (path === (await getAgentDownloadUri(customerVariables))) {
     context.res = await downloadAgent({ httpRequest: req, logger: context.log, path })
-  } else if (path === (await getResultUri(customerVariables))) {
+  } else if (resultPathMatches?.length) {
+    let suffix = ''
+    if (resultPathMatches && resultPathMatches.length >= 1) {
+      suffix = resultPathMatches[1] ?? ''
+    }
     context.res = await handleIngress({
       httpRequest: req,
       logger: context.log,
       preSharedSecret: await customerVariables
         .getVariable(CustomerVariableType.PreSharedSecret)
         .then((v) => v.value ?? undefined),
+      suffix,
     })
   } else if (path === (await getStatusUri(customerVariables))) {
     context.res = await handleStatus({
