@@ -6,7 +6,6 @@ import { HttpResponseSimple } from '@azure/functions/types/http'
 import { generateErrorResponse } from '../utils/errorResponse'
 import { getEffectiveTLDPlusOne } from '../domain/tld'
 import { addTrafficMonitoringSearchParamsForVisitorIdRequest } from '../utils/traffic'
-import { Buffer } from 'buffer'
 
 export interface HandleIngressParams {
   httpRequest: HttpRequest
