@@ -1,5 +1,11 @@
 import { HttpRequest } from '@azure/functions'
-import { filterRequestHeaders, getHost, prepareHeadersForIngressAPI, updateResponseHeaders } from './headers'
+import {
+  filterRequestHeaders,
+  getHost,
+  prepareHeadersForIngressAPI,
+  updateResponseHeaders,
+  updateResponseHeadersForAgentDownload,
+} from './headers'
 import { IncomingHttpHeaders } from 'http'
 
 const mockReq = {
@@ -72,7 +78,7 @@ describe('updateResponseHeaders', () => {
     expect(resultHeaders.hasOwnProperty('custom-header-1')).toBe(true)
     expect(resultHeaders.hasOwnProperty('content-length')).toBe(true)
     expect(resultHeaders.hasOwnProperty('x-edge-xxx')).toBe(false)
-    expect(resultHeaders['cache-control']).toBe('public, max-age=3600, s-maxage=60')
+    expect(resultHeaders['cache-control']).toBe('public, max-age=40000, s-maxage=40000')
     expect(resultHeaders['set-cookie']).toBe('_iidf; HttpOnly; Domain=fpjs.sh')
     expect(resultHeaders.hasOwnProperty('strict-transport-security')).toBe(false)
   })
@@ -94,6 +100,60 @@ describe('updateResponseHeaders', () => {
     }
 
     const resultHeaders = updateResponseHeaders(headers, 'fpjs.sh')
+
+    expect(resultHeaders.hasOwnProperty('custom-header-1')).toBe(true)
+    expect(resultHeaders.hasOwnProperty('content-length')).toBe(true)
+    expect(resultHeaders['cache-control']).toBe('no-cache')
+    expect(resultHeaders['set-cookie']).toBe('_iidf; HttpOnly; Domain=fpjs.sh')
+  })
+})
+
+describe('updateResponseHeadersForAgentDownload', () => {
+  it('correctly updates response headers', () => {
+    const headers: IncomingHttpHeaders = {
+      'access-control-allow-credentials': 'true',
+      'access-control-allow-origin': 'true',
+      'access-control-expose-headers': 'true',
+      'cache-control': 'public, max-age=40000, s-maxage=40000',
+      'content-encoding': 'br',
+      'content-length': '73892',
+      'content-type': 'application/json',
+      'cross-origin-resource-policy': 'cross-origin',
+      etag: 'dskjhfadsjk',
+      'set-cookie': ['_iidf', 'HttpOnly', 'Domain=azure.net'],
+      vary: 'Accept-Encoding',
+      'custom-header-1': 'gdfddfd',
+      'x-edge-xxx': 'ery8u',
+      'strict-transport-security': 'max-age=1000',
+    }
+
+    const resultHeaders = updateResponseHeadersForAgentDownload(headers, 'fpjs.sh')
+
+    expect(resultHeaders.hasOwnProperty('custom-header-1')).toBe(true)
+    expect(resultHeaders.hasOwnProperty('content-length')).toBe(true)
+    expect(resultHeaders.hasOwnProperty('x-edge-xxx')).toBe(false)
+    expect(resultHeaders['cache-control']).toBe('public, max-age=3600, s-maxage=60')
+    expect(resultHeaders['set-cookie']).toBe('_iidf; HttpOnly; Domain=fpjs.sh')
+    expect(resultHeaders.hasOwnProperty('strict-transport-security')).toBe(false)
+  })
+
+  it('updates cache policy', () => {
+    const headers: IncomingHttpHeaders = {
+      'access-control-allow-credentials': 'true',
+      'access-control-allow-origin': 'true',
+      'access-control-expose-headers': 'true',
+      'cache-control': 'no-cache',
+      'content-encoding': 'br',
+      'content-length': '73892',
+      'content-type': 'application/json',
+      'cross-origin-resource-policy': 'cross-origin',
+      etag: 'dskjhfadsjk',
+      'set-cookie': ['_iidf', 'HttpOnly', 'Domain=azure.net'],
+      vary: 'Accept-Encoding',
+      'custom-header-1': 'gdfddfd',
+    }
+
+    const resultHeaders = updateResponseHeadersForAgentDownload(headers, 'fpjs.sh')
 
     expect(resultHeaders.hasOwnProperty('custom-header-1')).toBe(true)
     expect(resultHeaders.hasOwnProperty('content-length')).toBe(true)

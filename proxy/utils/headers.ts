@@ -34,7 +34,14 @@ export function filterRequestHeaders(headers: HttpRequestHeaders) {
   }, {})
 }
 
-export function updateResponseHeaders(headers: http.IncomingHttpHeaders, domain: string): HttpResponseHeaders {
+export const updateResponseHeadersForAgentDownload = (headers: http.IncomingHttpHeaders, domain: string) =>
+  updateResponseHeaders(headers, domain, true)
+
+export function updateResponseHeaders(
+  headers: http.IncomingHttpHeaders,
+  domain: string,
+  overrideCacheControl = false,
+): HttpResponseHeaders {
   const result: HttpResponseHeaders = {}
 
   for (const [key, value] of Object.entries(headers)) {
@@ -50,7 +57,11 @@ export function updateResponseHeaders(headers: http.IncomingHttpHeaders, domain:
       }
 
       case CACHE_CONTROL_HEADER_NAME: {
-        result[CACHE_CONTROL_HEADER_NAME] = updateCacheControlHeader(value.toString())
+        if (overrideCacheControl) {
+          result[CACHE_CONTROL_HEADER_NAME] = updateCacheControlHeader(value.toString())
+        } else {
+          result[key] = value.toString()
+        }
 
         break
       }
