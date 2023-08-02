@@ -108,7 +108,7 @@ const mockContext = (req: HttpRequest): Context => {
 
 describe('Result Endpoint', function () {
   const origin: string = 'https://__ingress_api__'
-  const queryString: string = '?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress'
+  const search: string = '?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress'
 
   beforeAll(() => {
     jest.spyOn(ingress, 'handleIngress')
@@ -124,7 +124,11 @@ describe('Result Endpoint', function () {
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
-      new URL(`${origin}/${queryString}`),
+      expect.objectContaining({
+        origin,
+        pathname: '/',
+        search,
+      }),
       expect.anything(),
       expect.anything(),
     )
@@ -135,7 +139,11 @@ describe('Result Endpoint', function () {
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
-      new URL(`${origin}/with/suffix${queryString}`),
+      expect.objectContaining({
+        origin,
+        pathname: '/with/suffix',
+        search,
+      }),
       expect.anything(),
       expect.anything(),
     )
@@ -153,7 +161,11 @@ describe('Result Endpoint', function () {
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
-      new URL(`${origin}/${queryString}`),
+      expect.objectContaining({
+        origin,
+        pathname: '/',
+        search,
+      }),
       expect.anything(),
       expect.anything(),
     )
@@ -164,7 +176,11 @@ describe('Result Endpoint', function () {
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
-      new URL(`${origin}/with/suffix${queryString}`),
+      expect.objectContaining({
+        origin,
+        pathname: '/with/suffix',
+        search,
+      }),
       expect.anything(),
       expect.anything(),
     )
