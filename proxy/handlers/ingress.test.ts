@@ -12,6 +12,7 @@ import {
 import proxy from '../index'
 import * as ingress from './ingress'
 import https from 'https'
+import { ClientRequest } from 'http'
 
 const fp: FormPart = {
   value: Buffer.from(''),
@@ -107,12 +108,17 @@ const mockContext = (req: HttpRequest): Context => {
 }
 
 describe('Result Endpoint', function () {
+  let requestSpy: jest.MockInstance<ClientRequest, any>
   const origin: string = 'https://__ingress_api__'
   const search: string = '?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress'
 
   beforeAll(() => {
     jest.spyOn(ingress, 'handleIngress')
-    jest.spyOn(https, 'request')
+    requestSpy = jest.spyOn(https, 'request')
+  })
+
+  beforeEach(() => {
+    requestSpy.mockReset()
   })
 
   afterEach(() => {
@@ -132,6 +138,11 @@ describe('Result Endpoint', function () {
       expect.anything(),
       expect.anything(),
     )
+    expect(https.request).toHaveBeenCalledTimes(1)
+    requestSpy.mockImplementation((_url) => {
+      expect(_url).toBe(`${origin}${search}`)
+      return new ClientRequest(_url)
+    })
   }, 30000)
 
   test('HTTP GET with suffix', async () => {
@@ -147,6 +158,11 @@ describe('Result Endpoint', function () {
       expect.anything(),
       expect.anything(),
     )
+    expect(https.request).toHaveBeenCalledTimes(1)
+    requestSpy.mockImplementationOnce((_url) => {
+      expect(_url).toBe(`${origin}/with/suffix${search}`)
+      return new ClientRequest(_url)
+    })
   }, 30000)
 
   test('HTTP GET with bad suffix', async () => {
@@ -169,6 +185,11 @@ describe('Result Endpoint', function () {
       expect.anything(),
       expect.anything(),
     )
+    expect(https.request).toHaveBeenCalledTimes(1)
+    requestSpy.mockImplementationOnce((_url) => {
+      expect(_url).toBe(`${origin}${search}`)
+      return new ClientRequest(_url)
+    })
   }, 30000)
 
   test('HTTP POST with suffix', async () => {
@@ -184,6 +205,11 @@ describe('Result Endpoint', function () {
       expect.anything(),
       expect.anything(),
     )
+    expect(https.request).toHaveBeenCalledTimes(1)
+    requestSpy.mockImplementationOnce((_url) => {
+      expect(_url).toBe(`${origin}/with/suffix${search}`)
+      return new ClientRequest(_url)
+    })
   }, 30000)
 
   test('HTTP POST with bad suffix', async () => {
