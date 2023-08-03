@@ -127,6 +127,10 @@ describe('Result Endpoint', function () {
 
   test('HTTP GET without suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    requestSpy.mockImplementationOnce((_url) => {
+      expect(_url.toString()).toBe(`${origin}/${search}`)
+      return Reflect.construct(ClientRequest, _url)
+    })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
@@ -139,14 +143,14 @@ describe('Result Endpoint', function () {
       expect.anything(),
     )
     expect(https.request).toHaveBeenCalledTimes(1)
-    requestSpy.mockImplementation((_url) => {
-      expect(_url).toBe(`${origin}${search}`)
-      return new ClientRequest(_url)
-    })
   }, 30000)
 
   test('HTTP GET with suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/with/suffix')
+    requestSpy.mockImplementationOnce((_url) => {
+      expect(_url.toString()).toBe(`${origin}/with/suffix${search}`)
+      return Reflect.construct(ClientRequest, _url)
+    })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
@@ -174,6 +178,10 @@ describe('Result Endpoint', function () {
 
   test('HTTP POST without suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
+    requestSpy.mockImplementationOnce((_url) => {
+      expect(_url.toString()).toBe(`${origin}/${search}`)
+      return Reflect.construct(ClientRequest, _url)
+    })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
@@ -194,6 +202,10 @@ describe('Result Endpoint', function () {
 
   test('HTTP POST with suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
+    requestSpy.mockImplementationOnce((_url) => {
+      expect(_url.toString()).toBe(`${origin}/with/suffix${search}`)
+      return Reflect.construct(ClientRequest, _url)
+    })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
