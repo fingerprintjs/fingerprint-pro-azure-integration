@@ -127,9 +127,9 @@ describe('Result Endpoint', function () {
 
   test('HTTP GET without suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((_url) => {
-      expect(_url.toString()).toBe(`${origin}/${search}`)
-      return Reflect.construct(ClientRequest, _url)
+    requestSpy.mockImplementationOnce((url) => {
+      expect(url.toString()).toBe(`${origin}/${search}`)
+      return Reflect.construct(ClientRequest, url)
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
@@ -147,9 +147,9 @@ describe('Result Endpoint', function () {
 
   test('HTTP GET with suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/with/suffix')
-    requestSpy.mockImplementationOnce((_url) => {
-      expect(_url.toString()).toBe(`${origin}/with/suffix${search}`)
-      return Reflect.construct(ClientRequest, _url)
+    requestSpy.mockImplementationOnce((url) => {
+      expect(url.toString()).toBe(`${origin}/with/suffix${search}`)
+      return Reflect.construct(ClientRequest, url)
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
@@ -174,9 +174,9 @@ describe('Result Endpoint', function () {
 
   test('HTTP POST without suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((_url) => {
-      expect(_url.toString()).toBe(`${origin}/${search}`)
-      return Reflect.construct(ClientRequest, _url)
+    requestSpy.mockImplementationOnce((url) => {
+      expect(url.toString()).toBe(`${origin}/${search}`)
+      return Reflect.construct(ClientRequest, url)
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
@@ -194,9 +194,9 @@ describe('Result Endpoint', function () {
 
   test('HTTP POST with suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
-    requestSpy.mockImplementationOnce((_url) => {
-      expect(_url.toString()).toBe(`${origin}/with/suffix${search}`)
-      return Reflect.construct(ClientRequest, _url)
+    requestSpy.mockImplementationOnce((url) => {
+      expect(url.toString()).toBe(`${origin}/with/suffix${search}`)
+      return Reflect.construct(ClientRequest, url)
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
