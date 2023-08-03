@@ -12,7 +12,8 @@ import {
 import proxy from '../index'
 import * as ingress from './ingress'
 import https from 'https'
-import { ClientRequest } from 'http'
+import { ClientRequest, IncomingMessage } from 'http'
+import { Socket } from 'net'
 
 const fp: FormPart = {
   value: Buffer.from(''),
@@ -218,4 +219,29 @@ describe('Result Endpoint', function () {
     expect(ingress.handleIngress).toHaveBeenCalledTimes(0)
     expect(https.request).toHaveBeenCalledTimes(0)
   }, 30000)
+})
+
+describe('Browser caching endpoint', () => {
+  let requestSpy: jest.MockInstance<ClientRequest, any>
+
+  beforeAll(() => {
+    requestSpy = jest.spyOn(https, 'request')
+  })
+
+  afterAll(() => {
+    requestSpy.mockRestore()
+  })
+
+  test('cache-control header is returned as is', async () => {
+    const cacheControlValue = 'max-age=31536000, immutable, private'
+    const responseStream = new IncomingMessage(new Socket())
+    responseStream.headers['cache-control'] = cacheControlValue
+    requestSpy.mockImplementationOnce((_url, _options, cb) => {
+      cb(responseStream)
+      return Reflect.construct(ClientRequest, [_url, _options, cb])
+    })
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
+    const response = await proxy(mockContext(req), req)
+    expect(response?.headers?.['cache-control']?.[0]?.['value']).toBe(cacheControlValue)
+  })
 })
