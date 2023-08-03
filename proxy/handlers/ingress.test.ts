@@ -163,10 +163,6 @@ describe('Result Endpoint', function () {
       expect.anything(),
     )
     expect(https.request).toHaveBeenCalledTimes(1)
-    requestSpy.mockImplementationOnce((_url) => {
-      expect(_url).toBe(`${origin}/with/suffix${search}`)
-      return new ClientRequest(_url)
-    })
   }, 30000)
 
   test('HTTP GET with bad suffix', async () => {
@@ -194,10 +190,6 @@ describe('Result Endpoint', function () {
       expect.anything(),
     )
     expect(https.request).toHaveBeenCalledTimes(1)
-    requestSpy.mockImplementationOnce((_url) => {
-      expect(_url).toBe(`${origin}${search}`)
-      return new ClientRequest(_url)
-    })
   }, 30000)
 
   test('HTTP POST with suffix', async () => {
@@ -218,10 +210,6 @@ describe('Result Endpoint', function () {
       expect.anything(),
     )
     expect(https.request).toHaveBeenCalledTimes(1)
-    requestSpy.mockImplementationOnce((_url) => {
-      expect(_url).toBe(`${origin}/with/suffix${search}`)
-      return new ClientRequest(_url)
-    })
   }, 30000)
 
   test('HTTP POST with bad suffix', async () => {
