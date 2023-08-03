@@ -78,7 +78,9 @@ export function handleIngress({
       })
     })
 
-    request.write(httpRequest.bufferBody)
+    if (httpRequest.bufferBody) {
+      request.write(httpRequest.bufferBody)
+    }
 
     request.end()
   })
