@@ -11,7 +11,7 @@ import {
 } from '@azure/functions'
 import proxy from '../index'
 import * as ingress from './ingress'
-import https from 'https'
+import https, { Agent } from 'https'
 import { ClientRequest } from 'http'
 
 const fp: FormPart = {
@@ -112,6 +112,15 @@ describe('Result Endpoint', function () {
   const origin: string = 'https://__ingress_api__'
   const search: string = '?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress'
 
+  const mockEndpoint = (targetUrl: string) => {
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
+      expect(url.toString()).toBe(targetUrl)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
+    })
+  }
+
   beforeAll(() => {
     jest.spyOn(ingress, 'handleIngress')
     requestSpy = jest.spyOn(https, 'request')
@@ -127,10 +136,7 @@ describe('Result Endpoint', function () {
 
   test('HTTP GET without suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((url) => {
-      expect(url.toString()).toBe(`${origin}/${search}`)
-      return Reflect.construct(ClientRequest, url)
-    })
+    mockEndpoint(`${origin}/${search}`)
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
@@ -147,10 +153,7 @@ describe('Result Endpoint', function () {
 
   test('HTTP GET with suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/with/suffix')
-    requestSpy.mockImplementationOnce((url) => {
-      expect(url.toString()).toBe(`${origin}/with/suffix${search}`)
-      return Reflect.construct(ClientRequest, url)
-    })
+    mockEndpoint(`${origin}/with/suffix${search}`)
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
@@ -174,10 +177,7 @@ describe('Result Endpoint', function () {
 
   test('HTTP POST without suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((url) => {
-      expect(url.toString()).toBe(`${origin}/${search}`)
-      return Reflect.construct(ClientRequest, url)
-    })
+    mockEndpoint(`${origin}/${search}`)
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
@@ -194,10 +194,7 @@ describe('Result Endpoint', function () {
 
   test('HTTP POST with suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
-    requestSpy.mockImplementationOnce((url) => {
-      expect(url.toString()).toBe(`${origin}/with/suffix${search}`)
-      return Reflect.construct(ClientRequest, url)
-    })
+    mockEndpoint(`${origin}/with/suffix${search}`)
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
