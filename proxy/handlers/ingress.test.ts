@@ -11,7 +11,7 @@ import {
 } from '@azure/functions'
 import proxy from '../index'
 import * as ingress from './ingress'
-import https from 'https'
+import https, { Agent } from 'https'
 import { ClientRequest, IncomingMessage } from 'http'
 import { Socket } from 'net'
 
@@ -128,9 +128,11 @@ describe('Result Endpoint', function () {
 
   test('HTTP GET without suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((url) => {
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
       expect(url.toString()).toBe(`${origin}/${search}`)
-      return Reflect.construct(ClientRequest, url)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
@@ -144,13 +146,15 @@ describe('Result Endpoint', function () {
       expect.anything(),
     )
     expect(https.request).toHaveBeenCalledTimes(1)
-  }, 30000)
+  })
 
   test('HTTP GET with suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/with/suffix')
-    requestSpy.mockImplementationOnce((url) => {
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
       expect(url.toString()).toBe(`${origin}/with/suffix${search}`)
-      return Reflect.construct(ClientRequest, url)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
@@ -164,20 +168,22 @@ describe('Result Endpoint', function () {
       expect.anything(),
     )
     expect(https.request).toHaveBeenCalledTimes(1)
-  }, 30000)
+  })
 
   test('HTTP GET with bad suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(0)
     expect(https.request).toHaveBeenCalledTimes(0)
-  }, 30000)
+  })
 
   test('HTTP POST without suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((url) => {
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
       expect(url.toString()).toBe(`${origin}/${search}`)
-      return Reflect.construct(ClientRequest, url)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
@@ -191,13 +197,15 @@ describe('Result Endpoint', function () {
       expect.anything(),
     )
     expect(https.request).toHaveBeenCalledTimes(1)
-  }, 30000)
+  })
 
   test('HTTP POST with suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
-    requestSpy.mockImplementationOnce((url) => {
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
       expect(url.toString()).toBe(`${origin}/with/suffix${search}`)
-      return Reflect.construct(ClientRequest, url)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
@@ -211,14 +219,14 @@ describe('Result Endpoint', function () {
       expect.anything(),
     )
     expect(https.request).toHaveBeenCalledTimes(1)
-  }, 30000)
+  })
 
   test('HTTP POST with bad suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(0)
     expect(https.request).toHaveBeenCalledTimes(0)
-  }, 30000)
+  })
 })
 
 describe('Browser caching endpoint', () => {
@@ -236,9 +244,11 @@ describe('Browser caching endpoint', () => {
     const cacheControlValue = 'max-age=31536000, immutable, private'
     const responseStream = new IncomingMessage(new Socket())
     responseStream.headers['cache-control'] = cacheControlValue
-    requestSpy.mockImplementationOnce((_url, _options, cb) => {
+    requestSpy.mockImplementationOnce((...args) => {
+      const [, options, cb] = args
       cb(responseStream)
-      return Reflect.construct(ClientRequest, [_url, _options, cb])
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
     })
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
     const response = await proxy(mockContext(req), req)
