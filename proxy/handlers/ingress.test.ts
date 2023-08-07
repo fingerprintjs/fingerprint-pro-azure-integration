@@ -242,16 +242,18 @@ describe('Browser caching endpoint', () => {
 
   test('cache-control header is returned as is', async () => {
     const cacheControlValue = 'max-age=31536000, immutable, private'
-    const responseStream = new IncomingMessage(new Socket())
-    responseStream.headers['cache-control'] = cacheControlValue
     requestSpy.mockImplementationOnce((...args) => {
       const [, options, cb] = args
-      cb(responseStream)
       options.agent = new Agent()
+      const responseStream = new IncomingMessage(new Socket())
+      cb(responseStream)
+      responseStream.headers['cache-control'] = cacheControlValue
+      responseStream.emit('end')
       return Reflect.construct(ClientRequest, args)
     })
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
-    const response = await proxy(mockContext(req), req)
-    expect(response?.headers?.['cache-control']?.[0]?.['value']).toBe(cacheControlValue)
+    const context = mockContext(req)
+    await proxy(context, req)
+    expect(context.res?.headers?.['cache-control']).toBe(cacheControlValue)
   })
 })
