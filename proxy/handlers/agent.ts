@@ -1,7 +1,7 @@
 import { HttpRequest, Logger } from '@azure/functions'
 import { config } from '../utils/config'
 import * as https from 'https'
-import { filterRequestHeaders, updateResponseHeaders } from '../utils/headers'
+import { filterRequestHeaders, updateResponseHeadersForAgentDownload } from '../utils/headers'
 import { HttpResponseSimple } from '@azure/functions/types/http'
 import { addTrafficMonitoringSearchParamsForProCDN } from '../utils/traffic'
 import { IntegrationError } from '../errors/IntegrationError'
@@ -57,7 +57,7 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
 
         response.on('end', () => {
           const body = Buffer.concat(data)
-          const responseHeaders = updateResponseHeaders(response.headers, domain)
+          const responseHeaders = updateResponseHeadersForAgentDownload(response.headers, domain)
 
           resolve({
             status: response.statusCode ?? 500,
