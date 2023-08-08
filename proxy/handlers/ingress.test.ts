@@ -11,7 +11,9 @@ import {
 } from '@azure/functions'
 import proxy from '../index'
 import * as ingress from './ingress'
-import https from 'https'
+import https, { Agent } from 'https'
+import { ClientRequest, IncomingMessage } from 'http'
+import { Socket } from 'net'
 
 const fp: FormPart = {
   value: Buffer.from(''),
@@ -24,9 +26,37 @@ const form: Form = {
   *[Symbol.iterator]() {},
 }
 
-const mockRequest = (url: string, uri: string): HttpRequest => {
+const mockRequestGet = (url: string, uri: string): HttpRequest => {
   return {
     method: 'GET',
+    url: url, // 'https://fp.domain.com'
+    headers: {
+      'content-type': 'application/json',
+      'content-length': '24354',
+      host: 'fpjs.sh',
+      'transfer-encoding': 'br',
+      via: 'azure.com',
+      cookie: '_iidt=7A03Gwg; _vid_t=gEFRuIQlzYmv692/UL4GLA==',
+      'x-custom-header': 'value123899',
+      'x-edge-qqq': 'x-edge-qqq',
+      'strict-transport-security': 'max-age=600',
+      'x-azure-requestchain': 'hops=1',
+      'x-azure-socketip': '46.204.4.119',
+      'x-forwarded-for': '127.0.0.1',
+    },
+    query: {},
+    params: {
+      restOfPath: uri,
+    },
+    user: null,
+    get: (x) => x,
+    parseFormBody: () => form,
+  }
+}
+
+const mockRequestPost = (url: string, uri: string): HttpRequest => {
+  return {
+    method: 'POST',
     url: url, // 'https://fp.domain.com'
     headers: {
       'content-type': 'application/json',
@@ -79,44 +109,151 @@ const mockContext = (req: HttpRequest): Context => {
 }
 
 describe('Result Endpoint', function () {
+  let requestSpy: jest.MockInstance<ClientRequest, any>
   const origin: string = 'https://__ingress_api__'
-  const queryString: string = '?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress'
+  const search: string = '?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress'
 
   beforeAll(() => {
     jest.spyOn(ingress, 'handleIngress')
-    jest.spyOn(https, 'request')
+    requestSpy = jest.spyOn(https, 'request')
+  })
+
+  beforeEach(() => {
+    requestSpy.mockReset()
   })
 
   afterEach(() => {
     jest.clearAllMocks()
   })
 
-  test('Call without suffix', async () => {
-    const req = mockRequest('https://fp.domain.com', 'fpjs/resultId')
+  test('HTTP GET without suffix', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
+      expect(url.toString()).toBe(`${origin}/${search}`)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
+    })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
-      new URL(`${origin}/${queryString}`),
+      expect.objectContaining({
+        origin,
+        pathname: '/',
+        search,
+      }),
       expect.anything(),
       expect.anything(),
     )
-  }, 30000)
+    expect(https.request).toHaveBeenCalledTimes(1)
+  })
 
-  test('Call with suffix', async () => {
-    const req = mockRequest('https://fp.domain.com', 'fpjs/resultId/with/suffix')
+  test('HTTP GET with suffix', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/with/suffix')
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
+      expect(url.toString()).toBe(`${origin}/with/suffix${search}`)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
+    })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
-      new URL(`${origin}/with/suffix${queryString}`),
+      expect.objectContaining({
+        origin,
+        pathname: '/with/suffix',
+        search,
+      }),
       expect.anything(),
       expect.anything(),
     )
-  }, 30000)
+    expect(https.request).toHaveBeenCalledTimes(1)
+  })
 
-  test('Call with bad suffix', async () => {
-    const req = mockRequest('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
+  test('HTTP GET with bad suffix', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(0)
     expect(https.request).toHaveBeenCalledTimes(0)
-  }, 30000)
+  })
+
+  test('HTTP POST without suffix', async () => {
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
+      expect(url.toString()).toBe(`${origin}/${search}`)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
+    })
+    await proxy(mockContext(req), req)
+    expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
+    expect(https.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        origin,
+        pathname: '/',
+        search,
+      }),
+      expect.anything(),
+      expect.anything(),
+    )
+    expect(https.request).toHaveBeenCalledTimes(1)
+  })
+
+  test('HTTP POST with suffix', async () => {
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
+      expect(url.toString()).toBe(`${origin}/with/suffix${search}`)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
+    })
+    await proxy(mockContext(req), req)
+    expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
+    expect(https.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        origin,
+        pathname: '/with/suffix',
+        search,
+      }),
+      expect.anything(),
+      expect.anything(),
+    )
+    expect(https.request).toHaveBeenCalledTimes(1)
+  })
+
+  test('HTTP POST with bad suffix', async () => {
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
+    await proxy(mockContext(req), req)
+    expect(ingress.handleIngress).toHaveBeenCalledTimes(0)
+    expect(https.request).toHaveBeenCalledTimes(0)
+  })
+})
+
+describe('Browser caching endpoint', () => {
+  let requestSpy: jest.MockInstance<ClientRequest, any>
+
+  beforeAll(() => {
+    requestSpy = jest.spyOn(https, 'request')
+  })
+
+  afterAll(() => {
+    requestSpy.mockRestore()
+  })
+
+  test('cache-control header is returned as is', async () => {
+    const cacheControlValue = 'max-age=31536000, immutable, private'
+    requestSpy.mockImplementationOnce((...args) => {
+      const [, options, cb] = args
+      options.agent = new Agent()
+      const responseStream = new IncomingMessage(new Socket())
+      cb(responseStream)
+      responseStream.headers['cache-control'] = cacheControlValue
+      responseStream.emit('end')
+      return Reflect.construct(ClientRequest, args)
+    })
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
+    const context = mockContext(req)
+    await proxy(context, req)
+    expect(context.res?.headers?.['cache-control']).toBe(cacheControlValue)
+  })
 })
