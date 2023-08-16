@@ -36,7 +36,7 @@
     "@azure/storage-blob": "12.14.0",
     "@fingerprintjs/fingerprintjs-pro": "^3.8.3",
     "cockatiel": "3.1.1",
-    "semver": "7.5.2"
+    "semver": "7.5.4"
   },
   "devDependencies": {
     "@azure/arm-frontdoor": "^5.1.0",
