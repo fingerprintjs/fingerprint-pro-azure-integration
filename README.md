@@ -24,6 +24,8 @@
 
 [![Deploy To Azure](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
 [![Visualize](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/visualizebutton.svg?sanitize=true)](http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
+
+Fingerprint is a device intelligence platform offering 99.5% accurate visitor identification.
   
 Fingerprint Pro Azure Integration is responsible for:
 
@@ -32,7 +34,11 @@ Fingerprint Pro Azure Integration is responsible for:
   
 This [improves](https://dev.fingerprint.com/docs/azure-proxy-integration#the-benefits-of-using-the-azure-integration) both accurancy and reliability of visitor identification and bot detection on your site.
 
-## Setup
+## Requirements
+
+- Azure account
+
+## How to install
 
 To set up the Azure integration, you need to:
   
