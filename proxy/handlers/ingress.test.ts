@@ -14,6 +14,8 @@ import * as ingress from './ingress'
 import https, { Agent } from 'https'
 import { ClientRequest, IncomingMessage } from 'http'
 import { Socket } from 'net'
+import { CustomerVariableType } from '../../shared/customer-variables/types'
+import { EventEmitter } from 'events'
 
 const fp: FormPart = {
   value: Buffer.from(''),
@@ -26,7 +28,7 @@ const form: Form = {
   *[Symbol.iterator]() {},
 }
 
-const mockRequestGet = (url: string, uri: string): HttpRequest => {
+const mockRequestGet = (url: string, uri: string) => {
   return {
     method: 'GET',
     url: url, // 'https://fp.domain.com'
@@ -51,10 +53,10 @@ const mockRequestGet = (url: string, uri: string): HttpRequest => {
     user: null,
     get: (x) => x,
     parseFormBody: () => form,
-  }
+  } satisfies HttpRequest
 }
 
-const mockRequestPost = (url: string, uri: string): HttpRequest => {
+const mockRequestPost = (url: string, uri: string) => {
   return {
     method: 'POST',
     url: url, // 'https://fp.domain.com'
@@ -80,7 +82,7 @@ const mockRequestPost = (url: string, uri: string): HttpRequest => {
     get: (x) => x,
     parseFormBody: () => form,
     bufferBody: Buffer.from(''),
-  }
+  } satisfies HttpRequest
 }
 
 const mockContext = (req: HttpRequest): Context => {
@@ -124,6 +126,236 @@ describe('Result Endpoint', function () {
 
   afterEach(() => {
     jest.clearAllMocks()
+  })
+
+  test('Traffic monitoring', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
+      expect(url.toString()).toBe(`${origin}/${search}`)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
+    })
+    await proxy(mockContext(req), req)
+    expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
+    expect(https.request).toHaveBeenCalledTimes(1)
+
+    const [url] = requestSpy.mock.calls[0]
+    expect(url.searchParams.get('ii')).toBe('fingerprint-pro-azure/__azure_function_version__/ingress')
+  })
+
+  test('With proxy secret', async () => {
+    Object.assign(process.env, {
+      [CustomerVariableType.PreSharedSecret]: 'secret',
+    })
+
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
+      expect(url.toString()).toBe(`${origin}/${search}`)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
+    })
+    await proxy(mockContext(req), req)
+
+    const [, options] = requestSpy.mock.calls[0]
+
+    expect(options.headers['fpjs-proxy-secret']).toBe('secret')
+  })
+
+  test('Cookies should include only _iidt', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    requestSpy.mockImplementationOnce((...args) => {
+      const [url, options] = args
+      expect(url.toString()).toBe(`${origin}/${search}`)
+      options.agent = new Agent()
+      return Reflect.construct(ClientRequest, args)
+    })
+    await proxy(mockContext(req), req)
+
+    const [, options] = requestSpy.mock.calls[0]
+    expect(options.headers.cookie).toBe('_iidt=7A03Gwg')
+  })
+
+  test('Cookies are first party for the req url whose TLD has exception, the domain is derived from the req url (not origin header)', async () => {
+    requestSpy.mockImplementation((_url: any, _options: any, callback): any => {
+      const emitter = new EventEmitter()
+
+      Object.assign(emitter, {
+        statusCode: 200,
+        headers: {
+          'set-cookie': [
+            '_iidt=GlMQaHMfzYvomxCuA7Uymy7ArmjH04jPkT+enN7j/Xk8tJG+UYcQV+Qw60Ry4huw9bmDoO/smyjQp5vLCuSf8t4Jow==; Path=/; Domain=fpjs.io; Expires=Fri, 19 Jan 2024 08:54:36 GMT; HttpOnly; Secure; SameSite=None, anotherCookie=anotherValue; Domain=fpjs.io;',
+          ],
+          origin: ['https://some-other.com'],
+        },
+      })
+
+      callback(emitter)
+
+      emitter.emit('data', Buffer.from('data'))
+
+      emitter.emit('end')
+    })
+
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+
+    req.headers.host = 'city.kawasaki.jp'
+
+    const ctx = mockContext(req)
+
+    await proxy(ctx, req)
+
+    expect(ctx.res?.headers).toEqual({
+      'set-cookie':
+        '_iidt=GlMQaHMfzYvomxCuA7Uymy7ArmjH04jPkT+enN7j/Xk8tJG+UYcQV+Qw60Ry4huw9bmDoO/smyjQp5vLCuSf8t4Jow==; Path=/; Domain=city.kawasaki.jp; Expires=Fri, 19 Jan 2024 08:54:36 GMT; HttpOnly; Secure; SameSite=None, anotherCookie=anotherValue; Domain=city.kawasaki.jp;',
+      origin: 'https://some-other.com',
+    })
+  })
+
+  test('Cookies are first party for the req url whose TLD has wildcard, the domain is derived from the req url (not origin header)', async () => {
+    requestSpy.mockImplementation((_url: any, _options: any, callback): any => {
+      const emitter = new EventEmitter()
+
+      Object.assign(emitter, {
+        statusCode: 200,
+        headers: {
+          'set-cookie': [
+            '_iidt=GlMQaHMfzYvomxCuA7Uymy7ArmjH04jPkT+enN7j/Xk8tJG+UYcQV+Qw60Ry4huw9bmDoO/smyjQp5vLCuSf8t4Jow==; Path=/; Domain=fpjs.io; Expires=Fri, 19 Jan 2024 08:54:36 GMT; HttpOnly; Secure; SameSite=None, anotherCookie=anotherValue; Domain=fpjs.io;',
+          ],
+          origin: ['https://some-other.com'],
+        },
+      })
+
+      callback(emitter)
+
+      emitter.emit('data', Buffer.from('data'))
+
+      emitter.emit('end')
+    })
+
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+
+    req.headers.host = 'sub2.sub1.some.alces.network'
+
+    const ctx = mockContext(req)
+
+    await proxy(ctx, req)
+
+    expect(ctx.res?.headers).toEqual({
+      'set-cookie':
+        '_iidt=GlMQaHMfzYvomxCuA7Uymy7ArmjH04jPkT+enN7j/Xk8tJG+UYcQV+Qw60Ry4huw9bmDoO/smyjQp5vLCuSf8t4Jow==; Path=/; Domain=sub1.some.alces.network; Expires=Fri, 19 Jan 2024 08:54:36 GMT; HttpOnly; Secure; SameSite=None, anotherCookie=anotherValue; Domain=sub1.some.alces.network;',
+      origin: 'https://some-other.com',
+    })
+  })
+
+  test('Request body and headers are not modified, expect strict-transport-security and transfer-encoding', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    const resHeaders = {
+      'access-control-allow-credentials': 'true',
+      'access-control-expose-headers': 'Retry-After',
+      'content-type': 'text/plain',
+      'strict-transport-security': 'max-age=31536000; includeSubDomains',
+      'transfer-encoding': 'chunked',
+    }
+
+    const resBody = 'data'
+    requestSpy.mockImplementationOnce((...args: any[]): any => {
+      const [url, , callback] = args
+      expect(url.toString()).toBe(`${origin}/${search}`)
+
+      const response = new EventEmitter()
+      const request = new EventEmitter()
+
+      Object.assign(request, {
+        end: jest.fn(),
+        write: jest.fn(),
+      })
+
+      Object.assign(response, {
+        headers: resHeaders,
+      })
+
+      callback(response)
+
+      setTimeout(() => {
+        response.emit('data', Buffer.from(resBody, 'utf-8'))
+        response.emit('end')
+      }, 10)
+
+      return request
+    })
+    const ctx = mockContext(req)
+    await proxy(ctx, req)
+
+    expect(ctx.res?.body.toString()).toBe(resBody)
+    expect(ctx.res?.headers).toEqual({
+      'access-control-allow-credentials': 'true',
+      'access-control-expose-headers': 'Retry-After',
+      'content-type': 'text/plain',
+    })
+  })
+
+  test('Request body is not modified on error', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    const resHeaders = {
+      'access-control-allow-credentials': 'true',
+      'access-control-expose-headers': 'Retry-After',
+      'content-type': 'text/plain',
+    }
+
+    const resBody = 'error'
+    requestSpy.mockImplementation((_url: any, _options: any, callback): any => {
+      const emitter = new EventEmitter()
+
+      Object.assign(emitter, {
+        statusCode: 500,
+        headers: resHeaders,
+      })
+
+      callback(emitter)
+
+      emitter.emit('data', Buffer.from('error'))
+
+      emitter.emit('end')
+    })
+    const ctx = mockContext(req)
+    await proxy(ctx, req)
+
+    expect(ctx.res?.body.toString()).toBe(resBody)
+    expect(ctx.res?.headers).toEqual(resHeaders)
+  })
+
+  test('Returns error response on function error', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+
+    requestSpy.mockImplementation((): any => {
+      const emitter = new EventEmitter()
+
+      Object.assign(emitter, {
+        write: jest.fn(),
+        end: jest.fn(),
+      })
+
+      setTimeout(() => {
+        emitter.emit('error', new Error('Request timeout'))
+      }, 1)
+
+      return emitter
+    })
+
+    const ctx = mockContext(req)
+    await proxy(ctx, req)
+
+    expect(JSON.parse(ctx.res?.body)).toEqual({
+      error: {
+        code: 'Failed',
+        message: 'An error occured with Fingerprint Pro Azure function. Reason: Request timeout',
+      },
+      products: {},
+      requestId: expect.any(String),
+      v: '2',
+    })
   })
 
   test('HTTP GET without suffix', async () => {
