@@ -3,9 +3,12 @@
   "version": "1.1.2",
   "license": "MIT",
   "sideEffects": false,
+  "private": true,
   "scripts": {
-    "build": "rimraf dist && rollup -c rollup.config.mjs",
+    "build": "rimraf dist && NODE_OPTIONS=\"--max_old_space_size=4098\" rollup -c rollup.config.mjs",
+    "build:release": "FPDCN=fpcdn.io INGRESS_API=api.fpjs.io IS_RELEASE_BUILD=true yarn build",
     "watch": "yarn build --watch",
+    "prepare": "husky install",
     "postbuild": "cp host.json dist && node scripts/copyLocalSettings.mjs",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore --max-warnings 0 .",
     "lint:fix": "yarn lint --fix",
@@ -32,25 +35,35 @@
     "semver": "7.5.2"
   },
   "devDependencies": {
-    "@actions/core": "^1.10.0",
-    "@actions/github": "^5.1.1",
     "@azure/arm-frontdoor": "^5.1.0",
+    "@commitlint/config-conventional": "^17.0.3",
     "@playwright/test": "^1.32.3",
     "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.0.2",
     "@rollup/plugin-replace": "^5.0.1",
+    "@semantic-release/changelog": "6.0.1",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "10.0.1",
+    "@semantic-release/github": "8.0.4",
+    "@semantic-release/npm": "9.0.1",
     "@types/jest": "^29.5.1",
     "@types/node": "^16.x",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.44.0",
     "azurite": "^3.23.0",
+    "commitizen": "^4.2.4",
+    "conventional-changelog-conventionalcommits": "5.0.0",
+    "cz-conventional-changelog": "^3.3.0",
+
     "dotenv": "^16.0.3",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "fetch-mock": "^9.11.0",
     "jest": "^29.2.2",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.8.0",
     "rollup": "^3.21.7",
     "rollup-plugin-copy": "^3.4.0",
@@ -62,5 +75,14 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "vite": "^4.3.9"
+  },
+  "lint-staged": {
+    "*.ts": "yarn run lint:fix",
+    "*.tsx": "yarn run lint:fix"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
