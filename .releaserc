@@ -104,7 +104,8 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "yarn build:release && ./scripts/preparePackage.sh ${nextRelease.version}"
+        "prepareCmd": "yarn build:release",
+        "publishCmd": "./scripts/preparePackage.sh ${nextRelease.version}"
       }
     ],
     [
