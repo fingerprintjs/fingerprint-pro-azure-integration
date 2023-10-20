@@ -22,6 +22,9 @@
     "e2e-deploy-infra": "ts-node --project e2e/tsconfig.json e2e/infra/scripts/deploy.ts",
     "e2e-destroy-infra": "ts-node --project e2e/tsconfig.json e2e/infra/scripts/destroy.ts"
   },
+  "resolutions": {
+    "wrap-ansi": "7.0.0"
+  },
   "dependencies": {
     "@azure/arm-appservice": "14.0.0",
     "@azure/arm-cdn": "^8.0.0",
