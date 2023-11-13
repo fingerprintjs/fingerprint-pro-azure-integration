@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.2.0...v1.2.1) (2023-11-13)
+
+
+### Build System
+
+* **deps:** bump semver from 7.5.1 to 7.5.4 ([73c6953](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/73c6953e543e11d0b3742801b792aecd66543bfd))
+
 ## [1.2.0](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.1.2...v1.2.0) (2023-11-09)
 
 
