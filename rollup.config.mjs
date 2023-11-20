@@ -32,6 +32,11 @@ function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFu
     },
   })
 
+  const env = {
+    fpcnd: process.env.FPCDN ?? 'fpcdn.io',
+    ingressApi: process.env.INGRESS_API ?? 'api.fpjs.io',
+  }
+
   /**
    * @type {import('rollup').RollupOptions}
    * */
@@ -69,8 +74,8 @@ function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFu
       commonjs(),
       nodeResolve({ preferBuiltins: false, exportConditions: ['node'] }),
       replace({
-        __FPCDN__: process.env.FPCDN,
-        __INGRESS_API__: process.env.INGRESS_API,
+        __FPCDN__: env.fpcnd,
+        __INGRESS_API__: env.ingressApi,
         __azure_function_version__: packageJson.version,
         preventAssignment: true,
       }),
