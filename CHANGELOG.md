@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.2.1...v1.2.2) (2023-11-20)
+
+
+### Bug Fixes
+
+* add fallback for empty fpcdn and ingress api ([5fefb9d](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/5fefb9d1a69177c81769e3f5bc115b9deead0db5))
+
 ## [1.2.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.2.0...v1.2.1) (2023-11-13)
 
 
