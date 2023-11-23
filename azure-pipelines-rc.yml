@@ -6,15 +6,20 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  TAG: $[replace(variables['Build.SourceBranch'], 'refs/tags/', '')]
+
 steps:
-- script: echo $(Build.SourceBranch) | sed 's/refs\/tags\///'
+- script: echo $TAG
   displayName: 'Output tag'
+  env:
+    TAG: $(TAG)
 - script: yarn install --ignore-engines && npx playwright install && yarn global add ts-node
   displayName: 'Install dependencies'
 - script: ts-node scripts/downloadGithubReleasePackage.ts
   displayName: 'Download release artifact from GitHub'
   env:
-    TAG: $(Build.SourceBranch) | sed 's/refs\/tags\///'
+    TAG: $(TAG)
 - script: yarn build:example-website
   displayName: 'Build website'
   env:
