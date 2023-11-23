@@ -1,24 +1,20 @@
 trigger:
-  branches:
-    exclude:
-      - 'test'
+  tags:
     include:
-      - '*'
+      - 'v*-test.*'
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
+- script: echo $(Build.SourceBranch) | sed 's/refs\/tags\///'
+  displayName: 'Output tag'
 - script: yarn install --ignore-engines && npx playwright install
   displayName: 'Install dependencies'
-- script: yarn build
-  displayName: 'Build functions'
+- script: ts-node scripts/downloadGithubReleasePackage.ts
+  displayName: 'Download release artifact from GitHub'
   env:
-    FPCDN: fpcdn.io
-    INGRESS_API: api.fpjs.io
-    NODE_OPTIONS: "--max_old_space_size=16384"
-    IS_RELEASE_BUILD: true
-
+    TAG: $(Build.SourceBranch) | sed 's/refs\/tags\///'
 - script: yarn build:example-website
   displayName: 'Build website'
   env:
@@ -26,13 +22,6 @@ steps:
     VITE_ENDPOINT: $(VITE_ENDPOINT)
     VITE_SCRIPT_URL_PATTERN: $(VITE_SCRIPT_URL_PATTERN)
     NODE_OPTIONS: "--max_old_space_size=16384"
-
-- script: |
-    cd dist
-    zip -r package.zip *
-    mv package.zip ../
-    cd ..
-  displayName: 'Zip'
 
 - task: AzureCLI@2
   displayName: 'Deploy infrastructure'
