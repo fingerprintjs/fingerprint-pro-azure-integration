@@ -1,0 +1,27 @@
+name: Create PR to Main
+
+on:
+  workflow_run:
+    workflows: ["Pre-release E2E tests"]
+    branches: ["test"]
+    types:
+      - completed
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  create-pr-to-main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test branch
+        uses: actions/checkout@v3
+        with:
+          ref: 'test'
+
+      - name: Create Pull Request
+        run: |
+          gh pr create --base production --head main --title "Merge test into main" --body "Automated PR to merge test branch into main"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
