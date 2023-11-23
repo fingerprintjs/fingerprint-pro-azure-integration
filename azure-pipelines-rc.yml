@@ -66,19 +66,3 @@ steps:
     AZURE_STORAGE_RESOURCE_GROUP: $(AZURE_STORAGE_RESOURCE_GROUP)
     AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
     FPJS_PRE_SHARED_SECRET: $(FPJS_PRE_SHARED_SECRET)
-
-- script: |
-    curl -X POST \
-      -H "Authorization: token $TOKEN" \
-      -H "Accept: application/vnd.github.v3+json" \
-      https://api.github.com/repos/$USER/$REPO/pulls \
-      -d '{"title":"'"$PR_TITLE"'","body":"'"$PR_BODY"'","head":"'"$HEAD_BRANCH"'","base":"'"$BASE_BRANCH"'"}'
-  displayName: Create PR from test to main branch
-  env:
-    TOKEN: $(GITHUB_TOKEN)
-    USER: fingerprintjs
-    REPO: fingerprint-pro-azure-integration
-    PR_TITLE: New release
-    PR_BODY: New release from $(TAG)
-    HEAD_BRANCH: $(TAG)
-    BASE_BRANCH: main
