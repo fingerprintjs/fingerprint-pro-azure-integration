@@ -9,7 +9,7 @@ pool:
 steps:
 - script: echo $(Build.SourceBranch) | sed 's/refs\/tags\///'
   displayName: 'Output tag'
-- script: yarn install --ignore-engines && npx playwright install
+- script: yarn install --ignore-engines && npx playwright install && yarn global add ts-node
   displayName: 'Install dependencies'
 - script: ts-node scripts/downloadGithubReleasePackage.ts
   displayName: 'Download release artifact from GitHub'
