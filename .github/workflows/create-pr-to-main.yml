@@ -3,7 +3,7 @@ name: Create PR to Main
 on:
   workflow_run:
     workflows: ["Pre-release E2E tests"]
-    branches: ["test"]
+#    branches: ["test"]
     types:
       - completed
 
