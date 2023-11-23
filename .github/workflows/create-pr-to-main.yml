@@ -12,13 +12,13 @@ permissions:
   contents: read
 
 jobs:
-  create-pr:
+  create-pr-to-main:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main branch
+      - name: Checkout test branch
         uses: actions/checkout@v3
         with:
-          ref: 'main'
+          ref: 'test'
 
       - name: Create Pull Request
         run: |
