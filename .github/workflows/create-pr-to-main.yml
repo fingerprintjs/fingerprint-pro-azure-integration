@@ -1,11 +1,10 @@
 name: Create PR to Main
 
 on:
-  workflow_run:
-    workflows: ["Pre-release E2E tests"]
-#    branches: ["test"]
+  release:
     types:
-      - completed
+      - published
+      - prereleased
 
 permissions:
   pull-requests: write
@@ -15,13 +14,16 @@ jobs:
   create-pr-to-main:
     runs-on: ubuntu-latest
     steps:
+      - name: Abort if it's not a pre-release
+        if: github.event.release.prerelease == false
+        run: exit 1
       - name: Checkout test branch
         uses: actions/checkout@v3
         with:
           ref: 'test'
 
-      - name: Create Pull Request
+      - name: Create Pull Request from tag branch to main
         run: |
-          gh pr create --base production --head main --title "Merge test into main" --body "Automated PR to merge test branch into main"
+          gh pr create --title "Release ${{ github.event.release.tag_name }}" --body "Release ${{ github.event.release.tag_name }}" --base main --head test --repo ${{ github.repository }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
