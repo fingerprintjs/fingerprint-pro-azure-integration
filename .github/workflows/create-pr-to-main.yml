@@ -24,6 +24,6 @@ jobs:
 
       - name: Create Pull Request from tag branch to main
         run: |
-          gh pr create --title "Release ${{ github.event.release.tag_name }}" --body "Release ${{ github.event.release.tag_name }}" --base main --head ${{ github.event.release.tag_name }} --repo ${{ github.repository }}
+          gh pr create --title "Release ${{ github.event.release.tag_name }}" --body "Release ${{ github.event.release.tag_name }}" --base main --head test --repo ${{ github.repository }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
