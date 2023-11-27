@@ -2,7 +2,7 @@ import { config } from './config'
 import { isSemverGreater } from './semver'
 import { Logger } from '@azure/functions'
 
-function bearer(token?: string) {
+export function bearer(token?: string) {
   return `Bearer ${token}`
 }
 

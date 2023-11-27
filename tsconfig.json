@@ -12,7 +12,10 @@
     "esModuleInterop": true,
     "sourceMap": true
   },
-  "include": ["proxy", "management"],
+  "include": [
+    "proxy",
+    "management"
+  ],
   "references": [
     {
       "path": "./tsconfig.app.json"
