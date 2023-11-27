@@ -13,6 +13,22 @@ import packageJson from './package.json' assert { type: 'json' }
 dotenv.config()
 const outputDirectory = 'dist'
 
+function getEnv(key, defaultValue) {
+  const value = process.env[key]
+
+  if (!value && !defaultValue) {
+    throw new Error(`Missing environment variable ${key}`)
+  }
+
+  if (!value) {
+    console.warn(`Missing environment variable "${key}". Using default value: ${defaultValue}`)
+
+    return defaultValue
+  }
+
+  return value
+}
+
 function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFunctionJson) {
   const isDev = opts.watch
 
@@ -33,8 +49,8 @@ function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFu
   })
 
   const env = {
-    fpcnd: process.env.FPCDN ?? 'fpcdn.io',
-    ingressApi: process.env.INGRESS_API ?? 'api.fpjs.io',
+    fpcdn: getEnv('FPCDN', 'fpcdn.io'),
+    ingressApi: getEnv('INGRESS_API', 'api.fpjs.io'),
   }
 
   /**
@@ -74,7 +90,7 @@ function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFu
       commonjs(),
       nodeResolve({ preferBuiltins: false, exportConditions: ['node'] }),
       replace({
-        __FPCDN__: env.fpcnd,
+        __FPCDN__: env.fpcdn,
         __INGRESS_API__: env.ingressApi,
         __azure_function_version__: packageJson.version,
         preventAssignment: true,
