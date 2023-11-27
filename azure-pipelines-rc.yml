@@ -1,7 +1,7 @@
 trigger:
   tags:
     include:
-      - 'v*-test.*'
+      - '*'
 
 pool:
   vmImage: ubuntu-latest
