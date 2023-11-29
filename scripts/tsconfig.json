@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "module": "CommonJS"
+  },
+  "exclude": [
+    "../dist",
+    "node_modules",
+    "**/*.test.ts",
+    "test",
+    "e2e"
+  ],
+  "include": [
+    "scripts/**.ts"
+  ]
+}
