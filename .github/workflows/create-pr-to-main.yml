@@ -11,18 +11,9 @@ permissions:
 
 jobs:
   create-pr-to-main:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Abort if it's not a pre-release
-        if: github.event.release.prerelease == false
-        run: exit 1
-      - name: Checkout test branch
-        uses: actions/checkout@v3
-        with:
-          ref: 'test'
-
-      - name: Create Pull Request from tag branch to main
-        run: |
-          gh pr create --title "Release ${{ github.event.release.tag_name }}" --body "Release ${{ github.event.release.tag_name }}" --base main --head test --repo ${{ github.repository }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    name: Build project and run CI checks
+    uses: fingerprintjs/dx-team-toolkit/.github/workflows/create-pr.yml@v1
+    with:
+      target_branch: test
+      tag_name: ${{ github.event.release.tag_name }}
+      prerelease: ${{ github.event.release.prerelease }}
