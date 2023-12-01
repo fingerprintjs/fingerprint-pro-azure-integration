@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.2.2...v1.2.3) (2023-12-01)
+
+
+### Bug Fixes
+
+* validate env values on build ([24ce787](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/24ce787358bb2fdca0be9fac9623338912c26b4c))
+
 ## [1.2.3-test.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.2.2...v1.2.3-test.1) (2023-11-28)
 
 
