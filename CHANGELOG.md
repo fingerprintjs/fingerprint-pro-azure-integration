@@ -1,3 +1,10 @@
+## [1.2.4-rc.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.2.3...v1.2.4-rc.1) (2023-12-13)
+
+
+### Bug Fixes
+
+* improve endpoint creation ([dd84407](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/dd84407f10cb4a010c3cfc73b02ae41e95d086e5))
+
 ## [1.2.3](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.2.2...v1.2.3) (2023-12-01)
 
 
