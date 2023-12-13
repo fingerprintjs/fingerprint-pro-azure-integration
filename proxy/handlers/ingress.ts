@@ -6,6 +6,7 @@ import { HttpResponseSimple } from '@azure/functions/types/http'
 import { generateErrorResponse } from '../utils/errorResponse'
 import { getEffectiveTLDPlusOne } from '../domain/tld'
 import { addTrafficMonitoringSearchParamsForVisitorIdRequest } from '../utils/traffic'
+import { getValidRegion, Region } from '../utils/region'
 
 export interface HandleIngressParams {
   httpRequest: HttpRequest
@@ -20,7 +21,11 @@ export function handleIngress({
   preSharedSecret,
   suffix,
 }: HandleIngressParams): Promise<HttpResponseSimple> {
-  const { region = 'us' } = httpRequest.query
+  if (suffix && !suffix.startsWith('/')) {
+    suffix = '/' + suffix
+  }
+
+  const { region = Region.us } = httpRequest.query
 
   const domain = getEffectiveTLDPlusOne(getHost(httpRequest))
   const url = new URL(getIngressAPIHost(region) + suffix)
@@ -87,7 +92,9 @@ export function handleIngress({
 }
 
 function getIngressAPIHost(region: string): string {
-  const prefix = region === 'us' ? '' : `${region}.`
+  const validRegion = getValidRegion(region)
+
+  const prefix = validRegion === Region.us ? '' : `${region}.`
 
   return `https://${prefix}${config.ingressApi}`
 }
