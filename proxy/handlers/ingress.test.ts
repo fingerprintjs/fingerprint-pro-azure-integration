@@ -6,11 +6,49 @@ import { Socket } from 'net'
 import { CustomerVariableType } from '../../shared/customer-variables/types'
 import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet, mockRequestPost } from '../../shared/test/azure'
+import { Region } from '../utils/region'
 
 describe('Result Endpoint', function () {
   let requestSpy: jest.MockInstance<ClientRequest, any>
-  const origin: string = 'https://__ingress_api__'
+  const mockSuccessfulResponse = ({
+    checkRequestUrl,
+    responseHeaders = {},
+  }: {
+    checkRequestUrl: (url: URL) => void
+    responseHeaders?: Record<string, string>
+  }) => {
+    requestSpy.mockImplementationOnce((...args: any[]): any => {
+      const [url, , callback] = args
+
+      checkRequestUrl(url)
+
+      const response = new EventEmitter()
+      const request = new EventEmitter()
+
+      Object.assign(response, {
+        headers: responseHeaders,
+      })
+
+      Object.assign(request, {
+        end: jest.fn(),
+        write: jest.fn(),
+      })
+
+      callback(response)
+
+      setTimeout(() => {
+        response.emit('data', Buffer.from('data', 'utf-8'))
+        response.emit('end')
+      }, 10)
+
+      return request
+    })
+  }
+
+  const getOrigin = (region?: string) => (region ? `https://${region}.__ingress_api__` : 'https://__ingress_api__')
+  const defaultOrigin: string = getOrigin()
   const search: string = '?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress'
+  const getSearchWithRegion = (region: string) => `?region=${region}&${search.replace('?', '')}`
 
   beforeAll(() => {
     jest.spyOn(ingress, 'handleIngress')
@@ -29,7 +67,7 @@ describe('Result Endpoint', function () {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
     requestSpy.mockImplementationOnce((...args) => {
       const [url, options] = args
-      expect(url.toString()).toBe(`${origin}/${search}`)
+      expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
       options.agent = new Agent()
       return Reflect.construct(ClientRequest, args)
     })
@@ -46,13 +84,14 @@ describe('Result Endpoint', function () {
       [CustomerVariableType.PreSharedSecret]: 'secret',
     })
 
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((...args) => {
-      const [url, options] = args
-      expect(url.toString()).toBe(`${origin}/${search}`)
-      options.agent = new Agent()
-      return Reflect.construct(ClientRequest, args)
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
+      },
     })
+
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+
     await proxy(mockContext(req), req)
 
     const [, options] = requestSpy.mock.calls[0]
@@ -62,12 +101,13 @@ describe('Result Endpoint', function () {
 
   test('Cookies should include only _iidt', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((...args) => {
-      const [url, options] = args
-      expect(url.toString()).toBe(`${origin}/${search}`)
-      options.agent = new Agent()
-      return Reflect.construct(ClientRequest, args)
+
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
+      },
     })
+
     await proxy(mockContext(req), req)
 
     const [, options] = requestSpy.mock.calls[0]
@@ -156,36 +196,16 @@ describe('Result Endpoint', function () {
       'transfer-encoding': 'chunked',
     }
 
-    const resBody = 'data'
-    requestSpy.mockImplementationOnce((...args: any[]): any => {
-      const [url, , callback] = args
-      expect(url.toString()).toBe(`${origin}/${search}`)
-
-      const response = new EventEmitter()
-      const request = new EventEmitter()
-
-      Object.assign(request, {
-        end: jest.fn(),
-        write: jest.fn(),
-      })
-
-      Object.assign(response, {
-        headers: resHeaders,
-      })
-
-      callback(response)
-
-      setTimeout(() => {
-        response.emit('data', Buffer.from(resBody, 'utf-8'))
-        response.emit('end')
-      }, 10)
-
-      return request
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
+      },
+      responseHeaders: resHeaders,
     })
     const ctx = mockContext(req)
     await proxy(ctx, req)
 
-    expect(ctx.res?.body.toString()).toBe(resBody)
+    expect(ctx.res?.body.toString()).toBe('data')
     expect(ctx.res?.headers).toEqual({
       'access-control-allow-credentials': 'true',
       'access-control-expose-headers': 'Retry-After',
@@ -257,17 +277,17 @@ describe('Result Endpoint', function () {
 
   test('HTTP GET without suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((...args) => {
-      const [url, options] = args
-      expect(url.toString()).toBe(`${origin}/${search}`)
-      options.agent = new Agent()
-      return Reflect.construct(ClientRequest, args)
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
+      },
     })
+
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
-        origin,
+        origin: defaultOrigin,
         pathname: '/',
         search,
       }),
@@ -279,17 +299,16 @@ describe('Result Endpoint', function () {
 
   test('HTTP GET with suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/with/suffix')
-    requestSpy.mockImplementationOnce((...args) => {
-      const [url, options] = args
-      expect(url.toString()).toBe(`${origin}/with/suffix${search}`)
-      options.agent = new Agent()
-      return Reflect.construct(ClientRequest, args)
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.toString()).toBe(`${defaultOrigin}/with/suffix${search}`)
+      },
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
-        origin,
+        origin: defaultOrigin,
         pathname: '/with/suffix',
         search,
       }),
@@ -308,17 +327,16 @@ describe('Result Endpoint', function () {
 
   test('HTTP POST without suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((...args) => {
-      const [url, options] = args
-      expect(url.toString()).toBe(`${origin}/${search}`)
-      options.agent = new Agent()
-      return Reflect.construct(ClientRequest, args)
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
+      },
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
-        origin,
+        origin: defaultOrigin,
         pathname: '/',
         search,
       }),
@@ -330,17 +348,16 @@ describe('Result Endpoint', function () {
 
   test('HTTP POST with suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
-    requestSpy.mockImplementationOnce((...args) => {
-      const [url, options] = args
-      expect(url.toString()).toBe(`${origin}/with/suffix${search}`)
-      options.agent = new Agent()
-      return Reflect.construct(ClientRequest, args)
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.toString()).toBe(`${defaultOrigin}/with/suffix${search}`)
+      },
     })
     await proxy(mockContext(req), req)
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
-        origin,
+        origin: defaultOrigin,
         pathname: '/with/suffix',
         search,
       }),
@@ -357,6 +374,60 @@ describe('Result Endpoint', function () {
     expect(https.request).toHaveBeenCalledTimes(0)
   })
 
+  test('Suffix with a dot', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/.suffix')
+
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.toString()).toEqual(`${defaultOrigin}/.suffix${search}`)
+      },
+    })
+
+    const ctx = mockContext(req)
+
+    await proxy(ctx, req)
+  })
+
+  Object.values(Region).forEach((region) => {
+    test(`Suffix with a dot for region ${region}`, async () => {
+      const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/.suffix', {
+        region,
+      })
+
+      mockSuccessfulResponse({
+        checkRequestUrl: (url) => {
+          const expectedQuery = getSearchWithRegion(region)
+
+          if (region === Region.us) {
+            expect(url.toString()).toEqual(`${defaultOrigin}/.suffix${expectedQuery}`)
+          } else {
+            expect(url.toString()).toEqual(`${getOrigin(region)}/.suffix${expectedQuery}`)
+          }
+        },
+      })
+
+      const ctx = mockContext(req)
+
+      await proxy(ctx, req)
+    })
+  })
+
+  test('Suffix with a dot for invalid region', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/.suffix', {
+      region: 'invalid',
+    })
+
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.toString()).toEqual(`${defaultOrigin}/.suffix${getSearchWithRegion('invalid')}`)
+      },
+    })
+
+    const ctx = mockContext(req)
+
+    await proxy(ctx, req)
+  })
+
   test.each(['invalid', 'usa', 'EU', 'US', 'AP', ''])(
     'Should set default (US) region when invalid region is provided in query parameter: %s',
     async (region) => {
@@ -364,30 +435,10 @@ describe('Result Endpoint', function () {
         region,
       })
 
-      requestSpy.mockImplementationOnce((...args: any[]): any => {
-        const [url, , callback] = args
-        expect(url.origin).toBe(origin)
-
-        const response = new EventEmitter()
-        const request = new EventEmitter()
-
-        Object.assign(response, {
-          headers: {},
-        })
-
-        Object.assign(request, {
-          end: jest.fn(),
-          write: jest.fn(),
-        })
-
-        callback(response)
-
-        setTimeout(() => {
-          response.emit('data', Buffer.from('data', 'utf-8'))
-          response.emit('end')
-        }, 10)
-
-        return request
+      mockSuccessfulResponse({
+        checkRequestUrl: (url) => {
+          expect(url.toString()).toBe(`${defaultOrigin}/${getSearchWithRegion(region)}`)
+        },
       })
 
       const ctx = mockContext(req)
