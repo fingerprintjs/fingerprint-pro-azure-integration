@@ -356,6 +356,45 @@ describe('Result Endpoint', function () {
     expect(ingress.handleIngress).toHaveBeenCalledTimes(0)
     expect(https.request).toHaveBeenCalledTimes(0)
   })
+
+  test.each(['invalid', 'usa', 'EU', 'US', 'AP', ''])(
+    'Should set default (US) region when invalid region is provided in query parameter: %s',
+    async (region) => {
+      const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId', {
+        region,
+      })
+
+      requestSpy.mockImplementationOnce((...args: any[]): any => {
+        const [url, , callback] = args
+        expect(url.origin).toBe(origin)
+
+        const response = new EventEmitter()
+        const request = new EventEmitter()
+
+        Object.assign(response, {
+          headers: {},
+        })
+
+        Object.assign(request, {
+          end: jest.fn(),
+          write: jest.fn(),
+        })
+
+        callback(response)
+
+        setTimeout(() => {
+          response.emit('data', Buffer.from('data', 'utf-8'))
+          response.emit('end')
+        }, 10)
+
+        return request
+      })
+
+      const ctx = mockContext(req)
+
+      await proxy(ctx, req)
+    },
+  )
 })
 
 describe('Browser caching endpoint', () => {
