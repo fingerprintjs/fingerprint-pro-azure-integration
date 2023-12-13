@@ -428,7 +428,7 @@ describe('Result Endpoint', function () {
     await proxy(ctx, req)
   })
 
-  test.each(['invalid', 'usa', 'EU', 'US', 'AP', ''])(
+  test.each(['invalid', 'usa', 'EU', 'US', 'AP', '.invalid'])(
     'Should set default (US) region when invalid region is provided in query parameter: %s',
     async (region) => {
       const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId', {

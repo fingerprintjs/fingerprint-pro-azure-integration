@@ -97,6 +97,20 @@ describe('Agent Endpoint', () => {
     )
   })
 
+  test('invalid apiKey, version and loaderVersion', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
+      apiKey: 'foo.bar/baz',
+      version: 'foo.bar1/baz',
+      loaderVersion: 'foo.bar2/baz',
+    })
+
+    await proxy(mockContext(req), req)
+
+    const [url] = requestSpy.mock.calls[0]
+
+    expect(url.origin).toEqual(`https://${origin}`)
+  })
+
   test('Browser cache set to an hour when original value is higher', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
       apiKey: 'ujKG34hUYKLJKJ1F',
