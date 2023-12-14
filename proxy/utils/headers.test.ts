@@ -163,6 +163,7 @@ describe('prepareHeadersForIngressAPI', () => {
 
     expect(result['fpjs-proxy-client-ip']).toBe(mockReq.headers['x-forwarded-for'])
     expect(result['fpjs-proxy-secret']).toBe('secret')
+    expect(result['fpjs-proxy-forwarded-host']).toBe(new URL(mockReq.url).hostname)
   })
 
   it('should not set secret if it is undefined', () => {
@@ -170,5 +171,6 @@ describe('prepareHeadersForIngressAPI', () => {
 
     expect(result['fpjs-proxy-client-ip']).toBe(mockReq.headers['x-forwarded-for'])
     expect(result['fpjs-proxy-secret']).toBe(undefined)
+    expect(result['fpjs-proxy-forwarded-host']).toBe(undefined)
   })
 })
