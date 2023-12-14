@@ -1,9 +1,8 @@
 import * as http from 'http'
 import { HttpRequest, HttpRequestHeaders, HttpResponseHeaders, Logger } from '@azure/functions'
 import { updateCacheControlHeader } from './cacheControl'
-import { adjustCookies, filterCookie } from './cookies'
+import { filterCookie } from './cookies'
 
-const COOKIE_HEADER_NAME = 'set-cookie'
 const CACHE_CONTROL_HEADER_NAME = 'cache-control'
 
 const FPJS_COOKIE_NAME = '_iidt'
@@ -34,12 +33,11 @@ export function filterRequestHeaders(headers: HttpRequestHeaders) {
   }, {})
 }
 
-export const updateResponseHeadersForAgentDownload = (headers: http.IncomingHttpHeaders, domain: string) =>
-  updateResponseHeaders(headers, domain, true)
+export const updateResponseHeadersForAgentDownload = (headers: http.IncomingHttpHeaders) =>
+  updateResponseHeaders(headers, true)
 
 export function updateResponseHeaders(
   headers: http.IncomingHttpHeaders,
-  domain: string,
   overrideCacheControl = false,
 ): HttpResponseHeaders {
   const result: HttpResponseHeaders = {}
@@ -50,12 +48,6 @@ export function updateResponseHeaders(
     }
 
     switch (key) {
-      case COOKIE_HEADER_NAME: {
-        result[COOKIE_HEADER_NAME] = adjustCookies(Array.isArray(value) ? value : [value], domain)
-
-        break
-      }
-
       case CACHE_CONTROL_HEADER_NAME: {
         if (overrideCacheControl) {
           result[CACHE_CONTROL_HEADER_NAME] = updateCacheControlHeader(value.toString())
@@ -72,10 +64,6 @@ export function updateResponseHeaders(
   }
 
   return result
-}
-
-export function getHost(request: Pick<HttpRequest, 'headers'>) {
-  return request.headers['x-forwarded-host'] || request.headers.host
 }
 
 function resolveClientIp(request: HttpRequest, logger?: Logger) {
@@ -108,6 +96,7 @@ export function prepareHeadersForIngressAPI(request: HttpRequest, preSharedSecre
 
   if (preSharedSecret) {
     headers['fpjs-proxy-secret'] = preSharedSecret
+    headers['fpjs-proxy-forwarded-host'] = new URL(request.url).hostname
   }
 
   return headers

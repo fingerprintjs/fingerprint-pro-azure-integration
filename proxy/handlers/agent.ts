@@ -29,8 +29,6 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
     }
   }
 
-  const domain = new URL(httpRequest.url).hostname
-
   const url = new URL(`https://${config.fpdcdn}`)
   url.pathname = getEndpoint(apiKey, version, loaderVersion)
   addTrafficMonitoringSearchParamsForProCDN(url)
@@ -57,7 +55,7 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
 
         response.on('end', () => {
           const body = Buffer.concat(data)
-          const responseHeaders = updateResponseHeadersForAgentDownload(response.headers, domain)
+          const responseHeaders = updateResponseHeadersForAgentDownload(response.headers)
 
           resolve({
             status: response.statusCode ?? 500,
