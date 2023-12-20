@@ -1,3 +1,10 @@
+## [1.3.0](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.2.4...v1.3.0) (2023-12-20)
+
+
+### Features
+
+* remove public suffix list and add proxy-host-header as replacement ([a7308d4](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/a7308d47c99ca73d7285a14275f8baf614937781))
+
 ## [1.3.0-rc.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.2.4...v1.3.0-rc.1) (2023-12-20)
 
 
