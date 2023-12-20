@@ -1,7 +1,6 @@
 import { HttpRequest } from '@azure/functions'
 import {
   filterRequestHeaders,
-  getHost,
   prepareHeadersForIngressAPI,
   updateResponseHeaders,
   updateResponseHeadersForAgentDownload,
@@ -73,13 +72,12 @@ describe('updateResponseHeaders', () => {
       'strict-transport-security': 'max-age=1000',
     }
 
-    const resultHeaders = updateResponseHeaders(headers, 'fpjs.sh')
+    const resultHeaders = updateResponseHeaders(headers)
 
     expect(resultHeaders.hasOwnProperty('custom-header-1')).toBe(true)
     expect(resultHeaders.hasOwnProperty('content-length')).toBe(true)
     expect(resultHeaders.hasOwnProperty('x-edge-xxx')).toBe(false)
     expect(resultHeaders['cache-control']).toBe('public, max-age=40000, s-maxage=40000')
-    expect(resultHeaders['set-cookie']).toBe('_iidf; HttpOnly; Domain=fpjs.sh')
     expect(resultHeaders.hasOwnProperty('strict-transport-security')).toBe(false)
   })
 
@@ -99,12 +97,11 @@ describe('updateResponseHeaders', () => {
       'custom-header-1': 'gdfddfd',
     }
 
-    const resultHeaders = updateResponseHeaders(headers, 'fpjs.sh')
+    const resultHeaders = updateResponseHeaders(headers)
 
     expect(resultHeaders.hasOwnProperty('custom-header-1')).toBe(true)
     expect(resultHeaders.hasOwnProperty('content-length')).toBe(true)
     expect(resultHeaders['cache-control']).toBe('no-cache')
-    expect(resultHeaders['set-cookie']).toBe('_iidf; HttpOnly; Domain=fpjs.sh')
   })
 })
 
@@ -127,13 +124,12 @@ describe('updateResponseHeadersForAgentDownload', () => {
       'strict-transport-security': 'max-age=1000',
     }
 
-    const resultHeaders = updateResponseHeadersForAgentDownload(headers, 'fpjs.sh')
+    const resultHeaders = updateResponseHeadersForAgentDownload(headers)
 
     expect(resultHeaders.hasOwnProperty('custom-header-1')).toBe(true)
     expect(resultHeaders.hasOwnProperty('content-length')).toBe(true)
     expect(resultHeaders.hasOwnProperty('x-edge-xxx')).toBe(false)
     expect(resultHeaders['cache-control']).toBe('public, max-age=3600, s-maxage=60')
-    expect(resultHeaders['set-cookie']).toBe('_iidf; HttpOnly; Domain=fpjs.sh')
     expect(resultHeaders.hasOwnProperty('strict-transport-security')).toBe(false)
   })
 
@@ -153,35 +149,11 @@ describe('updateResponseHeadersForAgentDownload', () => {
       'custom-header-1': 'gdfddfd',
     }
 
-    const resultHeaders = updateResponseHeadersForAgentDownload(headers, 'fpjs.sh')
+    const resultHeaders = updateResponseHeadersForAgentDownload(headers)
 
     expect(resultHeaders.hasOwnProperty('custom-header-1')).toBe(true)
     expect(resultHeaders.hasOwnProperty('content-length')).toBe(true)
     expect(resultHeaders['cache-control']).toBe('no-cache, max-age=3600, s-maxage=60')
-    expect(resultHeaders['set-cookie']).toBe('_iidf; HttpOnly; Domain=fpjs.sh')
-  })
-})
-
-describe('getHost', () => {
-  it.each([
-    [
-      {
-        headers: {
-          'x-forwarded-host': 'fpjs.sh',
-        },
-      },
-      'fpjs.sh',
-    ],
-    [
-      {
-        headers: {
-          host: 'fpjs.sh',
-        },
-      },
-      'fpjs.sh',
-    ],
-  ])('returns correct host', (request, expectedHost) => {
-    expect(getHost(request)).toBe(expectedHost)
   })
 })
 
@@ -191,6 +163,7 @@ describe('prepareHeadersForIngressAPI', () => {
 
     expect(result['fpjs-proxy-client-ip']).toBe(mockReq.headers['x-forwarded-for'])
     expect(result['fpjs-proxy-secret']).toBe('secret')
+    expect(result['fpjs-proxy-forwarded-host']).toBe(new URL(mockReq.url).hostname)
   })
 
   it('should not set secret if it is undefined', () => {
@@ -198,5 +171,6 @@ describe('prepareHeadersForIngressAPI', () => {
 
     expect(result['fpjs-proxy-client-ip']).toBe(mockReq.headers['x-forwarded-for'])
     expect(result['fpjs-proxy-secret']).toBe(undefined)
+    expect(result['fpjs-proxy-forwarded-host']).toBe(undefined)
   })
 })
