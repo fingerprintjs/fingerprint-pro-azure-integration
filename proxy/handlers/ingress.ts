@@ -1,10 +1,9 @@
 import { HttpRequest, Logger } from '@azure/functions'
 import { config } from '../utils/config'
 import * as https from 'https'
-import { getHost, prepareHeadersForIngressAPI, updateResponseHeaders } from '../utils/headers'
+import { prepareHeadersForIngressAPI, updateResponseHeaders } from '../utils/headers'
 import { HttpResponseSimple } from '@azure/functions/types/http'
 import { generateErrorResponse } from '../utils/errorResponse'
-import { getEffectiveTLDPlusOne } from '../domain/tld'
 import { addTrafficMonitoringSearchParamsForVisitorIdRequest } from '../utils/traffic'
 import { getValidRegion, Region } from '../utils/region'
 
@@ -26,8 +25,6 @@ export function handleIngress({
   }
 
   const { region = Region.us } = httpRequest.query
-
-  const domain = getEffectiveTLDPlusOne(getHost(httpRequest))
   const url = new URL(getIngressAPIHost(region) + suffix)
 
   Object.entries(httpRequest.query).forEach(([key, value]) => {
@@ -64,7 +61,7 @@ export function handleIngress({
 
           resolve({
             status: response.statusCode ? response.statusCode : 500,
-            headers: updateResponseHeaders(response.headers, domain),
+            headers: updateResponseHeaders(response.headers),
             body: payload,
           })
         })
