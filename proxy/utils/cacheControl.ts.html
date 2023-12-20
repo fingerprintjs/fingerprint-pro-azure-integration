@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for proxy/utils/traffic.ts</title>
+    <title>Code coverage report for proxy/utils/cacheControl.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">proxy/utils</a> traffic.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">proxy/utils</a> cacheControl.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
@@ -77,33 +77,69 @@
 <a name='L12'></a><a href='#L12'>12</a>
 <a name='L13'></a><a href='#L13'>13</a>
 <a name='L14'></a><a href='#L14'>14</a>
-<a name='L15'></a><a href='#L15'>15</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">39x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const FUNCTION_VERSION = '__azure_function_version__'
-const PARAM_NAME = 'ii'
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const CACHE_MAX_AGE = 3600
+const SHARED_CACHE_MAX_AGE = 60
 &nbsp;
-export function addTrafficMonitoringSearchParamsForProCDN(url: URL) {
-  url.searchParams.append(PARAM_NAME, getTrafficMonitoringValue('procdn'))
+export function updateCacheControlHeader(headerValue: string): string {
+  let result = updateCacheControlAge(headerValue, 'max-age', CACHE_MAX_AGE)
+  result = updateCacheControlAge(result, 's-maxage', SHARED_CACHE_MAX_AGE)
+&nbsp;
+  return result
 }
 &nbsp;
-export function addTrafficMonitoringSearchParamsForVisitorIdRequest(url: URL) {
-  url.searchParams.append(PARAM_NAME, getTrafficMonitoringValue('ingress'))
-}
+function updateCacheControlAge(headerValue: string, type: 'max-age' | 's-maxage', cacheMaxAge: number): string {
+  const cacheControlDirectives = headerValue.split(', ')
+  const maxAgeIndex = cacheControlDirectives.findIndex(
+    (directive) =&gt; directive.split('=')[0].trim().toLowerCase() === type,
+  )
 &nbsp;
-function getTrafficMonitoringValue(type: 'procdn' | 'ingress'): string {
-  return `fingerprint-pro-azure/${FUNCTION_VERSION}/${type}`
+  if (maxAgeIndex === -1) {
+    cacheControlDirectives.push(`${type}=${cacheMaxAge}`)
+  } else {
+    const oldMaxAge = Number(cacheControlDirectives[maxAgeIndex].split('=')[1])
+    const newMaxAge = Math.min(cacheMaxAge, oldMaxAge)
+    cacheControlDirectives[maxAgeIndex] = `${type}=${newMaxAge}`
+  }
+&nbsp;
+  return cacheControlDirectives.join(', ')
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -112,7 +148,7 @@ function getTrafficMonitoringValue(type: 'procdn' | 'ingress'): string {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-13T19:11:39.389Z
+                at 2023-12-20T10:45:12.535Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
