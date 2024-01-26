@@ -15,18 +15,16 @@ const outputDirectory = 'dist'
 
 function getEnv(key, defaultValue) {
   const value = process.env[key]
-
-  if (!value && !defaultValue) {
-    throw new Error(`Missing environment variable ${key}`)
+  if (value) {
+    return value
   }
 
-  if (!value) {
+  if (defaultValue) {
     console.warn(`Missing environment variable "${key}". Using default value: ${defaultValue}`)
-
     return defaultValue
   }
 
-  return value
+  throw new Error(`Missing environment variable ${key}`)
 }
 
 function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFunctionJson) {
