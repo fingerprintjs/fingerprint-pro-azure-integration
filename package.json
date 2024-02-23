@@ -16,6 +16,7 @@
     "test:coverage": "jest --coverage",
     "test:dts": "tsc --noEmit --isolatedModules dist/**/*.d.ts",
     "test:e2e": "npx playwright test --config e2e/playwright.config.ts",
+    "test:mock-e2e": "ts-node --project e2e/tsconfig.json e2e/scripts/mockTests.ts",
     "emulate-storage": "azurite -l ./storage -L",
     "start": "func start",
     "start:example-website": "cd example-website && vite",
