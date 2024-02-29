@@ -17,8 +17,8 @@ jobs:
       - script: yarn build
         displayName: 'Build functions'
         env:
-          FPCDN: fpcdn.io
-          INGRESS_API: api.fpjs.io
+          FPCDN: mock-warden.fpjs.sh
+          INGRESS_API: mock-warden.fpjs.sh/ingress
           NODE_OPTIONS: "--max_old_space_size=16384"
           IS_RELEASE_BUILD: true
 
