@@ -60,7 +60,6 @@ jobs:
         displayName: 'Run e2e tests'
         env:
           CI: 'true'
-          GITHUB_TOKEN: $(GITHUB_TOKEN)
 
       - task: AzureCLI@2
         inputs:
