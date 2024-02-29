@@ -62,20 +62,20 @@ jobs:
           CI: 'true'
           GITHUB_TOKEN: $(GITHUB_TOKEN)
 
-      - task: AzureCLI@2
-        inputs:
-          azureSubscription: 'azure-proxy-integration-e2e-tests'
-          scriptType: 'bash'
-          scriptLocation: 'inlineScript'
-          inlineScript: 'yarn e2e-destroy-infra'
-        displayName: 'Destroy infrastructure'
-        condition: always()
-        env:
-          AZURE_STORAGE_ACCOUNT_NAME: $(AZURE_STORAGE_ACCOUNT_NAME)
-          AZURE_STORAGE_CONTAINER_NAME: $(AZURE_STORAGE_CONTAINER_NAME)
-          AZURE_STORAGE_RESOURCE_GROUP: $(AZURE_STORAGE_RESOURCE_GROUP)
-          AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
-          FPJS_PRE_SHARED_SECRET: $(FPJS_PRE_SHARED_SECRET)
+#      - task: AzureCLI@2
+#        inputs:
+#          azureSubscription: 'azure-proxy-integration-e2e-tests'
+#          scriptType: 'bash'
+#          scriptLocation: 'inlineScript'
+#          inlineScript: 'yarn e2e-destroy-infra'
+#        displayName: 'Destroy infrastructure'
+#        condition: always()
+#        env:
+#          AZURE_STORAGE_ACCOUNT_NAME: $(AZURE_STORAGE_ACCOUNT_NAME)
+#          AZURE_STORAGE_CONTAINER_NAME: $(AZURE_STORAGE_CONTAINER_NAME)
+#          AZURE_STORAGE_RESOURCE_GROUP: $(AZURE_STORAGE_RESOURCE_GROUP)
+#          AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+#          FPJS_PRE_SHARED_SECRET: $(FPJS_PRE_SHARED_SECRET)
 
 
   - job: E2E
