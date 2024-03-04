@@ -5,6 +5,12 @@ async function main() {
   let hasError = false
   const testInfo = readTestInfo()
 
+  const apiUrl = process.env.API_URL
+
+  if (!apiUrl) {
+    throw new Error('API_URL is not set')
+  }
+
   for (const info of testInfo) {
     const agentPath = `${info.routePrefix}/${info.agentDownloadPath}`
     const resultPath = `${info.routePrefix}/${info.getResultPath}`
@@ -16,7 +22,7 @@ async function main() {
 
     try {
       execSync(
-        `npm exec -y "git+https://github.com/fingerprintjs/dx-team-mock-for-proxy-integrations-e2e-tests.git" -- --host="${host}" --cdn-proxy-path="${agentPath}" --ingress-proxy-path="${resultPath}"`,
+        `npm exec -y "git+https://github.com/fingerprintjs/dx-team-mock-for-proxy-integrations-e2e-tests.git" -- --api-url="https://${apiUrl}" --host="${host}" --cdn-proxy-path="${agentPath}" --ingress-proxy-path="${resultPath}"`,
         {
           stdio: 'inherit',
         },
