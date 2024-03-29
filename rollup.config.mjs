@@ -1,4 +1,4 @@
-import typescript from 'rollup-plugin-typescript2'
+import typescript from '@rollup/plugin-typescript'
 import jsonPlugin from '@rollup/plugin-json'
 import licensePlugin from 'rollup-plugin-license'
 import dtsPlugin from 'rollup-plugin-dts'
@@ -86,7 +86,7 @@ function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFu
         tsconfig: 'tsconfig.app.json',
       }),
       commonjs(),
-      nodeResolve({ preferBuiltins: false, exportConditions: ['node'] }),
+      nodeResolve({ preferBuiltins: false }),
       replace({
         __FPCDN__: env.fpcdn,
         __INGRESS_API__: env.ingressApi,

@@ -45,7 +45,7 @@ const proxy: AzureFunction = async (context: Context, req: HttpRequest): Promise
       headers: {
         'Content-Type': 'application/json',
       },
-    } satisfies HttpResponseSimple)
+    }) satisfies HttpResponseSimple
 
   if (path === (await getAgentDownloadUri(customerVariables))) {
     context.res = await downloadAgent({ httpRequest: req, logger: context.log, path })
