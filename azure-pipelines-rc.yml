@@ -15,13 +15,13 @@ steps:
   displayName: 'Output tag'
   env:
     TAG: $(TAG)
-- script: yarn install --ignore-engines && npx playwright install && yarn global add ts-node
+- script: pnpm install && pnpm exec playwright install && pnpm global add ts-node
   displayName: 'Install dependencies'
 - script: ts-node scripts/downloadGithubReleasePackage.ts
   displayName: 'Download release artifact from GitHub'
   env:
     TAG: $(TAG)
-- script: yarn build:example-website
+- script: pnpm build:example-website
   displayName: 'Build website'
   env:
     VITE_API_KEY: $(API_KEY)
@@ -41,14 +41,14 @@ steps:
     azureSubscription: 'azure-proxy-integration-e2e-tests'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
-    inlineScript: 'yarn e2e-deploy-infra'
+    inlineScript: 'pnpm e2e-deploy-infra'
 
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'azure-proxy-integration-e2e-tests'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
-    inlineScript: 'yarn test:e2e'
+    inlineScript: 'pnpm test:e2e'
   displayName: 'Run e2e tests'
   env:
     CI: 'true'
@@ -58,7 +58,7 @@ steps:
     azureSubscription: 'azure-proxy-integration-e2e-tests'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
-    inlineScript: 'yarn e2e-destroy-infra'
+    inlineScript: 'pnpm e2e-destroy-infra'
   displayName: 'Destroy infrastructure'
   condition: always()
   env:

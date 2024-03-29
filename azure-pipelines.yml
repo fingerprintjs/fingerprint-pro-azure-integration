@@ -12,9 +12,9 @@ pool:
 jobs:
   - job: mockE2E
     steps:
-      - script: yarn install --ignore-engines && npx playwright install
+      - script: pnpm install && pnpm exec playwright install
         displayName: 'Install dependencies'
-      - script: yarn build
+      - script: pnpm build
         displayName: 'Build functions'
         env:
           FPCDN: $(MOCK_FPCDN)
@@ -22,7 +22,7 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=16384"
           IS_RELEASE_BUILD: true
 
-      - script: yarn build:example-website
+      - script: pnpm build:example-website
         displayName: 'Build website'
         env:
           VITE_API_KEY: $(API_KEY)
@@ -49,14 +49,14 @@ jobs:
           azureSubscription: 'azure-proxy-integration-e2e-tests'
           scriptType: 'bash'
           scriptLocation: 'inlineScript'
-          inlineScript: 'yarn e2e-deploy-infra'
+          inlineScript: 'pnpm e2e-deploy-infra'
 
       - task: AzureCLI@2
         inputs:
           azureSubscription: 'azure-proxy-integration-e2e-tests'
           scriptType: 'bash'
           scriptLocation: 'inlineScript'
-          inlineScript: 'yarn test:mock-e2e'
+          inlineScript: 'pnpm test:mock-e2e'
         displayName: 'Run e2e tests'
         env:
           CI: 'true'
@@ -67,7 +67,7 @@ jobs:
           azureSubscription: 'azure-proxy-integration-e2e-tests'
           scriptType: 'bash'
           scriptLocation: 'inlineScript'
-          inlineScript: 'yarn e2e-destroy-infra'
+          inlineScript: 'pnpm e2e-destroy-infra'
         displayName: 'Destroy infrastructure'
         condition: always()
         env:
@@ -80,9 +80,9 @@ jobs:
 
   - job: E2E
     steps:
-      - script: yarn install --ignore-engines && npx playwright install
+      - script: pnpm install --ignore-engines && npx playwright install
         displayName: 'Install dependencies'
-      - script: yarn build
+      - script: pnpm build
         displayName: 'Build functions'
         env:
           FPCDN: fpcdn.io
@@ -90,7 +90,7 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=16384"
           IS_RELEASE_BUILD: true
 
-      - script: yarn build:example-website
+      - script: pnpm build:example-website
         displayName: 'Build website'
         env:
           VITE_API_KEY: $(API_KEY)
@@ -117,14 +117,14 @@ jobs:
           azureSubscription: 'azure-proxy-integration-e2e-tests'
           scriptType: 'bash'
           scriptLocation: 'inlineScript'
-          inlineScript: 'yarn e2e-deploy-infra'
+          inlineScript: 'pnpm e2e-deploy-infra'
 
       - task: AzureCLI@2
         inputs:
           azureSubscription: 'azure-proxy-integration-e2e-tests'
           scriptType: 'bash'
           scriptLocation: 'inlineScript'
-          inlineScript: 'yarn test:e2e'
+          inlineScript: 'pnpm test:e2e'
         displayName: 'Run e2e tests'
         env:
           CI: 'true'
@@ -134,7 +134,7 @@ jobs:
           azureSubscription: 'azure-proxy-integration-e2e-tests'
           scriptType: 'bash'
           scriptLocation: 'inlineScript'
-          inlineScript: 'yarn e2e-destroy-infra'
+          inlineScript: 'pnpm e2e-destroy-infra'
         displayName: 'Destroy infrastructure'
         condition: always()
         env:
