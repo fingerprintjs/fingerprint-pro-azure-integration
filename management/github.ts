@@ -15,7 +15,7 @@ export async function getLatestGithubRelease(token?: string) {
             Authorization: bearer(token),
           }
         : undefined,
-    },
+    }
   )
 
   return (await response.json()) as GithubRelease
@@ -41,7 +41,7 @@ export async function downloadReleaseAsset(url: string, token?: string, logger?:
 
 export async function findFunctionZip(assets: GithubReleaseAsset[]) {
   return assets.find(
-    (asset) => asset.name === 'package.zip' && asset.state === 'uploaded' && asset.content_type === 'application/zip',
+    (asset) => asset.name === 'package.zip' && asset.state === 'uploaded' && asset.content_type === 'application/zip'
   )
 }
 

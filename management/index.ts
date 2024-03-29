@@ -74,7 +74,7 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
       const storageClient = new storageBlob.ContainerClient(
         containerUrl,
         // We must use StorageSharedKeyCredential in order to generate SAS tokens
-        new StorageSharedKeyCredential(accountName, key),
+        new StorageSharedKeyCredential(accountName, key)
       )
 
       const blobClient = storageClient.getBlockBlobClient(latestFunction.name)

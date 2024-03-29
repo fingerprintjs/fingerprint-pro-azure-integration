@@ -45,7 +45,7 @@ export async function deployWebsite(resourceGroup: string) {
     {
       env: process.env,
       stdio: 'pipe',
-    },
+    }
   )
   console.info('Static website enabled.')
 
@@ -96,14 +96,14 @@ async function uploadWebsite(container: ContainerClient) {
       const contents = fs.readFileSync(file)
 
       const blob = container.getBlockBlobClient(
-        parsedPath.dir.endsWith('assets') ? `assets/${parsedPath.base}` : parsedPath.base,
+        parsedPath.dir.endsWith('assets') ? `assets/${parsedPath.base}` : parsedPath.base
       )
       await blob.uploadData(contents, {
         blobHTTPHeaders: {
           blobContentType: getContentType(parsedPath.ext),
         },
       })
-    }),
+    })
   )
 }
 

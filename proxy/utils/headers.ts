@@ -38,7 +38,7 @@ export const updateResponseHeadersForAgentDownload = (headers: http.IncomingHttp
 
 export function updateResponseHeaders(
   headers: http.IncomingHttpHeaders,
-  overrideCacheControl = false,
+  overrideCacheControl = false
 ): HttpResponseHeaders {
   const result: HttpResponseHeaders = {}
 

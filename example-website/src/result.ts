@@ -60,7 +60,7 @@ async function getAndPrintData(options: LoadOptions) {
         ? {
             html: confidence.comment.replace(
               /(upgrade\s+to\s+)?pro(\s+version)?(:\s+(https?:\/\/\S+))?/gi,
-              '<a href="$4" target="_blank">$&</a>',
+              '<a href="$4" target="_blank">$&</a>'
             ),
           }
         : '',

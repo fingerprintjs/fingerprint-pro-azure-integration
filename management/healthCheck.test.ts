@@ -57,7 +57,7 @@ describe('performHealthCheckAfterUpdate', () => {
         version: '0.0.1',
         envInfo: [],
       } as StatusInfo,
-      { overwriteRoutes: false },
+      { overwriteRoutes: false }
     )
 
     fetchMock.getOnce(
@@ -66,7 +66,7 @@ describe('performHealthCheckAfterUpdate', () => {
         version: '1.0.0',
         envInfo: [],
       } as StatusInfo,
-      { overwriteRoutes: false },
+      { overwriteRoutes: false }
     )
 
     await performHealthCheckAfterUpdate({
@@ -92,7 +92,7 @@ describe('performHealthCheckAfterUpdate', () => {
         version: '0.0.1',
         envInfo: [],
       } as StatusInfo,
-      { overwriteRoutes: false },
+      { overwriteRoutes: false }
     )
 
     await expect(
@@ -107,7 +107,7 @@ describe('performHealthCheckAfterUpdate', () => {
         storageClient: mockStorageClient as any,
         checkInterval: 100,
         newFunctionZipUrl,
-      }),
+      })
     ).rejects.toThrow('Version mismatch, expected: 1.0.0, received: 0.0.1')
 
     expect(mockStorageClient.deleteBlob).toHaveBeenCalledTimes(0)
