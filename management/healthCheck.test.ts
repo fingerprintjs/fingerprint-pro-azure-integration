@@ -20,6 +20,8 @@ describe('performHealthCheckAfterUpdate', () => {
   beforeEach(() => {
     jest.restoreAllMocks()
 
+    mockStorageClient.deleteBlob.mockClear()
+
     fetchMock.reset()
   })
 
