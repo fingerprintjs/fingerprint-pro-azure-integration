@@ -5,11 +5,10 @@
   "sideEffects": false,
   "private": true,
   "scripts": {
-    "build": "rimraf dist && NODE_OPTIONS=\"--max_old_space_size=4098\" rollup -c rollup.config.mjs",
+    "build": "rimraf dist && NODE_OPTIONS=\"--max_old_space_size=4098\" rollup -c rollup.config.mjs && cp host.json dist && node scripts/copyLocalSettings.mjs",
     "build:release": "FPDCN=fpcdn.io INGRESS_API=api.fpjs.io IS_RELEASE_BUILD=true pnpm build",
     "watch": "pnpm build --watch",
     "prepare": "husky install",
-    "postbuild": "cp host.json dist && node scripts/copyLocalSettings.mjs",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore --max-warnings 0 .",
     "lint:fix": "pnpm lint --fix",
     "test": "jest",
