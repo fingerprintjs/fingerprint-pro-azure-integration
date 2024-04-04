@@ -1,5 +1,5 @@
 import { getSiteUrl, getStatusUrl } from './site'
-import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
+import { ExponentialBackoff, handleAll, retry, timeout, TimeoutStrategy, wrap } from 'cockatiel'
 import { StatusInfo } from '../../shared/status'
 
 export function doHealthCheck(siteName: string) {
@@ -7,11 +7,15 @@ export function doHealthCheck(siteName: string) {
 
   console.info(`Site url: ${url}`)
 
-  const policy = retry(handleAll, {
-    backoff: new ExponentialBackoff({
-      initialDelay: 500,
+  const policy = wrap(
+    retry(handleAll, {
+      backoff: new ExponentialBackoff({
+        initialDelay: 500,
+      }),
     }),
-  })
+    timeout(240_000, TimeoutStrategy.Aggressive)
+  )
+
   return policy.execute(async ({ attempt }) => {
     if (attempt > 1) {
       console.info(`Health check attempt ${attempt}`)
