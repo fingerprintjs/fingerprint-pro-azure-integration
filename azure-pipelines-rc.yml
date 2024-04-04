@@ -15,7 +15,7 @@ steps:
   displayName: 'Output tag'
   env:
     TAG: $(TAG)
-- script: pnpm install && pnpm exec playwright install && pnpm global add ts-node
+- script: npm install pnpm@8 -g && pnpm install && pnpm exec playwright install && pnpm global add ts-node
   displayName: 'Install dependencies'
 - script: ts-node scripts/downloadGithubReleasePackage.ts
   displayName: 'Download release artifact from GitHub'

@@ -12,7 +12,7 @@ pool:
 jobs:
   - job: mockE2E
     steps:
-      - script: pnpm install && pnpm exec playwright install
+      - script: npm install pnpm@8 -g && pnpm install && pnpm exec playwright install
         displayName: 'Install dependencies'
       - script: pnpm build
         displayName: 'Build functions'
@@ -80,7 +80,7 @@ jobs:
 
   - job: E2E
     steps:
-      - script: pnpm install --ignore-engines && npx playwright install
+      - script: npm install pnpm@8 -g && pnpm install && npx playwright install
         displayName: 'Install dependencies'
       - script: pnpm build
         displayName: 'Build functions'
