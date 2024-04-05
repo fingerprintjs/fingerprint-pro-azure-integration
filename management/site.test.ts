@@ -42,7 +42,7 @@ describe('getSiteStatusUrl', () => {
     })
 
     await expect(getSiteStatusUrl(client as any, 'resourceGroupName', 'siteName')).rejects.toThrow(
-      `Could not find proxy function for siteName in resourceGroupName resource group`,
+      `Could not find proxy function for siteName in resourceGroupName resource group`
     )
   })
 })

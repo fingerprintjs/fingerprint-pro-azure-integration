@@ -65,7 +65,7 @@ export function handleIngress({
             body: payload,
           })
         })
-      },
+      }
     )
 
     request.on('error', (error) => {

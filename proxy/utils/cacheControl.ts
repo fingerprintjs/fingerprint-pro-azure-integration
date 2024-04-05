@@ -11,7 +11,7 @@ export function updateCacheControlHeader(headerValue: string): string {
 function updateCacheControlAge(headerValue: string, type: 'max-age' | 's-maxage', cacheMaxAge: number): string {
   const cacheControlDirectives = headerValue.split(', ')
   const maxAgeIndex = cacheControlDirectives.findIndex(
-    (directive) => directive.split('=')[0].trim().toLowerCase() === type,
+    (directive) => directive.split('=')[0].trim().toLowerCase() === type
   )
 
   if (maxAgeIndex === -1) {

@@ -10,7 +10,7 @@ export async function getSiteStatusUrl(
   client: WebSiteManagementClient,
   resourceGroupName: string,
   siteName: string,
-  logger?: Logger,
+  logger?: Logger
 ) {
   const customerVariables = new CustomerVariables([new EnvCustomerVariables()], logger)
 
@@ -29,7 +29,7 @@ async function findProxyFunction(
   client: WebSiteManagementClient,
   resourceGroupName: string,
   siteName: string,
-  logger?: Logger,
+  logger?: Logger
 ) {
   const functions = client.webApps.listFunctions(resourceGroupName, siteName)
 

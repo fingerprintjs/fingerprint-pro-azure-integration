@@ -63,7 +63,7 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
             body: new Uint8Array(body),
           })
         })
-      },
+      }
     )
 
     request.on('error', (error) => {

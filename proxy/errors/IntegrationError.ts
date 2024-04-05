@@ -1,5 +1,8 @@
 export class IntegrationError extends Error {
-  constructor(message: string, readonly path: string) {
+  constructor(
+    message: string,
+    readonly path: string
+  ) {
     super(message)
   }
 

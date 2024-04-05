@@ -25,7 +25,7 @@ async function main() {
         `npm exec -y "git+https://github.com/fingerprintjs/dx-team-mock-for-proxy-integrations-e2e-tests.git" -- --api-url="https://${apiUrl}" --host="${host}" --cdn-proxy-path="${agentPath}" --ingress-proxy-path="${resultPath}"`,
         {
           stdio: 'inherit',
-        },
+        }
       )
     } catch (e) {
       console.error(e)

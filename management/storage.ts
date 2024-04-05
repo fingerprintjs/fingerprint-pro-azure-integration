@@ -5,7 +5,7 @@ export function removeOldFunctionFromStorage(
   oldZipUrl: string,
   newZipUrl: string,
   storageClient: ContainerClient,
-  logger?: Logger,
+  logger?: Logger
 ) {
   const oldZipName = extractBlobName(oldZipUrl)
   const newZipName = extractBlobName(newZipUrl)

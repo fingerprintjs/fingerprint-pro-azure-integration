@@ -13,7 +13,10 @@ export interface GetVariableResult {
  * Variables will be resolved in order in which providers are set.
  * */
 export class CustomerVariables {
-  constructor(private readonly providers: CustomerVariableProvider[], private readonly logger?: Logger) {}
+  constructor(
+    private readonly providers: CustomerVariableProvider[],
+    private readonly logger?: Logger
+  ) {}
 
   /**
    * Attempts to resolve customer variable using providers.
@@ -45,8 +48,8 @@ export class CustomerVariables {
           this.logger?.verbose(
             `Resolved customer variable ${variable} with provider ${provider.name}. Value: ${maybeObfuscateVariable(
               variable,
-              result,
-            )}`,
+              result
+            )}`
           )
 
           return {

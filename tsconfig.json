@@ -1,4 +1,5 @@
 {
+  "extends": "@fingerprintjs/tsconfig-dx-team/tsconfig.json",
   "compilerOptions": {
     "module": "ES2020",
     "target": "es2020",
@@ -10,7 +11,8 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "exactOptionalPropertyTypes": false
   },
   "include": [
     "proxy",

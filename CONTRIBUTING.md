@@ -2,7 +2,7 @@
 
 ## Working with code
 
-We prefer using [yarn](https://yarnpkg.com/) for installing dependencies and running scripts.
+We prefer using [pnpm](https://pnpm.io/) for installing dependencies and running scripts.
 
 For proposing changes, use the standard [pull request approach](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request). It's recommended to discuss fixes or new functionality in the Issues, first.
 
@@ -11,9 +11,9 @@ For proposing changes, use the standard [pull request approach](https://docs.git
 * The `develop` branch functions as a candidate for the next release. Create your pull requests into this branch. The code in `develop` must always pass the tests.
 
 ### How to build
-* After cloning the repository, run `yarn install` to install dependencies.
+* After cloning the repository, run `pnpm install` to install dependencies.
 
-* Run `yarn build` to build the project into the `dist` folder. The created `dist/fingerprintjs-pro-azure-function/fingerprintjs-pro-azure-function.js` and `dist/fingerprintjs-pro-azure-function-management/fingerprintjs-pro-azure-function-management.js` are meant to be deployed to Azure Functions.
+* Run `pnpm build` to build the project into the `dist` folder. The created `dist/fingerprintjs-pro-azure-function/fingerprintjs-pro-azure-function.js` and `dist/fingerprintjs-pro-azure-function-management/fingerprintjs-pro-azure-function-management.js` are meant to be deployed to Azure Functions.
 
 ### How to deploy to Azure Functions
 
@@ -35,20 +35,20 @@ You can invoke the function from your local environment using the [start command
 
 ### How to run the function locally
 
-* Run `yarn start` to run and debug the function locally via [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-develop-local).
-* You can run `yarn emulate-storage` to locally emulate your Azure Storage account using [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio). 
+* Run `pnpm start` to run and debug the function locally via [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-develop-local).
+* You can run `pnpm emulate-storage` to locally emulate your Azure Storage account using [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio). 
 
 
 ### Code style
 
 Consistent code formatting is enforced by [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/). To check your code, run:
 ```shell
-yarn lint
+pnpm lint
 ```
 
 You don't need to do this manually, CI runs the check automatically. To fix all auto-fixable issues at once, run:
 ```shell
-yarn lint:fix
+pnpm lint:fix
 ```
 
 ### Commit style

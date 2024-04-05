@@ -220,7 +220,7 @@ describe('Result Endpoint', function () {
         search,
       }),
       expect.anything(),
-      expect.anything(),
+      expect.anything()
     )
     expect(https.request).toHaveBeenCalledTimes(1)
   })
@@ -241,7 +241,7 @@ describe('Result Endpoint', function () {
         search,
       }),
       expect.anything(),
-      expect.anything(),
+      expect.anything()
     )
     expect(https.request).toHaveBeenCalledTimes(1)
   })
@@ -269,7 +269,7 @@ describe('Result Endpoint', function () {
         search,
       }),
       expect.anything(),
-      expect.anything(),
+      expect.anything()
     )
     expect(https.request).toHaveBeenCalledTimes(1)
   })
@@ -290,7 +290,7 @@ describe('Result Endpoint', function () {
         search,
       }),
       expect.anything(),
-      expect.anything(),
+      expect.anything()
     )
     expect(https.request).toHaveBeenCalledTimes(1)
   })
@@ -372,7 +372,7 @@ describe('Result Endpoint', function () {
       const ctx = mockContext(req)
 
       await proxy(ctx, req)
-    },
+    }
   )
 })
 

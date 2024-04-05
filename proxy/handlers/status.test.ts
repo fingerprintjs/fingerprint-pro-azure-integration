@@ -8,8 +8,11 @@ const fp: FormPart = {
   value: Buffer.from(''),
 }
 const form: Form = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   get: (_: string) => fp,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getAll: (_: string) => [fp],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   has: (_: string) => true,
   length: 0,
   *[Symbol.iterator]() {},
