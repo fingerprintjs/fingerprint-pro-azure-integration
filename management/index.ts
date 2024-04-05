@@ -24,7 +24,12 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
 
   const { resourceGroupName, appName, subscriptionId } = env
 
-  const latestFunction = await getLatestFunctionZip(context.log, process.env.GITHUB_TOKEN, config.version)
+  const latestFunction = await getLatestFunctionZip(
+    context.log,
+    process.env.GITHUB_TOKEN,
+    config.version,
+    env.allowPrerelease
+  )
 
   if (!latestFunction) {
     context.log.info('No new release found')
