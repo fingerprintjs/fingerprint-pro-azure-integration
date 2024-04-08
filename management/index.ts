@@ -10,11 +10,17 @@ import { getSiteStatusUrl } from './site'
 import { performHealthCheckAfterUpdate } from './healthCheck'
 import { WEBSITE_RUN_FROM_PACKAGE, USER_ASSIGNED_ENTITY_CLIENT_ID } from './settings'
 import { config } from './config'
+import crypto from 'crypto'
 
 const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
   if (timer.isPastDue) {
     context.log('Timer function is running late!')
   }
+
+  // @azure/arm-appservice uses library under the hood which needs access to global crypto object
+  Object.assign(global, {
+    crypto: crypto.webcrypto,
+  })
 
   const env = gatherEnvs(context.log)
 
