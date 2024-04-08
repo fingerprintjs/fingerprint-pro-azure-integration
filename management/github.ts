@@ -6,6 +6,20 @@ export function bearer(token?: string) {
   return `Bearer ${token}`
 }
 
+async function getLatestGithubReleaseWithPrelease(token?: string) {
+  const response = await fetch(`https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases`, {
+    headers: token
+      ? {
+          Authorization: bearer(token),
+        }
+      : undefined,
+  })
+
+  const releases = (await response.json()) as GithubRelease[]
+
+  return releases?.[0]
+}
+
 export async function getLatestGithubRelease(token?: string) {
   const response = await fetch(
     `https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases/latest`,
@@ -15,7 +29,7 @@ export async function getLatestGithubRelease(token?: string) {
             Authorization: bearer(token),
           }
         : undefined,
-    },
+    }
   )
 
   return (await response.json()) as GithubRelease
@@ -41,12 +55,23 @@ export async function downloadReleaseAsset(url: string, token?: string, logger?:
 
 export async function findFunctionZip(assets: GithubReleaseAsset[]) {
   return assets.find(
-    (asset) => asset.name === 'package.zip' && asset.state === 'uploaded' && asset.content_type === 'application/zip',
+    (asset) => asset.name === 'package.zip' && asset.state === 'uploaded' && asset.content_type === 'application/zip'
   )
 }
 
-export async function getLatestFunctionZip(logger?: Logger, token?: string, version = config.version) {
-  const release = await getLatestGithubRelease(token)
+export async function getLatestFunctionZip(
+  logger?: Logger,
+  token?: string,
+  version = config.version,
+  allowPrerelease = false
+) {
+  if (allowPrerelease) {
+    logger?.info('Pre-releases are allowed')
+  }
+
+  const release = allowPrerelease
+    ? await getLatestGithubReleaseWithPrelease(token)
+    : await getLatestGithubRelease(token)
 
   if (!isSemverGreater(release.tag_name, version)) {
     logger?.verbose(`Latest release ${release.tag_name} is not greater than current version ${version}`)

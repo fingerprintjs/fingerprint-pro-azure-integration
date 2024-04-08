@@ -1,3 +1,24 @@
+## [1.4.0-rc.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.3.0...v1.4.0-rc.1) (2024-04-08)
+
+
+### Features
+
+* update dependencies ([40fb0a7](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/40fb0a7cfa5cebe7f682ea66083c90b88a11e00c))
+
+## [1.4.0-rc.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.3.0...v1.4.0-rc.1) (2024-04-08)
+
+
+### Features
+
+* update dependencies ([40fb0a7](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/40fb0a7cfa5cebe7f682ea66083c90b88a11e00c))
+
+## [1.4.0-rc.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.3.0...v1.4.0-rc.1) (2024-04-05)
+
+
+### Features
+
+* update dependencies ([40fb0a7](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/40fb0a7cfa5cebe7f682ea66083c90b88a11e00c))
+
 ## [1.3.0](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.2.4...v1.3.0) (2023-12-20)
 
 

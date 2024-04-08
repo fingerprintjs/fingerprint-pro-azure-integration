@@ -14,6 +14,6 @@ describe('maybe obfuscate variable', () => {
       const result = maybeObfuscateVariable(variable, 'test')
 
       expect(result).toBe('test')
-    },
+    }
   )
 })

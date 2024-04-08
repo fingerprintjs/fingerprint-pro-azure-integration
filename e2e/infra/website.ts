@@ -5,7 +5,7 @@ import { KnownKind, KnownSkuName } from '@azure/arm-storage'
 import { execSync } from 'child_process'
 import invariant from 'tiny-invariant'
 import { ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob'
-import glob from 'glob'
+import { globSync } from 'glob'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
 
 const websiteDistPath = path.resolve(__dirname, '../../example-website/dist')
@@ -45,7 +45,7 @@ export async function deployWebsite(resourceGroup: string) {
     {
       env: process.env,
       stdio: 'pipe',
-    },
+    }
   )
   console.info('Static website enabled.')
 
@@ -84,7 +84,7 @@ async function doHealthCheck(url: string) {
 }
 
 async function uploadWebsite(container: ContainerClient) {
-  const files = glob.sync(path.join(websiteDistPath, '**', '*'), {
+  const files = globSync(path.join(websiteDistPath, '**', '*'), {
     nodir: true,
   })
 
@@ -96,14 +96,14 @@ async function uploadWebsite(container: ContainerClient) {
       const contents = fs.readFileSync(file)
 
       const blob = container.getBlockBlobClient(
-        parsedPath.dir.endsWith('assets') ? `assets/${parsedPath.base}` : parsedPath.base,
+        parsedPath.dir.endsWith('assets') ? `assets/${parsedPath.base}` : parsedPath.base
       )
       await blob.uploadData(contents, {
         blobHTTPHeaders: {
           blobContentType: getContentType(parsedPath.ext),
         },
       })
-    }),
+    })
   )
 }
 

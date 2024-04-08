@@ -109,7 +109,7 @@ export async function provisionFrontDoor({
     `fpjs-e2e-proxy-${Date.now()}`,
     {
       location: 'Global',
-    },
+    }
   )
   invariant(endpoint.name, 'endpoint.name is required')
   invariant(endpoint.hostName, 'endpoint.hostName is required')

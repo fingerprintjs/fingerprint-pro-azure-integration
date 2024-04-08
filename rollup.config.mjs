@@ -1,4 +1,4 @@
-import typescript from 'rollup-plugin-typescript2'
+import typescript from '@rollup/plugin-typescript'
 import jsonPlugin from '@rollup/plugin-json'
 import licensePlugin from 'rollup-plugin-license'
 import dtsPlugin from 'rollup-plugin-dts'
@@ -15,18 +15,16 @@ const outputDirectory = 'dist'
 
 function getEnv(key, defaultValue) {
   const value = process.env[key]
-
-  if (!value && !defaultValue) {
-    throw new Error(`Missing environment variable ${key}`)
+  if (value) {
+    return value
   }
 
-  if (!value) {
+  if (defaultValue) {
     console.warn(`Missing environment variable "${key}". Using default value: ${defaultValue}`)
-
     return defaultValue
   }
 
-  return value
+  throw new Error(`Missing environment variable ${key}`)
 }
 
 function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFunctionJson) {
@@ -88,7 +86,7 @@ function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFu
         tsconfig: 'tsconfig.app.json',
       }),
       commonjs(),
-      nodeResolve({ preferBuiltins: false, exportConditions: ['node'] }),
+      nodeResolve({ preferBuiltins: false }),
       replace({
         __FPCDN__: env.fpcdn,
         __INGRESS_API__: env.ingressApi,

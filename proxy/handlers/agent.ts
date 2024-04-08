@@ -29,7 +29,7 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
     }
   }
 
-  const url = new URL(`https://${config.fpdcdn}`)
+  const url = new URL(`https://${config.fpcdn}`)
   url.pathname = getEndpoint(apiKey, version, loaderVersion)
   addTrafficMonitoringSearchParamsForProCDN(url)
 
@@ -63,7 +63,7 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
             body: new Uint8Array(body),
           })
         })
-      },
+      }
     )
 
     request.on('error', (error) => {

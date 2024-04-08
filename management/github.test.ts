@@ -40,7 +40,7 @@ beforeEach(() => {
 
   fetchMock.get(
     `https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases/latest`,
-    mockRelease,
+    mockRelease
   )
 })
 

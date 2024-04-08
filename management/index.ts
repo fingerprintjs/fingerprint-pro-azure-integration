@@ -10,11 +10,17 @@ import { getSiteStatusUrl } from './site'
 import { performHealthCheckAfterUpdate } from './healthCheck'
 import { WEBSITE_RUN_FROM_PACKAGE, USER_ASSIGNED_ENTITY_CLIENT_ID } from './settings'
 import { config } from './config'
+import crypto from 'crypto'
 
 const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
   if (timer.isPastDue) {
     context.log('Timer function is running late!')
   }
+
+  // @azure/arm-appservice uses library under the hood which needs access to global crypto object
+  Object.assign(global, {
+    crypto: crypto.webcrypto,
+  })
 
   const env = gatherEnvs(context.log)
 
@@ -24,7 +30,12 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
 
   const { resourceGroupName, appName, subscriptionId } = env
 
-  const latestFunction = await getLatestFunctionZip(context.log, process.env.GITHUB_TOKEN, config.version)
+  const latestFunction = await getLatestFunctionZip(
+    context.log,
+    process.env.GITHUB_TOKEN,
+    config.version,
+    env.allowPrerelease
+  )
 
   if (!latestFunction) {
     context.log.info('No new release found')
@@ -74,7 +85,7 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
       const storageClient = new storageBlob.ContainerClient(
         containerUrl,
         // We must use StorageSharedKeyCredential in order to generate SAS tokens
-        new StorageSharedKeyCredential(accountName, key),
+        new StorageSharedKeyCredential(accountName, key)
       )
 
       const blobClient = storageClient.getBlockBlobClient(latestFunction.name)
