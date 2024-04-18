@@ -17,10 +17,6 @@ const DEFAULT_VERSION = '3'
 function copySearchParams(query: HttpRequestQuery, newURL: URL): void {
   const params = new URLSearchParams(query)
 
-  params.delete('apiKey')
-  params.delete('version')
-  params.delete('loaderVersion')
-
   newURL.search = params.toString()
 }
 

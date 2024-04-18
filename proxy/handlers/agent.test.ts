@@ -77,7 +77,7 @@ describe('Agent Endpoint', () => {
     const [url] = requestSpy.mock.calls[0]
 
     expect(url.toString()).toEqual(
-      `https://${origin}/v5/ujKG34hUYKLJKJ1F?customQuery=123&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
+      `https://${origin}/v5/ujKG34hUYKLJKJ1F?apiKey=ujKG34hUYKLJKJ1F&version=5&customQuery=123&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
     )
   })
 
@@ -93,7 +93,7 @@ describe('Agent Endpoint', () => {
     const [url] = requestSpy.mock.calls[0]
 
     expect(url.toString()).toEqual(
-      `https://${origin}/v5/ujKG34hUYKLJKJ1F?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
+      `https://${origin}/v5/ujKG34hUYKLJKJ1F?apiKey=ujKG34hUYKLJKJ1F&version=5&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
     )
   })
 
@@ -110,7 +110,7 @@ describe('Agent Endpoint', () => {
     const [url] = requestSpy.mock.calls[0]
 
     expect(url.toString()).toEqual(
-      `https://${origin}/v5/ujKG34hUYKLJKJ1F/loader_v3.6.5.js?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
+      `https://${origin}/v5/ujKG34hUYKLJKJ1F/loader_v3.6.5.js?apiKey=ujKG34hUYKLJKJ1F&version=5&loaderVersion=3.6.5&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
     )
   })
 
