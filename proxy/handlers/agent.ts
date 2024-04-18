@@ -49,6 +49,8 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
 
   const headers = filterRequestHeaders(httpRequest.headers)
 
+  delete headers['cookie']
+
   return new Promise<HttpResponseSimple>((resolve) => {
     const data: any[] = []
 

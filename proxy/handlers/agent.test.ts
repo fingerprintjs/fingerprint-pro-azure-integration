@@ -231,7 +231,7 @@ describe('Agent Endpoint', () => {
     })
   })
 
-  test('Req body and headers are the same, expect cookies, which should include only _iidt cookie', async () => {
+  test('Req body and headers are the same, expect cookies, which should be omitted', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
       apiKey: 'ujKG34hUYKLJKJ1F',
       version: '5',
@@ -259,7 +259,7 @@ describe('Agent Endpoint', () => {
 
     expect(options.headers).toEqual({
       ...req.headers,
-      cookie: '_iidt=GlMQaHMfzYvomxCuA7Uymy7ArmjH04jPkT+enN7j/Xk8tJG+UYcQV+Qw60Ry4huw9bmDoO/smyjQp5vLCuSf8t4Jow==',
+      cookie: undefined,
     })
   })
 
