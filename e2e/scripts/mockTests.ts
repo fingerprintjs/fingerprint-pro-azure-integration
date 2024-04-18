@@ -1,5 +1,6 @@
 import { execSync } from 'child_process'
 import { readTestInfo } from '../shared/testInfo'
+import pkg from '../../package.json'
 
 async function main() {
   let hasError = false
@@ -22,7 +23,7 @@ async function main() {
 
     try {
       execSync(
-        `npm exec -y "git+https://github.com/fingerprintjs/dx-team-mock-for-proxy-integrations-e2e-tests.git" -- --api-url="https://${apiUrl}" --host="${host}" --cdn-proxy-path="${agentPath}" --ingress-proxy-path="${resultPath}"`,
+        `npm exec -y "git+https://github.com/fingerprintjs/dx-team-mock-for-proxy-integrations-e2e-tests.git" -- --api-url="https://${apiUrl}" --host="${host}" --cdn-proxy-path="${agentPath}" --ingress-proxy-path="${resultPath}" --traffic-name="fingerprint-pro-azure" --integration-version=${pkg.version}`,
         {
           stdio: 'inherit',
         }
