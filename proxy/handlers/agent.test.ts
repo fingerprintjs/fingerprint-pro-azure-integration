@@ -64,6 +64,23 @@ describe('Agent Endpoint', () => {
     })
   })
 
+  test('Call with custom query parameters', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
+      apiKey: 'ujKG34hUYKLJKJ1F',
+      version: '5',
+      customQuery: '123',
+    })
+    const ctx = mockContext(req)
+
+    await proxy(ctx, req)
+
+    const [url] = requestSpy.mock.calls[0]
+
+    expect(url.toString()).toEqual(
+      `https://${origin}/v5/ujKG34hUYKLJKJ1F?customQuery=123&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
+    )
+  })
+
   test('Call with version', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
       apiKey: 'ujKG34hUYKLJKJ1F',
