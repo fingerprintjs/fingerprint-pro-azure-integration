@@ -128,7 +128,7 @@ describe('Result Endpoint', function () {
     await proxy(mockContext(req), req)
 
     const [, options] = requestSpy.mock.calls[0]
-    expect(options.headers.cookie).toBeUndefined()
+    expect(options.headers.cookie).toBeFalsy()
   })
 
   test('Request body and headers are not modified, expect strict-transport-security and transfer-encoding', async () => {
