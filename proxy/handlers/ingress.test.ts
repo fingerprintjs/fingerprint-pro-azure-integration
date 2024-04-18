@@ -114,6 +114,23 @@ describe('Result Endpoint', function () {
     expect(options.headers.cookie).toBe('_iidt=7A03Gwg')
   })
 
+  test('Cookies are undefined if _iidt is not est', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+
+    req.headers.cookie = '_vid_t=gEFRuIQlzYmv692/UL4GLA=='
+
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
+      },
+    })
+
+    await proxy(mockContext(req), req)
+
+    const [, options] = requestSpy.mock.calls[0]
+    expect(options.headers.cookie).toBeUndefined()
+  })
+
   test('Request body and headers are not modified, expect strict-transport-security and transfer-encoding', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
     const resHeaders = {

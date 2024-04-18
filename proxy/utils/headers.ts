@@ -24,9 +24,14 @@ export function filterRequestHeaders(headers: HttpRequestHeaders) {
         headerValue = headerValue.split(/; */).join('; ')
 
         headerValue = filterCookie(headerValue, (key) => key === FPJS_COOKIE_NAME)
-      }
 
-      result[headerName] = headerValue
+        // Only set cookie header if there are relevant cookies
+        if (headerValue) {
+          result[headerName] = headerValue
+        }
+      } else {
+        result[headerName] = headerValue
+      }
     }
 
     return result
