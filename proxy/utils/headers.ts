@@ -21,12 +21,15 @@ export function filterRequestHeaders(headers: HttpRequestHeaders) {
       let headerValue = value
 
       if (headerName === 'cookie') {
-        headerValue = headerValue.split(/; */).join('; ')
-
         headerValue = filterCookie(headerValue, (key) => key === FPJS_COOKIE_NAME)
-      }
 
-      result[headerName] = headerValue
+        // Only set cookie header if there are relevant cookies
+        if (headerValue) {
+          result[headerName] = headerValue
+        }
+      } else {
+        result[headerName] = headerValue
+      }
     }
 
     return result

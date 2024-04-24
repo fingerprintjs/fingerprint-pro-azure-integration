@@ -2,7 +2,7 @@ import { HttpRequest, Logger } from '@azure/functions'
 import { config } from '../utils/config'
 import * as https from 'https'
 import { filterRequestHeaders, updateResponseHeadersForAgentDownload } from '../utils/headers'
-import { HttpResponseSimple } from '@azure/functions/types/http'
+import { HttpRequestQuery, HttpResponseSimple } from '@azure/functions/types/http'
 import { addTrafficMonitoringSearchParamsForProCDN } from '../utils/traffic'
 import { IntegrationError } from '../errors/IntegrationError'
 
@@ -13,6 +13,12 @@ export interface DownloadAgentParams {
 }
 
 const DEFAULT_VERSION = '3'
+
+function copySearchParams(query: HttpRequestQuery, newURL: URL): void {
+  const params = new URLSearchParams(query)
+
+  newURL.search = params.toString()
+}
 
 export async function downloadAgent({ httpRequest, logger, path }: DownloadAgentParams): Promise<HttpResponseSimple> {
   const apiKey = httpRequest.query.apiKey
@@ -30,12 +36,16 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
   }
 
   const url = new URL(`https://${config.fpcdn}`)
+  copySearchParams(httpRequest.query, url)
+
   url.pathname = getEndpoint(apiKey, version, loaderVersion)
   addTrafficMonitoringSearchParamsForProCDN(url)
 
   logger.verbose('Downloading agent from', url.toString())
 
   const headers = filterRequestHeaders(httpRequest.headers)
+
+  delete headers['cookie']
 
   return new Promise<HttpResponseSimple>((resolve) => {
     const data: any[] = []
