@@ -12,7 +12,7 @@ async function main() {
     throw new Error('API_URL is not set')
   }
 
-  for (const info of testInfo) {
+  for (const info of testInfo.tests) {
     const agentPath = `${info.routePrefix}/${info.agentDownloadPath}`
     const resultPath = `${info.routePrefix}/${info.getResultPath}`
     const host = info.functionAppUrl

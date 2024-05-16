@@ -61,7 +61,6 @@ export async function deployE2EInfrastructure({
     return {
       waitForFrontDoor,
       testInfo: {
-        resourceGroup,
         frontdoorUrl,
         functionAppUrl: `https://${functionAppHost}`,
         websiteUrl: website.url,

@@ -6,7 +6,7 @@ import invariant from 'tiny-invariant'
 export const test = baseTest.extend<{ azureTestInfo: TestInfo }>({
   azureTestInfo: async ({ baseURL }, use) => {
     const testInfo = readTestInfo()
-    const project = testInfo.find((info) => info.frontdoorUrl === baseURL)
+    const project = testInfo.tests.find((info) => info.frontdoorUrl === baseURL)
 
     invariant(project, 'project is required')
 
