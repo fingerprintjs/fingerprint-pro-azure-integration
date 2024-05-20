@@ -1,5 +1,5 @@
 import { createResourceGroup, removeResourceGroup } from '../resourceGroup'
-import { writeTestInfo } from '../../shared/testInfo'
+import { addTestInfo, initTestInfo } from '../../shared/testInfo'
 import { deployE2EInfrastructure, DeployE2EInfrastructureOptions, DeployE2EInfrastructureResult } from '../infra'
 import { destroyTestInfo } from '../destroyTestInfo'
 
@@ -9,6 +9,8 @@ function getId() {
 
 async function main() {
   const resourceGroup = await createResourceGroup()
+
+  initTestInfo(resourceGroup)
 
   const results: DeployE2EInfrastructureResult[] = []
 
@@ -32,11 +34,11 @@ async function main() {
       const result = await deployE2EInfrastructure(variant)
 
       results.push(result)
+
+      addTestInfo(result.testInfo)
     }
 
     await Promise.all(results.map((r) => r.waitForFrontDoor()))
-
-    writeTestInfo(results.map((r) => r.testInfo))
   } catch (error) {
     for (const result of results) {
       await destroyTestInfo(result.testInfo)

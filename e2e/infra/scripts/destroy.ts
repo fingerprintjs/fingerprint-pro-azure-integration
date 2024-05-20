@@ -5,15 +5,11 @@ import { destroyTestInfo } from '../destroyTestInfo'
 async function main() {
   const testInfo = readTestInfo()
 
-  const resourceGroups = new Set(testInfo.map((t) => t.resourceGroup))
-
-  for (const info of testInfo) {
+  for (const info of testInfo.tests) {
     await destroyTestInfo(info)
   }
 
-  for (const resourceGroup of resourceGroups) {
-    await removeResourceGroup(resourceGroup)
-  }
+  await removeResourceGroup(testInfo.resourceGroup)
 
   deleteTestInfo()
 }
