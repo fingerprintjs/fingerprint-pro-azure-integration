@@ -15,7 +15,7 @@ async function main() {
   for (const info of testInfo.tests) {
     const agentPath = `${info.routePrefix}/${info.agentDownloadPath}`
     const resultPath = `${info.routePrefix}/${info.getResultPath}`
-    const host = info.functionAppUrl
+    const host = info.frontdoorUrl
 
     const agentUrl = new URL(host)
     agentUrl.pathname = agentPath
