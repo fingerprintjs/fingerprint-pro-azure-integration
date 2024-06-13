@@ -27,8 +27,8 @@ const mockReq = {
     'strict-transport-security': 'max-age=600',
     'x-azure-requestchain': 'hops=1',
     'x-azure-socketip': '46.204.4.119',
-    'x-forwarded-for': '127.0.0.1',
-    'x-azure-clientip': '127.0.0.1',
+    'x-forwarded-for': '127.0.0.1:12345',
+    'x-azure-clientip': '127.0.0.1:12345',
     'x-forwarded-host': 'fpjs.sh',
   },
   user: null,
@@ -163,7 +163,7 @@ describe('prepareHeadersForIngressAPI', () => {
   it('should set client ip and proxy secret', () => {
     const result = prepareHeadersForIngressAPI(mockReq, 'secret')
 
-    expect(result['fpjs-proxy-client-ip']).toBe(mockReq.headers['x-forwarded-for'])
+    expect(result['fpjs-proxy-client-ip']).toBe('127.0.0.1')
     expect(result['fpjs-proxy-secret']).toBe('secret')
     expect(result['fpjs-proxy-forwarded-host']).toBe('fpjs.sh')
   })
@@ -171,7 +171,7 @@ describe('prepareHeadersForIngressAPI', () => {
   it('should set correct host', () => {
     const result = prepareHeadersForIngressAPI(mockReq, 'secret')
 
-    expect(result['fpjs-proxy-client-ip']).toBe(mockReq.headers['x-forwarded-for'])
+    expect(result['fpjs-proxy-client-ip']).toBe('127.0.0.1')
     expect(result['fpjs-proxy-secret']).toBe('secret')
     expect(result['fpjs-proxy-forwarded-host']).toBe('fpjs.sh')
   })
@@ -179,7 +179,7 @@ describe('prepareHeadersForIngressAPI', () => {
   it('should not set secret if it is undefined', () => {
     const result = prepareHeadersForIngressAPI(mockReq, undefined)
 
-    expect(result['fpjs-proxy-client-ip']).toBe(mockReq.headers['x-azure-clientip'])
+    expect(result['fpjs-proxy-client-ip']).toBe('127.0.0.1')
     expect(result['fpjs-proxy-secret']).toBe(undefined)
     expect(result['fpjs-proxy-forwarded-host']).toBe(undefined)
   })

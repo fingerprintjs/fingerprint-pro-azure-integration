@@ -70,13 +70,22 @@ export function updateResponseHeaders(
 }
 
 function resolveClientIp(request: HttpRequest, logger?: Logger) {
-  const clientIp = request.headers['x-azure-clientip'] || request.headers['x-client-ip'] || request.headers['x-real-ip']
+  const clientIp =
+    request.headers['x-azure-clientip'] || request.headers['x-client-ip'] || request.headers['x-real-ip'] || ''
 
   logger?.verbose('Client IP resolved', {
     clientIp,
   })
 
-  return clientIp
+  return stripPort(clientIp)
+}
+
+function stripPort(ip: string) {
+  if (!ip.includes(':')) {
+    return ip
+  }
+
+  return ip.split(':')[0]
 }
 
 export function getHost(request: Pick<HttpRequest, 'headers' | 'url'>) {
