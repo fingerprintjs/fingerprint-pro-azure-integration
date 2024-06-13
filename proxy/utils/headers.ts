@@ -92,6 +92,10 @@ function resolveClientIp(request: HttpRequest, logger?: Logger) {
   return clientIp
 }
 
+export function getHost(request: Pick<HttpRequest, 'headers' | 'url'>) {
+  return request.headers['x-forwarded-host'] || request.headers.host || new URL(request.url).hostname
+}
+
 export function prepareHeadersForIngressAPI(request: HttpRequest, preSharedSecret?: string, logger?: Logger) {
   const headers = filterRequestHeaders(request.headers)
 
@@ -99,7 +103,7 @@ export function prepareHeadersForIngressAPI(request: HttpRequest, preSharedSecre
 
   if (preSharedSecret) {
     headers['fpjs-proxy-secret'] = preSharedSecret
-    headers['fpjs-proxy-forwarded-host'] = new URL(request.url).hostname
+    headers['fpjs-proxy-forwarded-host'] = getHost(request)
   }
 
   return headers
