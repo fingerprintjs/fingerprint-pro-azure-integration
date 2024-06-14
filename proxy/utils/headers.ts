@@ -2,6 +2,7 @@ import * as http from 'http'
 import { HttpRequest, HttpRequestHeaders, HttpResponseHeaders, Logger } from '@azure/functions'
 import { updateCacheControlHeader } from './cacheControl'
 import { filterCookie } from './cookies'
+import { stripPort } from './ip'
 
 const CACHE_CONTROL_HEADER_NAME = 'cache-control'
 
@@ -78,14 +79,6 @@ function resolveClientIp(request: HttpRequest, logger?: Logger) {
   })
 
   return stripPort(clientIp)
-}
-
-function stripPort(ip: string) {
-  if (!ip.includes(':')) {
-    return ip
-  }
-
-  return ip.split(':')[0]
 }
 
 export function getHost(request: Pick<HttpRequest, 'headers' | 'url'>) {
