@@ -81,7 +81,7 @@ function resolveClientIp(request: HttpRequest, logger?: Logger) {
 }
 
 export function getHost(request: Pick<HttpRequest, 'headers' | 'url'>) {
-  return request.headers['x-forwarded-host'] || request.headers.host || new URL(request.url).hostname
+  return request.headers['x-forwarded-host'] || new URL(request.url).hostname
 }
 
 export function prepareHeadersForIngressAPI(request: HttpRequest, preSharedSecret?: string, logger?: Logger) {
