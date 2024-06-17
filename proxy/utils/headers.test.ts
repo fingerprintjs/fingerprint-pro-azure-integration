@@ -26,7 +26,7 @@ const mockReq = {
     'x-edge-qqq': 'x-edge-qqq',
     'strict-transport-security': 'max-age=600',
     'x-azure-requestchain': 'hops=1',
-    'x-azure-socketip': '46.204.4.119',
+    'x-azure-clientip': '46.204.4.119',
     'x-forwarded-for': '127.0.0.1:12345',
     'x-azure-socketip': '127.0.0.1:12345',
     'x-forwarded-host': 'fpjs.sh',
