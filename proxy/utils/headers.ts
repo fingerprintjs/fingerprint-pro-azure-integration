@@ -72,7 +72,7 @@ export function updateResponseHeaders(
 
 function resolveClientIp(request: HttpRequest, logger?: Logger) {
   const clientIp =
-    request.headers['x-azure-clientip'] || request.headers['x-client-ip'] || request.headers['x-real-ip'] || ''
+    request.headers['x-azure-socketip'] || request.headers['x-client-ip'] || request.headers['x-real-ip'] || ''
 
   logger?.verbose('Client IP resolved', {
     clientIp,

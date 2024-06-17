@@ -40,7 +40,7 @@ export const mockRequestGet = (url: string, uri: string, query: HttpRequestQuery
       'x-azure-socketip': '46.204.4.119',
       'x-forwarded-for': '127.0.0.1',
       'x-client-ip': '128.0.0.1',
-      'x-azure-clientip': '127.0.0.1',
+      'x-azure-socketip': '127.0.0.1',
     },
     query,
     params: {
@@ -69,7 +69,7 @@ export const mockRequestPost = (url: string, uri: string) => {
       'x-azure-socketip': '46.204.4.119',
       'x-forwarded-for': '127.0.0.1',
       'x-client-ip': '128.0.0.1',
-      'x-azure-clientip': '127.0.0.1',
+      'x-azure-socketip': '127.0.0.1',
     },
     query: {},
     params: {
