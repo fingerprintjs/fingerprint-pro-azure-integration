@@ -53,7 +53,7 @@ async function main() {
       // 5 minutes
       maxDelay: 1000 * 60 * 5,
     }),
-    maxAttempts: 3,
+    maxAttempts: 5,
   })
 
   try {
