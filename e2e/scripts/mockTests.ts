@@ -1,8 +1,9 @@
 import { execSync } from 'child_process'
 import { readTestInfo } from '../shared/testInfo'
 import pkg from '../../package.json'
+import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
 
-async function main() {
+async function doMockTests() {
   let hasError = false
   const testInfo = readTestInfo()
 
@@ -42,6 +43,24 @@ async function main() {
   }
 
   if (hasError) {
+    throw new Error('One or more tests failed')
+  }
+}
+
+async function main() {
+  const policy = retry(handleAll, {
+    backoff: new ExponentialBackoff({
+      // 5 minutes
+      maxDelay: 1000 * 60 * 5,
+    }),
+    maxAttempts: 3,
+  })
+
+  try {
+    await policy.execute(doMockTests)
+  } catch (e) {
+    console.error(e)
+
     process.exit(1)
   }
 }
