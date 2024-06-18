@@ -10,6 +10,7 @@ import {
 import { KnownSessionAffinityEnabledState } from '@azure/arm-frontdoor'
 import invariant from 'tiny-invariant'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
+import { wait } from '../../shared/wait'
 
 export interface ProvisionFrontDoorParams {
   resourceGroup: string
@@ -155,6 +156,9 @@ export async function provisionFrontDoor({
   }
 }
 
+// 4 minutes
+const ADDITIONAL_WAIT = 240_000
+
 async function waitForFrontDoor(url: string) {
   console.info('Waiting for front door to be ready...', url)
 
@@ -166,7 +170,7 @@ async function waitForFrontDoor(url: string) {
     maxAttempts: 40,
   })
 
-  return policy.execute(async ({ attempt }) => {
+  await policy.execute(async ({ attempt }) => {
     if (attempt > 1) {
       console.info(`Attempt ${attempt}...`)
     }
@@ -184,4 +188,7 @@ async function waitForFrontDoor(url: string) {
 
     console.log('Frontdoor is ready!')
   })
+
+  // Wait additional ADDITIONAL_WAIT ms, to make sure that frontdoor is fully ready. Otherwise it might cause flaky tests.
+  await wait(ADDITIONAL_WAIT)
 }
