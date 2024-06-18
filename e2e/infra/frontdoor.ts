@@ -156,8 +156,8 @@ export async function provisionFrontDoor({
   }
 }
 
-// 6 minutes
-const ADDITIONAL_WAIT = 360_000
+// 10 minutes
+const ADDITIONAL_WAIT = 600_000
 
 async function waitForFrontDoor(url: string) {
   console.info('Waiting for front door to be ready...', url)
@@ -185,9 +185,11 @@ async function waitForFrontDoor(url: string) {
     if (text.includes('Page not found')) {
       throw new Error('Page not found')
     }
-
-    console.log('Frontdoor is ready!')
   })
+
+  console.info(
+    `Frontdoor is ready! Waiting additional ${ADDITIONAL_WAIT / 1000} seconds to make sure it is fully operational...`
+  )
 
   // Wait additional ADDITIONAL_WAIT ms, to make sure that frontdoor is fully ready. Otherwise it might cause flaky tests.
   await wait(ADDITIONAL_WAIT)
