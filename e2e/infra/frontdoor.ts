@@ -156,8 +156,8 @@ export async function provisionFrontDoor({
   }
 }
 
-// 4 minutes
-const ADDITIONAL_WAIT = 240_000
+// 6 minutes
+const ADDITIONAL_WAIT = 360_000
 
 async function waitForFrontDoor(url: string) {
   console.info('Waiting for front door to be ready...', url)
