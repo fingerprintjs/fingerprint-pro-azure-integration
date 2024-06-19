@@ -1,3 +1,24 @@
+## [1.4.1-rc.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.4.0...v1.4.1-rc.1) (2024-06-19)
+
+
+### Bug Fixes
+
+* don't use `host` header for determining request url ([639602e](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/639602e06beae4433a06f32357d6ccdd4488486d))
+* omit cookies when sending request to CDN ([c7f3783](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/c7f3783280ed4c87d33e938bc19446c3c408f14f))
+* preserve query parameters for agent request ([49eb9c7](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/49eb9c7fd1ed51baae67ac652fc085fbc3c7e7bf))
+* provide correct fpjs-proxy-forwarded-host header when using frontdoor ([341094f](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/341094f7b3f8ba3e67b88503b90089ce189b94e2))
+* rely only on non-spoofable `x-azure-socketip` for resolving client ip ([7f818ca](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/7f818ca38e9ffd6d6b88e7757be1da66d8c9581b))
+* remove cookies for browser cache requests ([4329da6](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/4329da66fdba1b152f7195b8eaca259c2c34860b))
+* set cookies to undefined if _iidt cookie is not present in ingress request ([554b1e6](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/554b1e6876bf0bb8fb1f0fe445fc5875a27126d7))
+* simplify cookie parsing ([37852fd](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/37852fd1a27f685413730fa5f6b92d71a8207fd3))
+* strip port from client ip ([0ccf5a2](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/0ccf5a218badba417a704136b521a89f34724c01))
+* use x-azure-socketip first for resolving client ip ([4e0db7b](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/4e0db7b07530c2542130e87a0cefc78350a5bebf))
+
+
+### Build System
+
+* **deps:** bump @azure/identity from 4.0.1 to 4.2.1 ([d6bad44](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/d6bad442dfa95af4fc89baca8a636f580daeeed5))
+
 ## [1.4.0](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.3.0...v1.4.0) (2024-04-08)
 
 
