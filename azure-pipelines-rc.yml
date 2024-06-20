@@ -1,4 +1,5 @@
 pr: none
+timeoutInMinutes: 120
 trigger:
   tags:
     include:
