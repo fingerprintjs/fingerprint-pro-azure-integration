@@ -1,3 +1,10 @@
+## [1.4.1-rc.2](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.4.1-rc.1...v1.4.1-rc.2) (2024-06-20)
+
+
+### Bug Fixes
+
+* fix broken mgmt function when using Node20 runtime ([a22e351](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/a22e3517dec67dc0b8bbf5c0755560ee23ba3b20))
+
 ## [1.4.1-rc.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.4.0...v1.4.1-rc.1) (2024-06-19)
 
 

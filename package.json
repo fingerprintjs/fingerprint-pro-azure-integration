@@ -1,6 +1,6 @@
 {
   "name": "@fingerprintjs/fingerprint-pro-azure-integration",
-  "version": "1.4.1-rc.1",
+  "version": "1.4.1-rc.2",
   "license": "MIT",
   "sideEffects": false,
   "private": true,
