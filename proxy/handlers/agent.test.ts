@@ -64,6 +64,23 @@ describe('Agent Endpoint', () => {
     })
   })
 
+  test('Call with custom query parameters', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
+      apiKey: 'ujKG34hUYKLJKJ1F',
+      version: '5',
+      customQuery: '123',
+    })
+    const ctx = mockContext(req)
+
+    await proxy(ctx, req)
+
+    const [url] = requestSpy.mock.calls[0]
+
+    expect(url.toString()).toEqual(
+      `https://${origin}/v5/ujKG34hUYKLJKJ1F?apiKey=ujKG34hUYKLJKJ1F&version=5&customQuery=123&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
+    )
+  })
+
   test('Call with version', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
       apiKey: 'ujKG34hUYKLJKJ1F',
@@ -76,7 +93,7 @@ describe('Agent Endpoint', () => {
     const [url] = requestSpy.mock.calls[0]
 
     expect(url.toString()).toEqual(
-      `https://${origin}/v5/ujKG34hUYKLJKJ1F?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
+      `https://${origin}/v5/ujKG34hUYKLJKJ1F?apiKey=ujKG34hUYKLJKJ1F&version=5&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
     )
   })
 
@@ -93,7 +110,7 @@ describe('Agent Endpoint', () => {
     const [url] = requestSpy.mock.calls[0]
 
     expect(url.toString()).toEqual(
-      `https://${origin}/v5/ujKG34hUYKLJKJ1F/loader_v3.6.5.js?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
+      `https://${origin}/v5/ujKG34hUYKLJKJ1F/loader_v3.6.5.js?apiKey=ujKG34hUYKLJKJ1F&version=5&loaderVersion=3.6.5&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fprocdn`
     )
   })
 
@@ -214,7 +231,7 @@ describe('Agent Endpoint', () => {
     })
   })
 
-  test('Req body and headers are the same, expect cookies, which should include only _iidt cookie', async () => {
+  test('Req body and headers are the same, expect cookies, which should be omitted', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
       apiKey: 'ujKG34hUYKLJKJ1F',
       version: '5',
@@ -242,7 +259,7 @@ describe('Agent Endpoint', () => {
 
     expect(options.headers).toEqual({
       ...req.headers,
-      cookie: '_iidt=GlMQaHMfzYvomxCuA7Uymy7ArmjH04jPkT+enN7j/Xk8tJG+UYcQV+Qw60Ry4huw9bmDoO/smyjQp5vLCuSf8t4Jow==',
+      cookie: undefined,
     })
   })
 

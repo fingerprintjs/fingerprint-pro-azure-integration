@@ -9,7 +9,7 @@ export default async function setup(config: FullConfig) {
   const targets = config.projects.map((p) => ({
     name: p.name,
     url: p.use.baseURL,
-    testInfo: testInfo.find((info) => info.frontdoorUrl === p.use.baseURL),
+    testInfo: testInfo.tests.find((info) => info.frontdoorUrl === p.use.baseURL),
     headless: p.use.headless,
   }))
 

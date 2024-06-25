@@ -42,6 +42,11 @@ export function handleIngress({
 
   const headers = prepareHeadersForIngressAPI(httpRequest, preSharedSecret, logger)
 
+  // No need to send cookies for browser cache request
+  if (suffix) {
+    delete headers['cookie']
+  }
+
   return new Promise<HttpResponseSimple>((resolve) => {
     const data: any[] = []
 

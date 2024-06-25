@@ -11,6 +11,7 @@ pool:
 
 jobs:
   - job: mockE2E
+    timeoutInMinutes: 120
     steps:
       - script: npm install pnpm@8 -g && pnpm install && pnpm exec playwright install
         displayName: 'Install dependencies'
@@ -79,6 +80,7 @@ jobs:
 
 
   - job: E2E
+    timeoutInMinutes: 120
     steps:
       - script: npm install pnpm@8 -g && pnpm install && npx playwright install
         displayName: 'Install dependencies'

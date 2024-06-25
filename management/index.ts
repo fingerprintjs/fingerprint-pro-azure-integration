@@ -17,10 +17,14 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
     context.log('Timer function is running late!')
   }
 
-  // @azure/arm-appservice uses library under the hood which needs access to global crypto object
-  Object.assign(global, {
-    crypto: crypto.webcrypto,
-  })
+  if (typeof global.crypto === 'undefined') {
+    context.log('Crypto not available, using webcrypto')
+
+    // @azure/arm-appservice uses library under the hood which needs access to global crypto object
+    Object.assign(global, {
+      crypto: crypto.webcrypto,
+    })
+  }
 
   const env = gatherEnvs(context.log)
 
