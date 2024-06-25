@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for proxy/utils/headers.ts</title>
+    <title>Code coverage report for management/healthCheck.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../prettify.css" />
-    <link rel="stylesheet" href="../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../sort-arrow-sprite.png);
+            background-image: url(../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">proxy/utils</a> headers.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">management</a> healthCheck.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/51</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.23% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>20/21</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>48/48</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
@@ -145,253 +145,169 @@
 <a name='L80'></a><a href='#L80'>80</a>
 <a name='L81'></a><a href='#L81'>81</a>
 <a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a>
-<a name='L86'></a><a href='#L86'>86</a>
-<a name='L87'></a><a href='#L87'>87</a>
-<a name='L88'></a><a href='#L88'>88</a>
-<a name='L89'></a><a href='#L89'>89</a>
-<a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a>
-<a name='L92'></a><a href='#L92'>92</a>
-<a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a>
-<a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a>
-<a name='L100'></a><a href='#L100'>100</a>
-<a name='L101'></a><a href='#L101'>101</a>
-<a name='L102'></a><a href='#L102'>102</a>
-<a name='L103'></a><a href='#L103'>103</a>
-<a name='L104'></a><a href='#L104'>104</a>
-<a name='L105'></a><a href='#L105'>105</a>
-<a name='L106'></a><a href='#L106'>106</a>
-<a name='L107'></a><a href='#L107'>107</a>
-<a name='L108'></a><a href='#L108'>108</a>
-<a name='L109'></a><a href='#L109'>109</a>
-<a name='L110'></a><a href='#L110'>110</a>
-<a name='L111'></a><a href='#L111'>111</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">38x</span>
-<span class="cline-any cline-yes">524x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">524x</span>
-<span class="cline-any cline-yes">302x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">302x</span>
-<span class="cline-any cline-yes">75x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">38x</span>
-<span class="cline-any cline-yes">37x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">264x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">524x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-yes">68x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">61x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">52x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">68x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">524x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1935x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as http from 'http'
-import { HttpRequest, HttpRequestHeaders, HttpResponseHeaders, Logger } from '@azure/functions'
-import { updateCacheControlHeader } from './cacheControl'
-import { filterCookie } from './cookies'
-import { stripPort } from './ip'
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Logger } from '@azure/functions'
+import { StatusInfo } from '../shared/status'
+import { StringDictionary, WebSiteManagementClient } from '@azure/arm-appservice'
+import { performRollback } from './rollback'
+import { ContainerClient } from '@azure/storage-blob'
+import { removeOldFunctionFromStorage } from './storage'
+import { eq } from 'semver'
+import { ConstantBackoff, handleAll, retry } from 'cockatiel'
 &nbsp;
-const CACHE_CONTROL_HEADER_NAME = 'cache-control'
-&nbsp;
-const FPJS_COOKIE_NAME = '_iidt'
-&nbsp;
-// Azure specific headers
-const BLACKLISTED_HEADERS_PREFIXES = ['x-edge-', 'x-arr-', 'x-site', 'x-azure-']
-&nbsp;
-const BLACKLISTED_REQUEST_HEADERS = new Set(['host', 'strict-transport-security'])
-const BLACKLISTED_RESPONSE_HEADERS = new Set(['strict-transport-security', 'transfer-encoding'])
-&nbsp;
-export function filterRequestHeaders(headers: HttpRequestHeaders) {
-  return Object.entries(headers).reduce((result: { [key: string]: string }, [name, value]) =&gt; {
-    const headerName = name.toLowerCase()
-&nbsp;
-    if (isHeaderAllowedForRequest(headerName)) {
-      let headerValue = value
-&nbsp;
-      if (headerName === 'cookie') {
-        headerValue = filterCookie(headerValue, (key) =&gt; key === FPJS_COOKIE_NAME)
-&nbsp;
-        // Only set cookie header if there are relevant cookies
-        if (headerValue) {
-          result[headerName] = headerValue
-        }
-      } else {
-        result[headerName] = headerValue
-      }
-    }
-&nbsp;
-    return result
-  }, {})
+export interface PerformHealthCheckAfterUpdateParams {
+  newVersion: string
+  newFunctionZipUrl: string
+  oldFunctionZipUrl: string
+  logger?: Logger
+  statusUrl: string
+  settings: StringDictionary
+  client: WebSiteManagementClient
+  resourceGroupName: string
+  appName: string
+  storageClient: ContainerClient
+  checkInterval?: number
 }
 &nbsp;
-export const updateResponseHeadersForAgentDownload = (headers: http.IncomingHttpHeaders) =&gt;
-  updateResponseHeaders(headers, true)
+export async function performHealthCheckAfterUpdate({
+  newVersion,
+  statusUrl,
+  logger,
+  settings,
+  appName,
+  client,
+  resourceGroupName,
+  oldFunctionZipUrl,
+  storageClient,
+  checkInterval,
+  newFunctionZipUrl,
+}: PerformHealthCheckAfterUpdateParams) {
+  try {
+    await runHealthCheckSchedule(statusUrl, newVersion, checkInterval, logger)
 &nbsp;
-export function updateResponseHeaders(
-  headers: http.IncomingHttpHeaders,
-  overrideCacheControl = false
-): HttpResponseHeaders {
-  const result: HttpResponseHeaders = {}
+    await removeOldFunctionFromStorage(oldFunctionZipUrl, newFunctionZipUrl, storageClient, logger)
+  } catch (error) {
+    logger?.error('Health check failed', error)
 &nbsp;
-  for (const [key, value] of Object.entries(headers)) {
-    if (!isHeaderAllowedForResponse(key) || !value) {
-      continue
-    }
+    await performRollback({
+      oldFunctionZipUrl,
+      settings,
+      appName,
+      client,
+      resourceGroupName,
+      logger,
+    })
 &nbsp;
-    switch (key) {
-      case CACHE_CONTROL_HEADER_NAME: {
-        if (overrideCacheControl) {
-          result[CACHE_CONTROL_HEADER_NAME] = updateCacheControlHeader(value.toString())
-        } else {
-          result[key] = value.toString()
-        }
-&nbsp;
-        break
-      }
-&nbsp;
-      default:
-        result[key] = value.toString()
-    }
+    throw error
   }
-&nbsp;
-  return result
 }
 &nbsp;
-function resolveClientIp(request: HttpRequest, logger?: Logger) {
-  const clientIp = request.headers['x-azure-socketip'] || <span class="branch-1 cbranch-no" title="branch not covered" >''</span>
+async function runHealthCheckSchedule(url: string, newVersion: string, checkInterval = <span class="branch-0 cbranch-no" title="branch not covered" >10_000,</span> logger?: Logger) {
+  logger?.verbose(`Starting health check at ${url}`)
 &nbsp;
-  logger?.verbose('Client IP resolved', {
-    clientIp,
+  const policy = retry(handleAll, {
+    maxAttempts: 20,
+    backoff: new ConstantBackoff(checkInterval),
   })
+  return policy.execute(async ({ attempt, signal }) =&gt; {
+    if (attempt &gt; 1) {
+      logger?.verbose(`Attempt ${attempt} at health check...`)
+    }
 &nbsp;
-  return stripPort(clientIp)
-}
+    const response = await fetch(url, { signal })
+    const json = (await response.json()) as StatusInfo
 &nbsp;
-export function getHost(request: Pick&lt;HttpRequest, 'headers' | 'url'&gt;) {
-  return request.headers['x-forwarded-host'] || new URL(request.url).hostname
-}
+    logger?.verbose('Health check response', json)
 &nbsp;
-export function prepareHeadersForIngressAPI(request: HttpRequest, preSharedSecret?: string, logger?: Logger) {
-  const headers = filterRequestHeaders(request.headers)
+    if (eq(json.version, newVersion)) {
+      logger?.info('Health check passed')
 &nbsp;
-  headers['fpjs-proxy-client-ip'] = resolveClientIp(request, logger)
+      return
+    }
 &nbsp;
-  if (preSharedSecret) {
-    headers['fpjs-proxy-secret'] = preSharedSecret
-    headers['fpjs-proxy-forwarded-host'] = getHost(request)
-  }
-&nbsp;
-  return headers
-}
-&nbsp;
-function isHeaderAllowedForResponse(headerName: string) {
-  return !BLACKLISTED_RESPONSE_HEADERS.has(headerName) &amp;&amp; !matchesBlacklistedHeaderPrefix(headerName)
-}
-&nbsp;
-function isHeaderAllowedForRequest(headerName: string) {
-  return !BLACKLISTED_REQUEST_HEADERS.has(headerName) &amp;&amp; !matchesBlacklistedHeaderPrefix(headerName)
-}
-&nbsp;
-function matchesBlacklistedHeaderPrefix(headerName: string) {
-  return BLACKLISTED_HEADERS_PREFIXES.some((prefix) =&gt; headerName.startsWith(prefix))
+    throw new Error(`Version mismatch, expected: ${newVersion}, received: ${json.version}`)
+  })
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -400,16 +316,16 @@ function matchesBlacklistedHeaderPrefix(headerName: string) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-06-25T10:17:53.460Z
+                at 2024-06-25T12:05:38.728Z
             </div>
-        <script src="../../prettify.js"></script>
+        <script src="../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../sorter.js"></script>
-        <script src="../../block-navigation.js"></script>
+        <script src="../sorter.js"></script>
+        <script src="../block-navigation.js"></script>
     </body>
 </html>
     
