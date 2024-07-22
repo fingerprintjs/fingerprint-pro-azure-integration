@@ -149,7 +149,7 @@
         {
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
-            "name": "[variables('roleAssignmentName')]",            
+            "name": "[variables('roleAssignmentName')]",
             "properties": {
                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionName'))]",
                 "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName')), '2023-01-31').principalId]",
@@ -173,7 +173,7 @@
             "properties": {
                 "accessTier": "Hot"
             }
-        },        
+        },
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
@@ -263,7 +263,7 @@
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
                 "reserved": true,
                 "siteConfig": {
-                    "linuxFxVersion": "Node|18",
+                    "linuxFxVersion": "Node|20",
                     "minimumElasticInstanceCount": 1,
                     "numberOfWorkers": 2,
                     "appSettings": [
@@ -290,14 +290,14 @@
                         {
                             "name": "WEBSITE_CONTENTSHARE",
                             "value": "[toLower(variables('functionAppName'))]"
-                        },                        
+                        },
                         {
                             "name": "USER_ASSIGNED_ENTITY_CLIENT_ID",
                             "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userAssignedIdentityName')), '2023-01-31').clientId]"
                         },
                         {
                             "name": "WEBSITE_RUN_FROM_PACKAGE_BLOB_MI_RESOURCE_ID",
-                            "value": "[format('{0}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{1}', resourceGroup().id, variables('userAssignedIdentityName'))]"                            
+                            "value": "[format('{0}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{1}', resourceGroup().id, variables('userAssignedIdentityName'))]"
                         },
                         {
                             "name": "WEBSITE_RUN_FROM_PACKAGE",
