@@ -1,3 +1,10 @@
+## [1.5.0](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.4.1...v1.5.0) (2024-07-22)
+
+
+### Features
+
+* use node 20 in deployment template ([fa9d8af](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/fa9d8afe35f78465792bd27c1b1dd7f236d44cbd))
+
 ## [1.5.0-rc.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.4.1...v1.5.0-rc.1) (2024-07-22)
 
 
