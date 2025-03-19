@@ -88,10 +88,10 @@ export function prepareHeadersForIngressAPI(request: HttpRequest, preSharedSecre
   const headers = filterRequestHeaders(request.headers)
 
   headers['fpjs-proxy-client-ip'] = resolveClientIp(request, logger)
+  headers['fpjs-proxy-forwarded-host'] = getHost(request)
 
   if (preSharedSecret) {
     headers['fpjs-proxy-secret'] = preSharedSecret
-    headers['fpjs-proxy-forwarded-host'] = getHost(request)
   }
 
   return headers
