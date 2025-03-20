@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.5.0...v1.5.1) (2025-03-20)
+
+
+### Bug Fixes
+
+* send other proxy headers even if proxy secret is undefined ([b6dc485](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/commit/b6dc4857f8c27c77360af283e8d7e4ca668a3cf0))
+
 ## [1.5.1-rc.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.5.0...v1.5.1-rc.1) (2025-03-20)
 
 
