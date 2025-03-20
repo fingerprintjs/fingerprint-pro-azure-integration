@@ -160,27 +160,21 @@ describe('updateResponseHeadersForAgentDownload', () => {
 })
 
 describe('prepareHeadersForIngressAPI', () => {
-  it('should set client ip and proxy secret', () => {
+  it('should set all proxy headers if proxy secret is defined, preserving the original headers', () => {
     const result = prepareHeadersForIngressAPI(mockReq, 'secret')
 
     expect(result['fpjs-proxy-client-ip']).toBe('127.0.0.1')
     expect(result['fpjs-proxy-secret']).toBe('secret')
     expect(result['fpjs-proxy-forwarded-host']).toBe('fpjs.sh')
+    expect(result['x-custom-header']).toBe(mockReq.headers['x-custom-header'])
   })
 
-  it('should set correct host', () => {
-    const result = prepareHeadersForIngressAPI(mockReq, 'secret')
-
-    expect(result['fpjs-proxy-client-ip']).toBe('127.0.0.1')
-    expect(result['fpjs-proxy-secret']).toBe('secret')
-    expect(result['fpjs-proxy-forwarded-host']).toBe('fpjs.sh')
-  })
-
-  it('should not set secret if it is undefined', () => {
+  it('should set the other proxy headers, even if proxy secret is not defined, preserving the original headers', () => {
     const result = prepareHeadersForIngressAPI(mockReq, undefined)
 
     expect(result['fpjs-proxy-client-ip']).toBe('127.0.0.1')
+    expect(result['fpjs-proxy-forwarded-host']).toBe('fpjs.sh')
     expect(result['fpjs-proxy-secret']).toBe(undefined)
-    expect(result['fpjs-proxy-forwarded-host']).toBe(undefined)
+    expect(result['x-custom-header']).toBe(mockReq.headers['x-custom-header'])
   })
 })

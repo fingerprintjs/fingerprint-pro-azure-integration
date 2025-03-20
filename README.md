@@ -23,7 +23,7 @@
 # Fingerprint Pro Azure Integration
 
 [![Deploy To Azure](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
-[![Visualize](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/visualizebutton.svg?sanitize=true)](http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
+[![Visualize](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/visualizebutton.svg?sanitize=true)](http://armviz.io/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Ffingerprint-pro-azure-integration%2Fmain%2Fazuredeploy.json)
 
 Fingerprint is a device intelligence platform offering 99.5% accurate visitor identification.
   
@@ -48,8 +48,8 @@ This [improves](https://dev.fingerprint.com/docs/azure-proxy-integration#the-ben
 
 To set up the Azure integration, you need to:
   
-1. Create the required resources in your Azure infrastructure - a deployment template is available.
-2. Configure the Fingerprint Pro JS Agent on your site to communicate with your created Azure function using the [endpoint](https://dev.fingerprint.com/docs/js-agent#endpoint) parameter.
+1. Create and configure required resources in your Azure infrastructure - a deployment template is available.
+2. [Configure](https://dev.fingerprint.com/docs/install-the-javascript-agent#configuring-the-agent) the Fingerprint JavaScript Agent on your site to communicate with your created Azure function.
 
 See [Azure Proxy Integration guide](https://dev.fingerprint.com/docs/azure-proxy-integration) in our documentation for step-by-step instructions. If you have any questions, reach out to our [support team](https://fingerprint.com/support/). 
 
