@@ -30,6 +30,7 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
       status: 500,
       headers: {
         'Content-Type': 'application/json',
+        'X-Test': 'hello'
       },
       body: new IntegrationError('API Key is missing', path).toBody(),
     }
