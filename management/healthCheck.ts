@@ -1,4 +1,4 @@
-import { Logger } from '@azure/functions'
+import { InvocationContext } from '@azure/functions'
 import { StatusInfo } from '../shared/status'
 import { StringDictionary, WebSiteManagementClient } from '@azure/arm-appservice'
 import { performRollback } from './rollback'
@@ -11,7 +11,7 @@ export interface PerformHealthCheckAfterUpdateParams {
   newVersion: string
   newFunctionZipUrl: string
   oldFunctionZipUrl: string
-  logger?: Logger
+  logger?: InvocationContext
   statusUrl: string
   settings: StringDictionary
   client: WebSiteManagementClient
@@ -54,8 +54,13 @@ export async function performHealthCheckAfterUpdate({
   }
 }
 
-async function runHealthCheckSchedule(url: string, newVersion: string, checkInterval = 10_000, logger?: Logger) {
-  logger?.verbose(`Starting health check at ${url}`)
+async function runHealthCheckSchedule(
+  url: string,
+  newVersion: string,
+  checkInterval = 10_000,
+  logger?: InvocationContext
+) {
+  logger?.debug(`Starting health check at ${url}`)
 
   const policy = retry(handleAll, {
     maxAttempts: 20,
@@ -63,13 +68,13 @@ async function runHealthCheckSchedule(url: string, newVersion: string, checkInte
   })
   return policy.execute(async ({ attempt, signal }) => {
     if (attempt > 1) {
-      logger?.verbose(`Attempt ${attempt} at health check...`)
+      logger?.debug(`Attempt ${attempt} at health check...`)
     }
 
     const response = await fetch(url, { signal })
     const json = (await response.json()) as StatusInfo
 
-    logger?.verbose('Health check response', json)
+    logger?.debug('Health check response', json)
 
     if (eq(json.version, newVersion)) {
       logger?.info('Health check passed')

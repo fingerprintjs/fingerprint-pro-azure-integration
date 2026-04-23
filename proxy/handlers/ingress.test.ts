@@ -1,4 +1,4 @@
-import proxy from '../index'
+import proxyFn from '../index'
 import * as ingress from './ingress'
 import https, { Agent } from 'https'
 import { ClientRequest, IncomingMessage } from 'http'
@@ -71,7 +71,7 @@ describe('Result Endpoint', function () {
       options.agent = new Agent()
       return Reflect.construct(ClientRequest, args)
     })
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledTimes(1)
 
@@ -92,7 +92,7 @@ describe('Result Endpoint', function () {
 
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
 
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
 
     const [, options] = requestSpy.mock.calls[0]
 
@@ -108,7 +108,7 @@ describe('Result Endpoint', function () {
       },
     })
 
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
 
     const [, options] = requestSpy.mock.calls[0]
     expect(options.headers.cookie).toBe('_iidt=7A03Gwg')
@@ -117,7 +117,7 @@ describe('Result Endpoint', function () {
   test('Cookies are undefined if _iidt is not est', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
 
-    req.headers.cookie = '_vid_t=gEFRuIQlzYmv692/UL4GLA=='
+    req.headers.set('cookie', '_vid_t=gEFRuIQlzYmv692/UL4GLA==')
 
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
@@ -125,7 +125,7 @@ describe('Result Endpoint', function () {
       },
     })
 
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
 
     const [, options] = requestSpy.mock.calls[0]
     expect(options.headers.cookie).toBeFalsy()
@@ -147,15 +147,17 @@ describe('Result Endpoint', function () {
       },
       responseHeaders: resHeaders,
     })
-    const ctx = mockContext(req)
-    await proxy(ctx, req)
+    const ctx = mockContext()
+    const res = await proxyFn(req, ctx)
 
-    expect(ctx.res?.body.toString()).toBe('data')
-    expect(ctx.res?.headers).toEqual({
-      'access-control-allow-credentials': 'true',
-      'access-control-expose-headers': 'Retry-After',
-      'content-type': 'text/plain',
-    })
+    expect(await res.text()).toBe('data')
+    expect(res.headers).toEqual(
+      new Headers({
+        'access-control-allow-credentials': 'true',
+        'access-control-expose-headers': 'Retry-After',
+        'content-type': 'text/plain',
+      })
+    )
   })
 
   test('Request body is not modified on error', async () => {
@@ -181,11 +183,11 @@ describe('Result Endpoint', function () {
 
       emitter.emit('end')
     })
-    const ctx = mockContext(req)
-    await proxy(ctx, req)
+    const ctx = mockContext()
+    const res = await proxyFn(req, ctx)
 
-    expect(ctx.res?.body.toString()).toBe(resBody)
-    expect(ctx.res?.headers).toEqual(resHeaders)
+    expect(await res.text()).toBe(resBody)
+    expect(res.headers).toEqual(new Headers(resHeaders))
   })
 
   test('Returns error response on function error', async () => {
@@ -206,10 +208,10 @@ describe('Result Endpoint', function () {
       return emitter
     })
 
-    const ctx = mockContext(req)
-    await proxy(ctx, req)
+    const ctx = mockContext()
+    const res = await proxyFn(req, ctx)
 
-    expect(JSON.parse(ctx.res?.body)).toEqual({
+    expect(await res.json()).toEqual({
       error: {
         code: 'Failed',
         message: 'An error occured with Fingerprint Pro Azure function. Reason: Request timeout',
@@ -228,7 +230,7 @@ describe('Result Endpoint', function () {
       },
     })
 
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -249,7 +251,7 @@ describe('Result Endpoint', function () {
         expect(url.toString()).toBe(`${defaultOrigin}/with/suffix${search}`)
       },
     })
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -265,7 +267,7 @@ describe('Result Endpoint', function () {
 
   test('HTTP GET with bad suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(0)
     expect(https.request).toHaveBeenCalledTimes(0)
   })
@@ -277,7 +279,7 @@ describe('Result Endpoint', function () {
         expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
       },
     })
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -298,7 +300,7 @@ describe('Result Endpoint', function () {
         expect(url.toString()).toBe(`${defaultOrigin}/with/suffix${search}`)
       },
     })
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -314,7 +316,7 @@ describe('Result Endpoint', function () {
 
   test('HTTP POST with bad suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(0)
     expect(https.request).toHaveBeenCalledTimes(0)
   })
@@ -328,9 +330,9 @@ describe('Result Endpoint', function () {
       },
     })
 
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    await proxyFn(req, ctx)
   })
 
   Object.values(Region).forEach((region) => {
@@ -351,9 +353,9 @@ describe('Result Endpoint', function () {
         },
       })
 
-      const ctx = mockContext(req)
+      const ctx = mockContext()
 
-      await proxy(ctx, req)
+      await proxyFn(req, ctx)
     })
   })
 
@@ -368,9 +370,9 @@ describe('Result Endpoint', function () {
       },
     })
 
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    await proxyFn(req, ctx)
   })
 
   test.each(['invalid', 'usa', 'EU', 'US', 'AP', '.invalid'])(
@@ -386,9 +388,9 @@ describe('Result Endpoint', function () {
         },
       })
 
-      const ctx = mockContext(req)
+      const ctx = mockContext()
 
-      await proxy(ctx, req)
+      await proxyFn(req, ctx)
     }
   )
 })
@@ -416,8 +418,8 @@ describe('Browser caching endpoint', () => {
       return Reflect.construct(ClientRequest, args)
     })
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
-    const context = mockContext(req)
-    await proxy(context, req)
-    expect(context.res?.headers?.['cache-control']).toBe(cacheControlValue)
+    const context = mockContext()
+    const res = await proxyFn(req, context)
+    expect(res.headers.get('cache-control')).toBe(cacheControlValue)
   })
 })

@@ -1,8 +1,7 @@
-import { HttpRequest } from '@azure/functions'
+import { HttpRequest, HttpResponseInit } from '@azure/functions'
 import { CustomerVariables } from '../../shared/customer-variables/CustomerVariables'
 import { maybeObfuscateVariable } from '../../shared/customer-variables/maybeObfuscateVariable'
 import { CustomerVariableType } from '../../shared/customer-variables/types'
-import { HttpResponseSimple } from '@azure/functions/types/http'
 import { EnvVarInfo, StatusFormat, StatusInfo } from '../../shared/status'
 
 export interface HandleStatusParams {
@@ -107,18 +106,15 @@ export async function getStatusInfo(customerVariables: CustomerVariables): Promi
   }
 }
 
-export async function handleStatus({
-  customerVariables,
-  httpRequest,
-}: HandleStatusParams): Promise<HttpResponseSimple> {
-  const { format } = httpRequest.query
+export async function handleStatus({ customerVariables, httpRequest }: HandleStatusParams): Promise<HttpResponseInit> {
+  const format = httpRequest.query.get('format') ?? StatusFormat.HTML
 
   const info = await getStatusInfo(customerVariables)
 
   if (format === StatusFormat.JSON) {
     return {
-      status: '200',
-      body: info,
+      status: 200,
+      body: JSON.stringify(info),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -128,7 +124,7 @@ export async function handleStatus({
   const { html, styleNonce } = renderHtml(info)
 
   return {
-    status: '200',
+    status: 200,
     body: html,
     headers: {
       'Content-Type': 'text/html',

@@ -1,6 +1,6 @@
 import { config } from './config'
 import { isSemverGreater } from './semver'
-import { Logger } from '@azure/functions'
+import { InvocationContext } from '@azure/functions'
 
 export function bearer(token?: string) {
   return `Bearer ${token}`
@@ -35,8 +35,8 @@ export async function getLatestGithubRelease(token?: string) {
   return (await response.json()) as GithubRelease
 }
 
-export async function downloadReleaseAsset(url: string, token?: string, logger?: Logger) {
-  logger?.verbose(`Downloading release asset from ${url}`)
+export async function downloadReleaseAsset(url: string, token?: string, logger?: InvocationContext) {
+  logger?.debug(`Downloading release asset from ${url}`)
 
   const headers: Record<string, string> = {
     Accept: 'application/octet-stream',
@@ -60,7 +60,7 @@ export async function findFunctionZip(assets: GithubReleaseAsset[]) {
 }
 
 export async function getLatestFunctionZip(
-  logger?: Logger,
+  logger?: InvocationContext,
   token?: string,
   version = config.version,
   allowPrerelease = false
@@ -74,16 +74,16 @@ export async function getLatestFunctionZip(
     : await getLatestGithubRelease(token)
 
   if (!isSemverGreater(release.tag_name, version)) {
-    logger?.verbose(`Latest release ${release.tag_name} is not greater than current version ${version}`)
+    logger?.debug(`Latest release ${release.tag_name} is not greater than current version ${version}`)
 
     return null
   }
 
-  logger?.verbose(`Found new release ${release.tag_name}`, release.assets)
+  logger?.debug(`Found new release ${release.tag_name}`, release.assets)
 
   const asset = await findFunctionZip(release.assets)
 
-  logger?.verbose(`Found asset ${asset?.name} for release ${release.tag_name}`, asset)
+  logger?.debug(`Found asset ${asset?.name} for release ${release.tag_name}`, asset)
 
   return asset
     ? {

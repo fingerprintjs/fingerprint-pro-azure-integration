@@ -1,15 +1,15 @@
-import { HttpRequest, Logger } from '@azure/functions'
+import { HttpRequest, InvocationContext } from '@azure/functions'
 import { config } from '../utils/config'
 import * as https from 'https'
 import { prepareHeadersForIngressAPI, updateResponseHeaders } from '../utils/headers'
-import { HttpResponseSimple } from '@azure/functions/types/http'
+import { HttpResponseInit } from '@azure/functions/types/http'
 import { generateErrorResponse } from '../utils/errorResponse'
 import { addTrafficMonitoringSearchParamsForVisitorIdRequest } from '../utils/traffic'
 import { getValidRegion, Region } from '../utils/region'
 
 export interface HandleIngressParams {
   httpRequest: HttpRequest
-  logger: Logger
+  logger: InvocationContext
   preSharedSecret?: string
   suffix?: string
 }
@@ -19,23 +19,22 @@ export function handleIngress({
   logger,
   preSharedSecret,
   suffix,
-}: HandleIngressParams): Promise<HttpResponseSimple> {
+}: HandleIngressParams): Promise<HttpResponseInit> {
   if (suffix && !suffix.startsWith('/')) {
     suffix = '/' + suffix
   }
 
-  const { region = Region.us } = httpRequest.query
-  const url = new URL(getIngressAPIHost(region) + suffix)
+  const region = httpRequest.query.get('region') ?? Region.us
 
-  Object.entries(httpRequest.query).forEach(([key, value]) => {
-    url.searchParams.append(key, value)
-  })
+  const url = new URL(getIngressAPIHost(region) + suffix)
+  url.search = httpRequest.query.toString()
+
   addTrafficMonitoringSearchParamsForVisitorIdRequest(url)
 
-  logger.verbose('Performing request', url.toString())
+  logger.debug('Performing request', url.toString())
 
   if (preSharedSecret) {
-    logger.verbose('Pre-shared secret is set')
+    logger.debug('Pre-shared secret is set')
   } else {
     logger.warn('Pre-shared secret is not set')
   }
@@ -47,7 +46,7 @@ export function handleIngress({
     delete headers['cookie']
   }
 
-  return new Promise<HttpResponseSimple>((resolve) => {
+  return new Promise<HttpResponseInit>((resolve) => {
     const data: any[] = []
 
     const request = https.request(
@@ -62,7 +61,7 @@ export function handleIngress({
         response.on('end', () => {
           const payload = Buffer.concat(data)
 
-          logger.verbose('Response from Ingress API', response.statusCode, payload.toString('utf-8'))
+          logger.debug('Response from Ingress API', response.statusCode, payload.toString('utf-8'))
 
           resolve({
             status: response.statusCode ? response.statusCode : 500,
@@ -85,8 +84,8 @@ export function handleIngress({
       })
     })
 
-    if (httpRequest.bufferBody) {
-      request.write(httpRequest.bufferBody)
+    if (httpRequest.body) {
+      request.write(httpRequest.body)
     }
 
     request.end()

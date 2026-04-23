@@ -26,11 +26,11 @@
     "changeset:version": "changeset version"
   },
   "dependencies": {
-    "@azure/arm-appservice": "14.1.0",
+    "@azure/arm-appservice": "18.0.0",
     "@azure/arm-cdn": "^9.0.0",
     "@azure/arm-resources": "5.2.0",
     "@azure/arm-storage": "18.2.0",
-    "@azure/functions": "^3.5.1",
+    "@azure/functions": "4.13.0",
     "@azure/identity": "4.2.1",
     "@azure/storage-blob": "12.17.0",
     "cockatiel": "3.1.2",

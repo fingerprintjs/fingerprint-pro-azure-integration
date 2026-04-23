@@ -27,7 +27,7 @@ function getEnv(key, defaultValue) {
   throw new Error(`Missing environment variable ${key}`)
 }
 
-function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFunctionJson) {
+function makeConfig(opts, entryFile, artifactName) {
   const isDev = opts.watch
 
   const buildFlags = {
@@ -58,29 +58,6 @@ function makeConfig(opts, entryFile, artifactName, functionJsonPath, transformFu
     input: entryFile,
     external: ['https'],
     plugins: [
-      copyPlugin({
-        targets: [
-          {
-            src: functionJsonPath,
-            dest: `${outputDirectory}/${artifactName}`,
-            transform: (contents) => {
-              const json = JSON.parse(contents.toString())
-
-              if (json.disabled) {
-                console.warn(
-                  `Function ${artifactName} is disabled. To enable it, set "disabled" to false in ${functionJsonPath}.`,
-                )
-              }
-
-              json.scriptFile = `./${artifactName}.js`
-
-              transformFunctionJson?.(json, isDev)
-
-              return JSON.stringify(json, null, 2)
-            },
-          },
-        ],
-      }),
       jsonPlugin(),
       typescript({
         tsconfig: 'tsconfig.app.json',
@@ -137,21 +114,6 @@ export default (opts) => {
    * @type {import('rollup').RollupOptions[]}
    * */
   return [
-    ...makeConfig(opts, 'proxy/index.ts', 'fingerprint-pro-azure-function', 'proxy/function.json'),
-    ...makeConfig(
-      opts,
-      'management/index.ts',
-      'fingerprint-pro-azure-function-management',
-      'management/function.json',
-      (config, isDev) => {
-        if (!isDev && config.bindings[0].runOnStartup) {
-          console.info(
-            `Management function is configured to run on startup, but this can cause problems when deployed to Azure. Setting to false`,
-          )
-
-          config.bindings[0].runOnStartup = false
-        }
-      },
-    ),
+    ...makeConfig(opts, 'index.ts', 'fingerprint-azure-proxy', ),
   ]
 }

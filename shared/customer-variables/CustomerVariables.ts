@@ -1,6 +1,6 @@
 import { CustomerVariableProvider, CustomerVariableType, CustomerVariableValue } from './types'
 import { getDefaultCustomerVariable } from './defaults'
-import { Logger } from '@azure/functions'
+import { InvocationContext } from '@azure/functions'
 import { maybeObfuscateVariable } from './maybeObfuscateVariable'
 
 export interface GetVariableResult {
@@ -15,7 +15,7 @@ export interface GetVariableResult {
 export class CustomerVariables {
   constructor(
     private readonly providers: CustomerVariableProvider[],
-    private readonly logger?: Logger
+    private readonly logger?: InvocationContext
   ) {}
 
   /**
@@ -31,7 +31,7 @@ export class CustomerVariables {
 
     const defaultValue = getDefaultCustomerVariable(variable)
 
-    this.logger?.verbose(`Resolved customer variable ${variable} with default value ${defaultValue}`)
+    this.logger?.debug(`Resolved customer variable ${variable} with default value ${defaultValue}`)
 
     return {
       value: defaultValue,
@@ -45,7 +45,7 @@ export class CustomerVariables {
         const result = await provider.getVariable(variable)
 
         if (result) {
-          this.logger?.verbose(
+          this.logger?.debug(
             `Resolved customer variable ${variable} with provider ${provider.name}. Value: ${maybeObfuscateVariable(
               variable,
               result

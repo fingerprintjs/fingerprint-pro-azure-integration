@@ -1,5 +1,5 @@
 import * as http from 'http'
-import { HttpRequest, HttpRequestHeaders, HttpResponseHeaders, Logger } from '@azure/functions'
+import { HttpHeadersInit, HttpRequest, InvocationContext } from '@azure/functions'
 import { updateCacheControlHeader } from './cacheControl'
 import { filterCookie } from './cookies'
 import { stripPort } from './ip'
@@ -14,8 +14,8 @@ const BLACKLISTED_HEADERS_PREFIXES = ['x-edge-', 'x-arr-', 'x-site', 'x-azure-']
 const BLACKLISTED_REQUEST_HEADERS = new Set(['host', 'strict-transport-security'])
 const BLACKLISTED_RESPONSE_HEADERS = new Set(['strict-transport-security', 'transfer-encoding'])
 
-export function filterRequestHeaders(headers: HttpRequestHeaders) {
-  return Object.entries(headers).reduce((result: { [key: string]: string }, [name, value]) => {
+export function filterRequestHeaders(headers: Headers) {
+  return Array.from(headers.entries()).reduce((result: { [key: string]: string }, [name, value]) => {
     const headerName = name.toLowerCase()
 
     if (isHeaderAllowedForRequest(headerName)) {
@@ -43,8 +43,8 @@ export const updateResponseHeadersForAgentDownload = (headers: http.IncomingHttp
 export function updateResponseHeaders(
   headers: http.IncomingHttpHeaders,
   overrideCacheControl = false
-): HttpResponseHeaders {
-  const result: HttpResponseHeaders = {}
+): HttpHeadersInit {
+  const result: HttpHeadersInit = {}
 
   for (const [key, value] of Object.entries(headers)) {
     if (!isHeaderAllowedForResponse(key) || !value) {
@@ -70,10 +70,10 @@ export function updateResponseHeaders(
   return result
 }
 
-function resolveClientIp(request: HttpRequest, logger?: Logger) {
-  const clientIp = request.headers['x-azure-socketip'] || ''
+function resolveClientIp(request: HttpRequest, logger?: InvocationContext) {
+  const clientIp = request.headers.get('x-azure-socketip') || ''
 
-  logger?.verbose('Client IP resolved', {
+  logger?.debug('Client IP resolved', {
     clientIp,
   })
 
@@ -81,10 +81,14 @@ function resolveClientIp(request: HttpRequest, logger?: Logger) {
 }
 
 export function getHost(request: Pick<HttpRequest, 'headers' | 'url'>) {
-  return request.headers['x-forwarded-host'] || new URL(request.url).hostname
+  return request.headers.get('x-forwarded-host') || new URL(request.url).hostname
 }
 
-export function prepareHeadersForIngressAPI(request: HttpRequest, preSharedSecret?: string, logger?: Logger) {
+export function prepareHeadersForIngressAPI(
+  request: HttpRequest,
+  preSharedSecret?: string,
+  logger?: InvocationContext
+) {
   const headers = filterRequestHeaders(request.headers)
 
   headers['fpjs-proxy-client-ip'] = resolveClientIp(request, logger)

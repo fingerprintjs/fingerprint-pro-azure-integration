@@ -1,4 +1,3 @@
-import { AzureFunction, Context, Timer } from '@azure/functions'
 import { WebSiteManagementClient } from '@azure/arm-appservice'
 import { ManagedIdentityCredential } from '@azure/identity'
 import * as storageBlob from '@azure/storage-blob'
@@ -8,11 +7,12 @@ import { getLatestFunctionZip } from './github'
 import { gatherEnvs } from './env'
 import { getSiteStatusUrl } from './site'
 import { performHealthCheckAfterUpdate } from './healthCheck'
-import { WEBSITE_RUN_FROM_PACKAGE, USER_ASSIGNED_ENTITY_CLIENT_ID } from './settings'
+import { USER_ASSIGNED_ENTITY_CLIENT_ID, WEBSITE_RUN_FROM_PACKAGE } from './settings'
 import { config } from './config'
 import crypto from 'crypto'
+import { TimerHandler } from '@azure/functions/types/timer'
 
-const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
+const managementFn: TimerHandler = async (timer, context) => {
   if (timer.isPastDue) {
     context.log('Timer function is running late!')
   }
@@ -42,19 +42,19 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
   )
 
   if (!latestFunction) {
-    context.log.info('No new release found')
+    context.info('No new release found')
 
     return
   }
 
-  context.log.verbose('latestFunction', latestFunction)
+  context.debug('latestFunction', latestFunction)
 
   try {
     const clientId = process.env[USER_ASSIGNED_ENTITY_CLIENT_ID]
     const credentials = new ManagedIdentityCredential({
       clientId: clientId,
     })
-    context.log.info('Got client id', clientId)
+    context.info('Got client id', clientId)
 
     const storageArmClient = new StorageManagementClient(credentials, subscriptionId)
     const client = new WebSiteManagementClient(credentials, subscriptionId)
@@ -66,21 +66,21 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
     const oldFunctionZipUrl = settings.properties?.[WEBSITE_RUN_FROM_PACKAGE]
 
     if (oldFunctionZipUrl) {
-      context.log.verbose('storageUrl', oldFunctionZipUrl)
+      context.debug('storageUrl', oldFunctionZipUrl)
 
       const storageUrl = new URL(oldFunctionZipUrl)
       const storageName = storageUrl.pathname.split('/')[1]
       const accountName = storageUrl.hostname.split('.')[0]
 
-      context.log.verbose('storageName', storageName)
-      context.log.verbose('accountName', accountName)
+      context.debug('storageName', storageName)
+      context.debug('accountName', accountName)
 
       const { keys } = await storageArmClient.storageAccounts.listKeys(resourceGroupName, accountName)
 
       const key = keys?.[0].value
 
       if (!key) {
-        context.log.warn('No storage keys found')
+        context.warn('No storage keys found')
 
         return
       }
@@ -104,7 +104,7 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
         }),
       })
 
-      context.log.verbose('sas', sas)
+      context.debug('sas', sas)
 
       settings.properties![WEBSITE_RUN_FROM_PACKAGE] = sas
 
@@ -124,7 +124,7 @@ const managementFn: AzureFunction = async (context: Context, timer: Timer) => {
       })
     }
   } catch (error) {
-    context.log.error(error)
+    context.error(error)
   }
 }
 
