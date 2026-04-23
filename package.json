@@ -1,6 +1,6 @@
 {
   "name": "@fingerprintjs/fingerprint-pro-azure-integration",
-  "version": "1.5.1",
+  "version": "1.5.0",
   "license": "MIT",
   "sideEffects": false,
   "private": true,
@@ -21,7 +21,9 @@
     "start:example-website": "cd example-website && vite",
     "build:example-website": "cd example-website && vite build",
     "e2e-deploy-infra": "ts-node --project e2e/tsconfig.json e2e/infra/scripts/deploy.ts",
-    "e2e-destroy-infra": "ts-node --project e2e/tsconfig.json e2e/infra/scripts/destroy.ts"
+    "e2e-destroy-infra": "ts-node --project e2e/tsconfig.json e2e/infra/scripts/destroy.ts",
+    "changeset:publish": "HUSKY=0 changeset publish && pnpm build:release && ./scripts/preparePackage.sh",
+    "changeset:version": "changeset version"
   },
   "dependencies": {
     "@azure/arm-appservice": "14.1.0",
@@ -38,8 +40,10 @@
   },
   "devDependencies": {
     "@azure/arm-frontdoor": "^5.1.0",
+    "@changesets/cli": "2.30.0",
     "@commitlint/cli": "^17.0.2",
     "@commitlint/config-conventional": "^17.0.2",
+    "@fingerprintjs/changesets-changelog-format": "^0.2.0",
     "@fingerprintjs/commit-lint-dx-team": "^0.0.2",
     "@fingerprintjs/conventional-changelog-dx-team": "^0.1.0",
     "@fingerprintjs/eslint-config-dx-team": "^0.1.0",
