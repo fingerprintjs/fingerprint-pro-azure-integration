@@ -8,7 +8,7 @@ import nodeResolve from '@rollup/plugin-node-resolve'
 import copyPlugin from 'rollup-plugin-copy'
 import commonjs from '@rollup/plugin-commonjs'
 import dotenv from 'dotenv'
-import packageJson from './package.json' assert { type: 'json' }
+import packageJson from './package.json' with { type: 'json' }
 
 dotenv.config()
 const outputDirectory = 'dist'
