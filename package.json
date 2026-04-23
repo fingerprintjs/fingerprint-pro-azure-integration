@@ -33,7 +33,6 @@
     "@azure/functions": "^3.5.1",
     "@azure/identity": "4.2.1",
     "@azure/storage-blob": "12.17.0",
-    "@fingerprintjs/fingerprintjs-pro": "^3.9.2",
     "cockatiel": "3.1.2",
     "semver": "7.6.0",
     "tslib": "^2.6.2"
@@ -47,6 +46,7 @@
     "@fingerprintjs/commit-lint-dx-team": "^0.0.2",
     "@fingerprintjs/conventional-changelog-dx-team": "^0.1.0",
     "@fingerprintjs/eslint-config-dx-team": "^0.1.0",
+    "@fingerprintjs/fingerprintjs-pro": "^3.9.2",
     "@fingerprintjs/prettier-config-dx-team": "^0.1.0",
     "@fingerprintjs/tsconfig-dx-team": "^0.0.2",
     "@playwright/test": "^1.42.1",
