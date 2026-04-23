@@ -1,0 +1,8 @@
+{
+  "mode": "pre",
+  "tag": "test",
+  "initialVersions": {
+    "@fingerprint/azure-proxy": "1.5.0"
+  },
+  "changesets": []
+}
