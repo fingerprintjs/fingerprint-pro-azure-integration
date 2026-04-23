@@ -1,5 +1,5 @@
 {
-  "name": "@fingerprintjs/fingerprint-pro-azure-integration",
+  "name": "@fingerprint/azure-proxy",
   "version": "1.5.0",
   "license": "MIT",
   "sideEffects": false,
