@@ -26,7 +26,7 @@ const managementFn: TimerHandler = async (timer, context) => {
     })
   }
 
-  const env = gatherEnvs(context.log)
+  const env = gatherEnvs(context)
 
   if (!env) {
     return
@@ -35,7 +35,7 @@ const managementFn: TimerHandler = async (timer, context) => {
   const { resourceGroupName, appName, subscriptionId } = env
 
   const latestFunction = await getLatestFunctionZip(
-    context.log,
+    context,
     process.env.GITHUB_TOKEN,
     config.version,
     env.allowPrerelease
@@ -60,7 +60,7 @@ const managementFn: TimerHandler = async (timer, context) => {
     const client = new WebSiteManagementClient(credentials, subscriptionId)
     const [settings, statusUrl] = await Promise.all([
       client.webApps.listApplicationSettings(resourceGroupName, appName),
-      getSiteStatusUrl(client, resourceGroupName, appName, context.log),
+      getSiteStatusUrl(client, resourceGroupName, appName, context),
     ])
 
     const oldFunctionZipUrl = settings.properties?.[WEBSITE_RUN_FROM_PACKAGE]
@@ -114,7 +114,7 @@ const managementFn: TimerHandler = async (timer, context) => {
         newVersion: latestFunction.version,
         statusUrl,
         oldFunctionZipUrl: oldFunctionZipUrl,
-        logger: context.log,
+        logger: context,
         resourceGroupName,
         appName,
         client,
