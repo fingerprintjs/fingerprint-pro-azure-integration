@@ -7,6 +7,7 @@
   "scripts": {
     "build": "rimraf dist && NODE_OPTIONS=\"--max_old_space_size=4098\" rollup -c rollup.config.mjs && cp host.json dist && node scripts/copyLocalSettings.mjs",
     "build:release": "FPDCN=fpcdn.io INGRESS_API=api.fpjs.io IS_RELEASE_BUILD=true pnpm build",
+    "prepare-package": "./scripts/preparePackage.sh",
     "watch": "pnpm build --watch",
     "prepare": "husky install",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore --max-warnings 0 .",
@@ -22,7 +23,7 @@
     "build:example-website": "cd example-website && vite build",
     "e2e-deploy-infra": "ts-node --project e2e/tsconfig.json e2e/infra/scripts/deploy.ts",
     "e2e-destroy-infra": "ts-node --project e2e/tsconfig.json e2e/infra/scripts/destroy.ts",
-    "changeset:publish": "HUSKY=0 changeset publish && pnpm build:release && ./scripts/preparePackage.sh",
+    "changeset:publish": "HUSKY=0 changeset publish && pnpm build:release && pnpm prepare-package",
     "changeset:version": "changeset version"
   },
   "dependencies": {
