@@ -43,7 +43,7 @@ function createPackageJsonPlugin(artifactName) {
         name: packageJson.name,
         version: packageJson.version,
         description: packageJson.description,
-        main: `${artifactName}/${artifactName}.js`,
+        main: `${artifactName}.js`,
         license: packageJson.license,
         //dependencies: packageJson.dependencies ?? {},
       }
@@ -110,6 +110,7 @@ function makeConfig(opts, entryFile, artifactName) {
   const commonOutput = {
     exports: 'named',
     sourcemap: !buildFlags.isForRelease,
+    inlineDynamicImports: true,
   }
 
   const output = [
@@ -118,7 +119,7 @@ function makeConfig(opts, entryFile, artifactName) {
       output: [
         {
           ...commonOutput,
-          file: `${outputDirectory}/${artifactName}/${artifactName}.js`,
+          file: `${outputDirectory}/${artifactName}.js`,
           format: 'cjs',
         },
       ],
@@ -143,5 +144,5 @@ export default (opts) => {
   /**
    * @type {import('rollup').RollupOptions[]}
    * */
-  return [...makeConfig(opts, 'index.ts', 'fingerprint-azure-proxy')]
+  return [...makeConfig(opts, 'index.ts', 'index')]
 }
