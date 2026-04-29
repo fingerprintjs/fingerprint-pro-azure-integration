@@ -5,10 +5,10 @@ import dtsPlugin from 'rollup-plugin-dts'
 import replace from '@rollup/plugin-replace'
 import { join } from 'path'
 import nodeResolve from '@rollup/plugin-node-resolve'
-import copyPlugin from 'rollup-plugin-copy'
 import commonjs from '@rollup/plugin-commonjs'
 import dotenv from 'dotenv'
 import packageJson from './package.json' with { type: 'json' }
+import { mkdir, writeFile } from 'node:fs/promises'
 
 dotenv.config()
 const outputDirectory = 'dist'
@@ -25,6 +25,35 @@ function getEnv(key, defaultValue) {
   }
 
   throw new Error(`Missing environment variable ${key}`)
+}
+
+/**
+ * Custom Rollup plugin that emits a tailored package.json file
+ * into the artifact directory after the bundle has been written.
+ *
+ * @param {string} artifactName - Name of the artifact (used as subdir in dist)
+ * @returns {import('rollup').Plugin}
+ */
+function createPackageJsonPlugin(artifactName) {
+  return {
+    name: 'create-package-json',
+    // `writeBundle` runs after Rollup has written the output files to disk
+    async writeBundle() {
+      const distPackageJson = {
+        name: packageJson.name,
+        version: packageJson.version,
+        description: packageJson.description,
+        main: `${artifactName}/${artifactName}.js`,
+        license: packageJson.license,
+        //dependencies: packageJson.dependencies ?? {},
+      }
+
+      await mkdir(outputDirectory, { recursive: true })
+      await writeFile(join(outputDirectory, 'package.json'), JSON.stringify(distPackageJson, null, 2) + '\n', 'utf-8')
+
+      this.info(`Generated package.json in ${outputDirectory}`)
+    },
+  }
 }
 
 function makeConfig(opts, entryFile, artifactName) {
@@ -71,6 +100,7 @@ function makeConfig(opts, entryFile, artifactName) {
         preventAssignment: true,
       }),
       commonBanner,
+      createPackageJsonPlugin(artifactName),
     ],
   }
 
@@ -113,7 +143,5 @@ export default (opts) => {
   /**
    * @type {import('rollup').RollupOptions[]}
    * */
-  return [
-    ...makeConfig(opts, 'index.ts', 'fingerprint-azure-proxy', ),
-  ]
+  return [...makeConfig(opts, 'index.ts', 'fingerprint-azure-proxy')]
 }
