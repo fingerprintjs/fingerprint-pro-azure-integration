@@ -14,10 +14,7 @@
     "sourceMap": true,
     "exactOptionalPropertyTypes": false
   },
-  "include": [
-    "proxy",
-    "management"
-  ],
+  "include": ["proxy", "management"],
   "references": [
     {
       "path": "./tsconfig.app.json"

@@ -2,16 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "types": ["node"],
-    "module": "ES2020"
+    "module": "ES2020",
+    "composite": true
   },
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.test.ts",
-    "test",
-    "e2e"
-  ],
-  "include": [
-    "**/*.ts"
-  ]
+  "exclude": ["dist", "node_modules", "**/*.test.ts", "test", "e2e"],
+  "include": ["**/*.ts"]
 }
