@@ -1,3 +1,6 @@
 packages:
-  - "example-website"
-  - "./"
+  - example-website
+  - ./
+
+onlyBuiltDependencies:
+  - azure-functions-core-tools
