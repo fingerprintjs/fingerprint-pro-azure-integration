@@ -259,7 +259,7 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
         "reserved": true,
         "siteConfig": {
-          "linuxFxVersion": "Node|20",
+          "linuxFxVersion": "Node|24",
           "minimumElasticInstanceCount": 1,
           "numberOfWorkers": 2,
           "appSettings": [
