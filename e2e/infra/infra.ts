@@ -45,7 +45,7 @@ export async function deployE2EInfrastructure({
       agentDownloadPath,
       routePrefix,
     })
-    const functionAppHost = functionApp.hostNames?.[0]
+    const functionAppHost = functionApp.hostNames?.[0] || functionApp.enabledHostNames?.[0]
     invariant(functionAppHost, 'functionAppHost is required')
 
     const { url: frontdoorUrl, waitForFrontDoor } = await provisionFrontDoor({

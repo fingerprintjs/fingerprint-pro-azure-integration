@@ -16,15 +16,17 @@ export function getStatusUrl(baseUrl: string) {
 
 export async function getWebApp(resourceGroup: string, appName: string) {
   const policy = retry(handleAll, {
-    maxAttempts: 10,
-    backoff: new ExponentialBackoff(),
+    maxAttempts: 25,
+    backoff: new ExponentialBackoff({
+      initialDelay: 1024,
+    }),
   })
   return policy.execute(async ({ attempt }) => {
     if (attempt > 0) {
       console.info(`Attempt ${attempt}...`)
     }
 
-    const webApps = await websiteManagementClient.webApps.list()
+    const webApps = websiteManagementClient.webApps.list()
 
     for await (const webApp of webApps) {
       if (webApp.name?.startsWith(appName) && webApp.resourceGroup === resourceGroup) {

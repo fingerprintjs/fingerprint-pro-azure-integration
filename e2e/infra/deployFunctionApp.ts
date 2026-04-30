@@ -1,4 +1,4 @@
-import { resourcesClient } from './clients'
+import { deploymentsClient } from './clients'
 import config from './config'
 import { getWebApp } from './site'
 import invariant from 'tiny-invariant'
@@ -26,7 +26,7 @@ export async function deployFunctionApp({
 
   console.info(`Deploying app ${appName} to ${resourceGroup} resource group`)
 
-  await resourcesClient.deployments.beginCreateOrUpdateAndWait(resourceGroup, `${resourceGroup}-deployment`, {
+  await deploymentsClient.deployments.beginCreateOrUpdate(resourceGroup, `${resourceGroup}-deployment`, {
     properties: {
       template,
       parameters: {
