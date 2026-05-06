@@ -1,5 +1,5 @@
 ---
-'@fingerprint/azure-proxy': minor
+'@fingerprint/azure-frontdoor-proxy': minor
 ---
 
 Update runtime to 4.x

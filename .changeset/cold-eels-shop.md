@@ -1,5 +1,5 @@
 ---
-'@fingerprint/azure-proxy': major
+'@fingerprint/azure-frontdoor-proxy': major
 ---
 
 Migrate to Flex Consumption plan.
