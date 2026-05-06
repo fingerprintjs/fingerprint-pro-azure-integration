@@ -1,5 +1,5 @@
 {
-  "name": "@fingerprint/azure-proxy",
+  "name": "@fingerprint/azure-frontdoor-proxy",
   "version": "1.5.0",
   "license": "MIT",
   "sideEffects": false,
