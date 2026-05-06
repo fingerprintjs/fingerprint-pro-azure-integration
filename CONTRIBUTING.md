@@ -6,9 +6,8 @@ We prefer using [pnpm](https://pnpm.io/) for installing dependencies and running
 
 For proposing changes, use the standard [pull request approach](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request). It's recommended to discuss fixes or new functionality in the Issues, first.
 
-* You cannot push directly into the `main` and `develop` branches. 
-* Releases are created from the `main` branch. If you have the Azure Integration set up, it is running code from the `main` branch. Pull requests into the `main` branch are not accepted.
-* The `develop` branch functions as a candidate for the next release. Create your pull requests into this branch. The code in `develop` must always pass the tests.
+* The `main` branches are locked for the push action.
+* Releases are created from the `main` branch. If you have Azure Integration set up, it is running code from the `main` branch.
 
 ### How to build
 * After cloning the repository, run `pnpm install` to install dependencies.
@@ -57,4 +56,14 @@ You are required to follow [conventional commits](https://www.conventionalcommit
 
 ### How to release a new version
 
-The integration is automatically released on every push to the main branch if there are relevant changes. The workflow must be approved by one of the maintainers, first.
+We use [changesets](https://github.com/changesets/changesets) for handling release notes. If there are relevant changes, please add them to changeset via `pnpm exec changeset`. You need to run `pnpm install` before doing so.
+
+Every change requires a pre-release first:
+```shell
+pnpm exec changeset pre enter rc
+```
+
+When the PR is merged, the pre-release is created and E2E tests run against it. Once the tests pass, a stable release can be created:
+```shell
+pnpm exec changeset pre exit
+```
