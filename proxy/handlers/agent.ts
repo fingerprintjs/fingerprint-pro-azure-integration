@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
+import { HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
 import { config } from '../utils/config'
 import * as https from 'https'
 import { filterRequestHeaders, updateResponseHeadersForAgentDownload } from '../utils/headers'
@@ -17,19 +17,19 @@ function copySearchParams(query: URLSearchParams, newURL: URL): void {
   newURL.search = query.toString()
 }
 
-export async function downloadAgent({ httpRequest, logger, path }: DownloadAgentParams): Promise<HttpResponseInit> {
+export async function downloadAgent({ httpRequest, logger, path }: DownloadAgentParams): Promise<HttpResponse> {
   const apiKey = httpRequest.query.get('apiKey')
   const version = httpRequest.query.get('version') ?? DEFAULT_VERSION
   const loaderVersion = httpRequest.query.get('loaderVersion')
 
   if (!apiKey) {
-    return {
+    return new HttpResponse({
       status: 500,
       headers: {
         'Content-Type': 'application/json',
       },
       body: new IntegrationError('API Key is missing', path).toBody(),
-    }
+    })
   }
 
   const url = new URL(`https://${config.fpcdn}`)
@@ -44,7 +44,7 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
 
   delete headers['cookie']
 
-  return new Promise<HttpResponseInit>((resolve) => {
+  return new Promise<HttpResponse>((resolve) => {
     const data: any[] = []
 
     const request = https.request(
@@ -64,11 +64,13 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
           const body = Buffer.concat(data)
           const responseHeaders = updateResponseHeadersForAgentDownload(response.headers)
 
-          resolve({
-            status: response.statusCode ?? 500,
-            headers: responseHeaders,
-            body: new Uint8Array(body),
-          })
+          resolve(
+            new HttpResponse({
+              status: response.statusCode ?? 500,
+              headers: responseHeaders,
+              body: new Uint8Array(body),
+            })
+          )
         })
       }
     )
@@ -76,13 +78,15 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
     request.on('error', (error) => {
       logger.error('unable to download agent', { error })
 
-      resolve({
-        status: 500,
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-        body: 'error',
-      })
+      resolve(
+        new HttpResponse({
+          status: 500,
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+          body: 'error',
+        })
+      )
     })
 
     request.end()

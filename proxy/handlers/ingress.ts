@@ -1,8 +1,7 @@
-import { HttpRequest, InvocationContext } from '@azure/functions'
+import { HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
 import { config } from '../utils/config'
 import * as https from 'https'
 import { prepareHeadersForIngressAPI, updateResponseHeaders } from '../utils/headers'
-import { HttpResponseInit } from '@azure/functions/types/http'
 import { generateErrorResponse } from '../utils/errorResponse'
 import { addTrafficMonitoringSearchParamsForVisitorIdRequest } from '../utils/traffic'
 import { getValidRegion, Region } from '../utils/region'
@@ -19,7 +18,7 @@ export function handleIngress({
   logger,
   preSharedSecret,
   suffix,
-}: HandleIngressParams): Promise<HttpResponseInit> {
+}: HandleIngressParams): Promise<HttpResponse> {
   if (suffix && !suffix.startsWith('/')) {
     suffix = '/' + suffix
   }
@@ -46,7 +45,7 @@ export function handleIngress({
     delete headers['cookie']
   }
 
-  return new Promise<HttpResponseInit>((resolve) => {
+  return new Promise<HttpResponse>((resolve) => {
     const data: any[] = []
 
     const request = https.request(
@@ -63,11 +62,13 @@ export function handleIngress({
 
           logger.debug('Response from Ingress API', response.statusCode, payload.toString('utf-8'))
 
-          resolve({
-            status: response.statusCode ? response.statusCode : 500,
-            headers: updateResponseHeaders(response.headers),
-            body: payload,
-          })
+          resolve(
+            new HttpResponse({
+              status: response.statusCode ? response.statusCode : 500,
+              headers: updateResponseHeaders(response.headers),
+              body: payload,
+            })
+          )
         })
       }
     )
@@ -75,13 +76,15 @@ export function handleIngress({
     request.on('error', (error) => {
       logger.error('unable to handle result', { error })
 
-      resolve({
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(generateErrorResponse(error)),
-      })
+      resolve(
+        new HttpResponse({
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(generateErrorResponse(error)),
+        })
+      )
     })
 
     if (httpRequest.body) {

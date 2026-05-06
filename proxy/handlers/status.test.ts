@@ -31,7 +31,7 @@ describe('Handle status', () => {
       customerVariables: customerVariables,
     })
 
-    expect(removeNonce(result.body as string)).toMatchInlineSnapshot(`
+    expect(removeNonce(await result.text())).toMatchInlineSnapshot(`
     "
         <html lang='en-US'>
           <head>
@@ -85,7 +85,7 @@ describe('Handle status', () => {
       customerVariables: customerVariables,
     })
 
-    expect(removeNonce(result.body as string)).toMatchInlineSnapshot(`
+    expect(removeNonce(await result.text())).toMatchInlineSnapshot(`
     "
         <html lang='en-US'>
           <head>

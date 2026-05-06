@@ -36,7 +36,7 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
   const resultPathMatches = path.match(resultUriRegex)
 
   if (path === (await getAgentDownloadUri(customerVariables))) {
-    return await downloadAgent({ httpRequest: req, logger: context, path }).then((init) => new HttpResponse(init))
+    return await downloadAgent({ httpRequest: req, logger: context, path })
   } else if (resultPathMatches?.length) {
     let suffix = ''
     if (resultPathMatches && resultPathMatches.length >= 1) {
@@ -49,12 +49,12 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
         .getVariable(CustomerVariableType.PreSharedSecret)
         .then((v) => v.value ?? undefined),
       suffix,
-    }).then((init) => new HttpResponse(init))
+    })
   } else if (path === (await getStatusUri(customerVariables))) {
     return await handleStatus({
       httpRequest: req,
       customerVariables,
-    }).then((init) => new HttpResponse(init))
+    })
   } else {
     return new HttpResponse404(path)
   }
