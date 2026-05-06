@@ -7,7 +7,7 @@ import { CustomerVariableType } from '../shared/customer-variables/types'
 import { handleStatus } from './handlers/status'
 import { removeTrailingSlashes } from '../shared/routing'
 import { getAgentDownloadUri, getResultUri, getStatusUri } from '../shared/customer-variables/selectors'
-import { IntegrationError } from './errors/IntegrationError'
+import { HttpResponse404 } from './http/responses'
 
 export const proxyFn = async (req: HttpRequest, context: InvocationContext): Promise<HttpResponse> => {
   context.debug('Handling request', {
@@ -35,15 +35,6 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
   const resultUriRegex = new RegExp(`^${resultUri}(/.*)?$`)
   const resultPathMatches = path.match(resultUriRegex)
 
-  const get404 = () =>
-    new HttpResponse({
-      status: 404,
-      body: new IntegrationError('Invalid route', path).toBody(),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-
   if (path === (await getAgentDownloadUri(customerVariables))) {
     return await downloadAgent({ httpRequest: req, logger: context, path }).then((init) => new HttpResponse(init))
   } else if (resultPathMatches?.length) {
@@ -65,7 +56,7 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
       customerVariables,
     }).then((init) => new HttpResponse(init))
   } else {
-    return get404()
+    return new HttpResponse404(path)
   }
 }
 export default proxyFn
