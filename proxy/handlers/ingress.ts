@@ -5,6 +5,7 @@ import { prepareHeadersForIngressAPI, updateResponseHeaders } from '../utils/hea
 import { generateErrorResponse } from '../utils/errorResponse'
 import { addTrafficMonitoringSearchParamsForVisitorIdRequest } from '../utils/traffic'
 import { getValidRegion, Region } from '../utils/region'
+import { toError } from '../utils/error'
 
 export interface HandleIngressParams {
   httpRequest: HttpRequest
@@ -13,7 +14,7 @@ export interface HandleIngressParams {
   suffix?: string
 }
 
-export function handleIngress({
+export async function handleIngress({
   httpRequest,
   logger,
   preSharedSecret,
@@ -42,7 +43,26 @@ export function handleIngress({
 
   // No need to send cookies for browser cache request
   if (suffix) {
+    logger.debug('Removing cookie header for browser cache request')
     delete headers['cookie']
+  }
+
+  let requestBody: Buffer | undefined = undefined
+
+  if (httpRequest.body) {
+    try {
+      requestBody = Buffer.from(await httpRequest.arrayBuffer())
+    } catch (e) {
+      logger.error('unable to handle request body', { error: e })
+
+      return new HttpResponse({
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(generateErrorResponse(toError(e))),
+      })
+    }
   }
 
   return new Promise<HttpResponse>((resolve) => {
@@ -58,6 +78,8 @@ export function handleIngress({
         response.on('data', (chunk) => data.push(chunk))
 
         response.on('end', () => {
+          logger.debug('Response from Ingress API', response.statusCode)
+
           const payload = Buffer.concat(data)
 
           logger.debug('Response from Ingress API', response.statusCode, payload.toString('utf-8'))
@@ -87,8 +109,8 @@ export function handleIngress({
       )
     })
 
-    if (httpRequest.body) {
-      request.write(httpRequest.body)
+    if (requestBody) {
+      request.write(requestBody)
     }
 
     request.end()
