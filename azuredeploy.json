@@ -98,7 +98,7 @@
     "containerName": "function-releases",
     "functionNameComputed": "fingerprint-pro-azure-integration",
     "functionRuntime": "node",
-    "functionRuntimeVersion": "22",
+    "functionRuntimeVersion": "24",
     "maximumInstanceCount": 2,
     "instanceMemoryMB": 512,
     "packageZipUri": "https://github.com/fingerprintjs/fingerprint-pro-azure-integration/releases/latest/download/package.zip",
