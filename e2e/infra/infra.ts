@@ -17,33 +17,6 @@ export interface DeployE2EInfrastructureResult {
   waitForFrontDoor: () => Promise<void>
 }
 
-export async function updateE2EInfrastructure({
-  resourceGroup,
-  getResultPath,
-  agentDownloadPath,
-  routePrefix,
-  name,
-}: DeployE2EInfrastructureOptions) {
-  console.info('Updating infrastructure...')
-
-  await deployWebsite(resourceGroup, name)
-
-  const { url: tmpStorageUrl } = await deployAppToTempStorage()
-
-  const template = await getUpdatedDeployTemplate(tmpStorageUrl)
-
-  await deployFunctionApp({
-    template,
-    resourceGroup,
-    getResultPath,
-    agentDownloadPath,
-    routePrefix,
-    name,
-  })
-
-  console.info('Updated infrastructure deployed!')
-}
-
 export async function deployE2EInfrastructure({
   resourceGroup,
   getResultPath,

@@ -15,27 +15,20 @@ if (!fs.existsSync(websiteDistPath)) {
 
 export async function deployWebsite(resourceGroup: string, name: string) {
   const accountName = `e2e${name}${resourceGroup.replace(/[^0-9]/gi, '')}`
-  let account = await storageClient.storageAccounts.getProperties(resourceGroup, accountName).catch(() => {
-    return null
+
+  console.info(`Creating storage account for website: ${accountName}`)
+  const poll = await storageClient.storageAccounts.beginCreate(resourceGroup, accountName, {
+    kind: KnownKind.StorageV2,
+    location: 'westus',
+    sku: {
+      tier: 'Standard',
+      name: KnownSkuName.StandardLRS,
+    },
+    allowSharedKeyAccess: true,
+    allowBlobPublicAccess: true,
   })
 
-  if (!account) {
-    console.info(`Creating storage account for website: ${accountName}`)
-    const poll = await storageClient.storageAccounts.beginCreate(resourceGroup, accountName, {
-      kind: KnownKind.StorageV2,
-      location: 'westus',
-      sku: {
-        tier: 'Standard',
-        name: KnownSkuName.StandardLRS,
-      },
-      allowSharedKeyAccess: true,
-      allowBlobPublicAccess: true,
-    })
-
-    account = await poll.pollUntilDone()
-  } else {
-    console.info(`Storage account already exists: ${account.name}`)
-  }
+  const account = await poll.pollUntilDone()
 
   invariant(account.primaryEndpoints?.web, 'Storage account web endpoint not found')
   const accountUrl = `https://${account.name}.blob.core.windows.net/$web`

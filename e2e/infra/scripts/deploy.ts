@@ -1,11 +1,6 @@
 import { createResourceGroup, removeResourceGroup, removeResourceGroupAndWait } from '../resourceGroup'
 import { addTestInfo, deleteTestInfo, initTestInfo, safeReadTestInfo } from '../../shared/testInfo'
-import {
-  deployE2EInfrastructure,
-  DeployE2EInfrastructureOptions,
-  DeployE2EInfrastructureResult,
-  updateE2EInfrastructure,
-} from '../infra'
+import { deployE2EInfrastructure, DeployE2EInfrastructureOptions, DeployE2EInfrastructureResult } from '../infra'
 import { destroyTestInfo } from '../destroyTestInfo'
 
 function getId() {
@@ -13,18 +8,9 @@ function getId() {
 }
 
 async function main() {
-  let isUpdate = false
-  let resourceGroup: string
+  const resourceGroup = await createResourceGroup()
 
-  const testInfo = safeReadTestInfo()
-  if (testInfo) {
-    isUpdate = true
-    resourceGroup = testInfo.resourceGroup
-  } else {
-    resourceGroup = await createResourceGroup()
-
-    initTestInfo(resourceGroup)
-  }
+  initTestInfo(resourceGroup)
 
   const variants: DeployE2EInfrastructureOptions[] = [
     {
@@ -43,32 +29,26 @@ async function main() {
     },
   ]
 
-  if (isUpdate) {
+  const results: DeployE2EInfrastructureResult[] = []
+
+  try {
     for (const variant of variants) {
-      await updateE2EInfrastructure(variant)
+      const result = await deployE2EInfrastructure(variant)
+
+      results.push(result)
+
+      addTestInfo(result.testInfo)
     }
-  } else {
-    const results: DeployE2EInfrastructureResult[] = []
 
-    try {
-      for (const variant of variants) {
-        const result = await deployE2EInfrastructure(variant)
-
-        results.push(result)
-
-        addTestInfo(result.testInfo)
-      }
-
-      await Promise.all(results.map((r) => r.waitForFrontDoor()))
-    } catch (error) {
-      for (const result of results) {
-        await destroyTestInfo(result.testInfo)
-      }
-
-      await removeResourceGroupAndWait(resourceGroup)
-
-      throw error
+    await Promise.all(results.map((r) => r.waitForFrontDoor()))
+  } catch (error) {
+    for (const result of results) {
+      await destroyTestInfo(result.testInfo)
     }
+
+    await removeResourceGroupAndWait(resourceGroup)
+
+    throw error
   }
 }
 
