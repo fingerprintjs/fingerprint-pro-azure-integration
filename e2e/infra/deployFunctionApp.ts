@@ -10,6 +10,7 @@ export type FunctionAppDeploymentParameters = Pick<TestInfo, 'routePrefix' | 'ag
 export interface DeployFunctionAppOptions extends FunctionAppDeploymentParameters {
   resourceGroup: string
   template: Record<string, unknown>
+  name: string
 }
 
 /**
@@ -21,12 +22,13 @@ export async function deployFunctionApp({
   getResultPath,
   routePrefix,
   agentDownloadPath,
+  name,
 }: DeployFunctionAppOptions) {
-  const appName = `fpjs-dev-e2e-app-${Date.now()}`
+  const appName = `fpjs-dev-e2e-app-${name}-${resourceGroup.replace(/[^0-9]/gi, '')}`
 
   console.info(`Deploying app ${appName} to ${resourceGroup} resource group`)
 
-  await deploymentsClient.deployments.beginCreateOrUpdate(resourceGroup, `${resourceGroup}-deployment`, {
+  await deploymentsClient.deployments.beginCreateOrUpdate(resourceGroup, `${resourceGroup}-${name}-deployment`, {
     properties: {
       template,
       parameters: {

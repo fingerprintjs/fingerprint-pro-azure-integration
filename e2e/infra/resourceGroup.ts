@@ -13,10 +13,16 @@ export async function createResourceGroup() {
   return name
 }
 
-export async function removeResourceGroup(name: string) {
+export async function removeResourceGroupAndWait(name: string) {
   console.info('Removing resource group', name)
 
   const poll = await resourcesClient.resourceGroups.beginDelete(name)
 
   await poll.pollUntilDone()
+}
+
+export async function removeResourceGroup(name: string) {
+  console.info('Removing resource group', name)
+
+  await resourcesClient.resourceGroups.beginDelete(name)
 }

@@ -1,5 +1,5 @@
 import { TestInfo } from '../shared/testInfo'
-import { removeResourceGroup } from './resourceGroup'
+import { removeResourceGroupAndWait } from './resourceGroup'
 import { deployWebsite } from './website'
 import { deployAppToTempStorage, getUpdatedDeployTemplate } from './tmpStorage'
 import { deployFunctionApp, FunctionAppDeploymentParameters } from './deployFunctionApp'
@@ -9,6 +9,7 @@ import { STATUS_PATH } from '../../shared/status'
 
 export interface DeployE2EInfrastructureOptions extends FunctionAppDeploymentParameters {
   resourceGroup: string
+  name: string
 }
 
 export interface DeployE2EInfrastructureResult {
@@ -16,21 +17,49 @@ export interface DeployE2EInfrastructureResult {
   waitForFrontDoor: () => Promise<void>
 }
 
+export async function updateE2EInfrastructure({
+  resourceGroup,
+  getResultPath,
+  agentDownloadPath,
+  routePrefix,
+  name,
+}: DeployE2EInfrastructureOptions) {
+  console.info('Updating infrastructure...')
+
+  await deployWebsite(resourceGroup, name)
+
+  const { url: tmpStorageUrl } = await deployAppToTempStorage()
+
+  const template = await getUpdatedDeployTemplate(tmpStorageUrl)
+
+  await deployFunctionApp({
+    template,
+    resourceGroup,
+    getResultPath,
+    agentDownloadPath,
+    routePrefix,
+    name,
+  })
+
+  console.info('Updated infrastructure deployed!')
+}
+
 export async function deployE2EInfrastructure({
   resourceGroup,
   getResultPath,
   routePrefix,
   agentDownloadPath,
+  name,
 }: DeployE2EInfrastructureOptions): Promise<DeployE2EInfrastructureResult> {
   const cleanupFns: Array<() => Promise<void>> = []
 
   const cleanup = async () => {
     await Promise.all(cleanupFns.map((fn) => fn()))
-    await removeResourceGroup(resourceGroup)
+    await removeResourceGroupAndWait(resourceGroup)
   }
 
   try {
-    const website = await deployWebsite(resourceGroup)
+    const website = await deployWebsite(resourceGroup, name)
 
     const { url: tmpStorageUrl, removeBlob, blobName } = await deployAppToTempStorage()
 
@@ -44,6 +73,7 @@ export async function deployE2EInfrastructure({
       getResultPath,
       agentDownloadPath,
       routePrefix,
+      name,
     })
     const functionAppHost = functionApp.hostNames?.[0] || functionApp.enabledHostNames?.[0]
     invariant(functionAppHost, 'functionAppHost is required')
@@ -54,6 +84,7 @@ export async function deployE2EInfrastructure({
       functionAppHost,
       functionHealthStatusPath: `/fpjs/${STATUS_PATH}`,
       functionAppRoutePrefix: routePrefix,
+      name,
     })
 
     console.info(`Front door URL: ${frontdoorUrl}`)

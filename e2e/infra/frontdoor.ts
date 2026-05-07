@@ -18,6 +18,7 @@ export interface ProvisionFrontDoorParams {
   websiteHost: string
   functionHealthStatusPath: string
   functionAppRoutePrefix: string
+  name: string
 }
 
 export async function provisionFrontDoor({
@@ -26,8 +27,10 @@ export async function provisionFrontDoor({
   resourceGroup,
   functionHealthStatusPath,
   functionAppRoutePrefix,
+  name,
 }: ProvisionFrontDoorParams) {
-  const profileName = `e2e-frontdoor-${Date.now()}`
+  const id = `${resourceGroup.replace(/[^0-9]/gi, '')}-${name}`
+  const profileName = `e2e-${id}`
 
   console.info(`Creating front door profile`, profileName)
 
@@ -104,14 +107,9 @@ export async function provisionFrontDoor({
   console.info('Created origins')
   console.info('Creating endpoints...')
 
-  const endpoint = await cdnClient.afdEndpoints.beginCreateAndWait(
-    resourceGroup,
-    profileName,
-    `fpjs-e2e-proxy-${Date.now()}`,
-    {
-      location: 'Global',
-    }
-  )
+  const endpoint = await cdnClient.afdEndpoints.beginCreateAndWait(resourceGroup, profileName, `fpjs-e2e-proxy-${id}`, {
+    location: 'Global',
+  })
   invariant(endpoint.name, 'endpoint.name is required')
   invariant(endpoint.hostName, 'endpoint.hostName is required')
 
