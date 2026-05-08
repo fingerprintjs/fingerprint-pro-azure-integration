@@ -51,7 +51,7 @@ describe('Result Endpoint', function () {
   const getSearchWithRegion = (region: string) => `?region=${region}&${search.replace('?', '')}`
 
   beforeAll(() => {
-    jest.spyOn(ingress, 'handleIngress')
+    jest.spyOn(ingress, '_handleIngress')
     requestSpy = jest.spyOn(https, 'request')
   })
 
@@ -72,7 +72,7 @@ describe('Result Endpoint', function () {
       return Reflect.construct(ClientRequest, args)
     })
     await proxyFn(req, mockContext())
-    expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
+    expect(ingress._handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledTimes(1)
 
     const [url] = requestSpy.mock.calls[0]
@@ -231,7 +231,7 @@ describe('Result Endpoint', function () {
     })
 
     await proxyFn(req, mockContext())
-    expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
+    expect(ingress._handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
         origin: defaultOrigin,
@@ -252,7 +252,7 @@ describe('Result Endpoint', function () {
       },
     })
     await proxyFn(req, mockContext())
-    expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
+    expect(ingress._handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
         origin: defaultOrigin,
@@ -268,7 +268,7 @@ describe('Result Endpoint', function () {
   test('HTTP GET with bad suffix', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
     await proxyFn(req, mockContext())
-    expect(ingress.handleIngress).toHaveBeenCalledTimes(0)
+    expect(ingress._handleIngress).toHaveBeenCalledTimes(0)
     expect(https.request).toHaveBeenCalledTimes(0)
   })
 
@@ -280,7 +280,7 @@ describe('Result Endpoint', function () {
       },
     })
     await proxyFn(req, mockContext())
-    expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
+    expect(ingress._handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
         origin: defaultOrigin,
@@ -301,7 +301,7 @@ describe('Result Endpoint', function () {
       },
     })
     await proxyFn(req, mockContext())
-    expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
+    expect(ingress._handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledWith(
       expect.objectContaining({
         origin: defaultOrigin,
@@ -317,7 +317,7 @@ describe('Result Endpoint', function () {
   test('HTTP POST with bad suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
     await proxyFn(req, mockContext())
-    expect(ingress.handleIngress).toHaveBeenCalledTimes(0)
+    expect(ingress._handleIngress).toHaveBeenCalledTimes(0)
     expect(https.request).toHaveBeenCalledTimes(0)
   })
 

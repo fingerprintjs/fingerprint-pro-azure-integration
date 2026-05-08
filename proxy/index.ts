@@ -1,6 +1,6 @@
 import { HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
 import { downloadAgent } from './handlers/agent'
-import { handleIngress } from './handlers/ingress'
+import { _handleIngress, handleIngress } from './handlers/ingress'
 import { CustomerVariables } from '../shared/customer-variables/CustomerVariables'
 import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables'
 import { CustomerVariableType } from '../shared/customer-variables/types'
@@ -49,6 +49,7 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
         .getVariable(CustomerVariableType.PreSharedSecret)
         .then((v) => v.value ?? undefined),
       suffix,
+      requestType: 'ingressV3',
     })
   } else if (path === (await getStatusUri(customerVariables))) {
     return await handleStatus({
