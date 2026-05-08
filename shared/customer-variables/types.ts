@@ -1,4 +1,4 @@
-export enum CustomerVariableType {
+export enum CustomerVariableName {
   RoutePrefix = 'fpjs_route_prefix',
   GetResultPath = 'fpjs_get_result_path',
   PreSharedSecret = 'fpjs_pre_shared_secret',
@@ -7,10 +7,10 @@ export enum CustomerVariableType {
 
 export type CustomerVariableValue = string | null | undefined
 
-export type CustomerVariablesRecord = Record<CustomerVariableType, CustomerVariableValue>
+export type CustomerVariablesRecord = Record<CustomerVariableName, CustomerVariableValue>
 
 export interface CustomerVariableProvider {
   readonly name: string
 
-  getVariable: (variable: CustomerVariableType) => Promise<CustomerVariableValue>
+  getVariable: (variable: CustomerVariableName) => Promise<CustomerVariableValue>
 }

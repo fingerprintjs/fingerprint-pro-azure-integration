@@ -1,4 +1,4 @@
-import { CustomerVariableProvider, CustomerVariableType } from './types'
+import { CustomerVariableProvider, CustomerVariableName } from './types'
 import { CustomerVariables } from './CustomerVariables'
 
 describe('customer variables', () => {
@@ -17,7 +17,7 @@ describe('customer variables', () => {
     const customerVariables = new CustomerVariables([mockProvider])
 
     await expect(
-      customerVariables.getVariable(CustomerVariableType.PreSharedSecret).then((v) => v.value)
+      customerVariables.getVariable(CustomerVariableName.PreSharedSecret).then((v) => v.value)
     ).resolves.toBeNull()
   })
 })

@@ -3,7 +3,7 @@ import { downloadAgent } from './handlers/agent'
 import { _handleIngress, handleIngress } from './handlers/ingress'
 import { CustomerVariables } from '../shared/customer-variables/CustomerVariables'
 import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables'
-import { CustomerVariableType } from '../shared/customer-variables/types'
+import { CustomerVariableName } from '../shared/customer-variables/types'
 import { handleStatus } from './handlers/status'
 import { removeTrailingSlashes } from '../shared/routing'
 import { getAgentDownloadUri, getResultUri, getStatusUri } from '../shared/customer-variables/selectors'
@@ -46,7 +46,7 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
       httpRequest: req,
       logger: context,
       preSharedSecret: await customerVariables
-        .getVariable(CustomerVariableType.PreSharedSecret)
+        .getVariable(CustomerVariableName.PreSharedSecret)
         .then((v) => v.value ?? undefined),
       suffix,
       requestType: 'ingressV3',

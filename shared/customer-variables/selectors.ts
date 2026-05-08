@@ -1,5 +1,5 @@
 import { CustomerVariables, GetVariableResult } from './CustomerVariables'
-import { CustomerVariableType } from './types'
+import { CustomerVariableName } from './types'
 import { STATUS_PATH } from '../status'
 
 export const getAgentDownloadUri = async (variables: CustomerVariables) =>
@@ -13,10 +13,10 @@ export const getStatusUri = async (variables: CustomerVariables) => `${await get
 const extractVariable = (result: GetVariableResult) => result.value
 
 const getRoutePrefix = async (variables: CustomerVariables) =>
-  variables.getVariable(CustomerVariableType.RoutePrefix).then(extractVariable)
+  variables.getVariable(CustomerVariableName.RoutePrefix).then(extractVariable)
 
 const getAgentDownloadPath = async (variables: CustomerVariables) =>
-  variables.getVariable(CustomerVariableType.AgentDownloadPath).then(extractVariable)
+  variables.getVariable(CustomerVariableName.AgentDownloadPath).then(extractVariable)
 
 const getResultPath = async (variables: CustomerVariables) =>
-  variables.getVariable(CustomerVariableType.GetResultPath).then(extractVariable)
+  variables.getVariable(CustomerVariableName.GetResultPath).then(extractVariable)

@@ -3,7 +3,7 @@ import * as ingress from './ingress'
 import https, { Agent } from 'https'
 import { ClientRequest, IncomingMessage } from 'http'
 import { Socket } from 'net'
-import { CustomerVariableType } from '../../shared/customer-variables/types'
+import { CustomerVariableName } from '../../shared/customer-variables/types'
 import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet, mockRequestPost } from '../../shared/test/azure'
 import { Region } from '../utils/region'
@@ -81,7 +81,7 @@ describe('Result Endpoint', function () {
 
   test('With proxy secret', async () => {
     Object.assign(process.env, {
-      [CustomerVariableType.PreSharedSecret]: 'secret',
+      [CustomerVariableName.PreSharedSecret]: 'secret',
     })
 
     mockSuccessfulResponse({

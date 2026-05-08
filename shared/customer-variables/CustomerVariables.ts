@@ -1,4 +1,4 @@
-import { CustomerVariableProvider, CustomerVariableType, CustomerVariableValue } from './types'
+import { CustomerVariableProvider, CustomerVariableName, CustomerVariableValue } from './types'
 import { getDefaultCustomerVariable } from './defaults'
 import { InvocationContext } from '@azure/functions'
 import { maybeObfuscateVariable } from './maybeObfuscateVariable'
@@ -22,7 +22,7 @@ export class CustomerVariables {
    * Attempts to resolve customer variable using providers.
    * If no provider can resolve the variable, the default value is returned.
    * */
-  async getVariable(variable: CustomerVariableType): Promise<GetVariableResult> {
+  async getVariable(variable: CustomerVariableName): Promise<GetVariableResult> {
     const providerResult = await this.getValueFromProviders(variable)
 
     if (providerResult) {
@@ -39,7 +39,7 @@ export class CustomerVariables {
     }
   }
 
-  private async getValueFromProviders(variable: CustomerVariableType): Promise<GetVariableResult | null> {
+  private async getValueFromProviders(variable: CustomerVariableName): Promise<GetVariableResult | null> {
     for (const provider of this.providers) {
       try {
         const result = await provider.getVariable(variable)
