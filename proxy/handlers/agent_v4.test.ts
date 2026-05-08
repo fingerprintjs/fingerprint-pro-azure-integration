@@ -4,7 +4,7 @@ import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet } from '../../shared/test/azure'
 import { generateErrorResponse } from '../utils/errorResponse'
 
-describe('Agent Endpoint', () => {
+describe('Agent Endpoint V4', () => {
   const origin: string = '__ingress_api__'
 
   const agentScript =
@@ -52,28 +52,8 @@ describe('Agent Endpoint', () => {
     jest.clearAllMocks()
   })
 
-  test('Call with no params', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent')
-    const ctx = mockContext()
-
-    const res = await proxyFn(req, ctx)
-
-    expect(requestSpy).toHaveBeenCalledTimes(1)
-    expect(requestSpy).toHaveBeenCalledWith(
-      `https://${origin}/web/v3/?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress`,
-      expect.anything(),
-      expect.anything()
-    )
-
-    expect(await res.text()).toEqual(agentScript)
-  })
-
-  test('Call with custom query parameters', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'ujKG34hUYKLJKJ1F',
-      version: '5',
-      customQuery: '123',
-    })
+  test('Call with all params', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
     const ctx = mockContext()
 
     await proxyFn(req, ctx)
@@ -81,63 +61,12 @@ describe('Agent Endpoint', () => {
     const [url] = requestSpy.mock.calls[0]
 
     expect(url.toString()).toEqual(
-      `https://${origin}/web/v5/ujKG34hUYKLJKJ1F?apiKey=ujKG34hUYKLJKJ1F&version=5&customQuery=123&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress`
+      `https://${origin}/web/v4/ujKG34hUYKLJKJ1F?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress`
     )
-  })
-
-  test('Call with version', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'ujKG34hUYKLJKJ1F',
-      version: '5',
-    })
-    const ctx = mockContext()
-
-    await proxyFn(req, ctx)
-
-    const [url] = requestSpy.mock.calls[0]
-
-    expect(url.toString()).toEqual(
-      `https://${origin}/web/v5/ujKG34hUYKLJKJ1F?apiKey=ujKG34hUYKLJKJ1F&version=5&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress`
-    )
-  })
-
-  test('Call with version and loaderVersion', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'ujKG34hUYKLJKJ1F',
-      version: '5',
-      loaderVersion: '3.6.5',
-    })
-    const ctx = mockContext()
-
-    await proxyFn(req, ctx)
-
-    const [url] = requestSpy.mock.calls[0]
-
-    expect(url.toString()).toEqual(
-      `https://${origin}/web/v5/ujKG34hUYKLJKJ1F/loader_v3.6.5.js?apiKey=ujKG34hUYKLJKJ1F&version=5&loaderVersion=3.6.5&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress`
-    )
-  })
-
-  test('invalid apiKey, version and loaderVersion', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'foo.bar/baz',
-      version: 'foo.bar1/baz',
-      loaderVersion: 'foo.bar2/baz',
-    })
-
-    await proxyFn(req, mockContext())
-
-    const [url] = requestSpy.mock.calls[0]
-
-    expect(new URL(url).origin).toEqual(`https://${origin}`)
   })
 
   test('Browser cache set to an hour when original value is higher', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'ujKG34hUYKLJKJ1F',
-      version: '5',
-      loaderVersion: '3.6.5',
-    })
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     Object.assign(mockHttpResponse.headers, {
       'cache-control': 'public, max-age=3613',
@@ -156,11 +85,7 @@ describe('Agent Endpoint', () => {
   })
 
   test('Browser cache is the same when original value is lower than an hour', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'ujKG34hUYKLJKJ1F',
-      version: '5',
-      loaderVersion: '3.6.5',
-    })
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     Object.assign(mockHttpResponse.headers, {
       'cache-control': 'public, max-age=100',
@@ -179,11 +104,7 @@ describe('Agent Endpoint', () => {
   })
 
   test('Proxy cache set to a minute when original value is higher', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'ujKG34hUYKLJKJ1F',
-      version: '5',
-      loaderVersion: '3.6.5',
-    })
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     Object.assign(mockHttpResponse.headers, {
       'cache-control': 'public, max-age=3613, s-maxage=575500',
@@ -202,11 +123,7 @@ describe('Agent Endpoint', () => {
   })
 
   test('Proxy cache is the same when original value is lower than a minute', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'ujKG34hUYKLJKJ1F',
-      version: '5',
-      loaderVersion: '3.6.5',
-    })
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     Object.assign(mockHttpResponse.headers, {
       'cache-control': 'public, max-age=3613, s-maxage=10',
@@ -225,11 +142,7 @@ describe('Agent Endpoint', () => {
   })
 
   test('Response headers are the same, but strict-transport-security is removed', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'ujKG34hUYKLJKJ1F',
-      version: '5',
-      loaderVersion: '3.6.5',
-    })
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     Object.assign(mockHttpResponse.headers, {
       'content-type': 'text/javascript; charset=utf-8',
@@ -250,11 +163,7 @@ describe('Agent Endpoint', () => {
   })
 
   test('Req body and headers are the same, expect cookies, which should be omitted', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'ujKG34hUYKLJKJ1F',
-      version: '5',
-      loaderVersion: '3.6.5',
-    })
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     Array.from(req.headers.keys()).forEach((key) => req.headers.delete(key))
 
@@ -294,11 +203,7 @@ describe('Agent Endpoint', () => {
       return mockHttpRequest
     })
 
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent', {
-      apiKey: 'ujKG34hUYKLJKJ1F',
-      version: '5',
-      loaderVersion: '3.6.5',
-    })
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     const ctx = mockContext()
 

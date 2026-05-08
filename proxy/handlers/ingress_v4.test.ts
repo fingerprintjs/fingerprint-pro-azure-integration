@@ -8,7 +8,7 @@ import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet, mockRequestPost } from '../../shared/test/azure'
 import { Region } from '../utils/region'
 
-describe('Result Endpoint', function () {
+describe('Ingress Endpoint V4', () => {
   let requestSpy: jest.MockInstance<ClientRequest, any>
   const mockSuccessfulResponse = ({
     checkRequestUrl,
@@ -64,19 +64,16 @@ describe('Result Endpoint', function () {
   })
 
   test('Traffic monitoring', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
-    requestSpy.mockImplementationOnce((...args) => {
-      const [url, options] = args
-      expect(url).toBe(`${defaultOrigin}/${search}`)
-      options.agent = new Agent()
-      return Reflect.construct(ClientRequest, args)
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs')
+    mockSuccessfulResponse({
+      checkRequestUrl: (url) => {
+        expect(url.pathname).toBe('/')
+        expect(url.searchParams.get('ii')).toBe('fingerprint-pro-azure/__azure_function_version__/ingress')
+      },
     })
+
     await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
-    expect(https.request).toHaveBeenCalledTimes(1)
-
-    const [url] = requestSpy.mock.calls[0]
-    expect(new URL(url).searchParams.get('ii')).toBe('fingerprint-pro-azure/__azure_function_version__/ingress')
   })
 
   test('With proxy secret', async () => {
@@ -90,7 +87,7 @@ describe('Result Endpoint', function () {
       },
     })
 
-    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs')
 
     await proxyFn(req, mockContext())
 
@@ -100,7 +97,7 @@ describe('Result Endpoint', function () {
   })
 
   test('Cookies should include only _iidt', async () => {
-    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs')
 
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
@@ -115,7 +112,7 @@ describe('Result Endpoint', function () {
   })
 
   test('Cookies are undefined if _iidt is not est', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs')
 
     req.headers.set('cookie', '_vid_t=gEFRuIQlzYmv692/UL4GLA==')
 
@@ -132,7 +129,7 @@ describe('Result Endpoint', function () {
   })
 
   test('Request body and headers are not modified, expect strict-transport-security and transfer-encoding', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs')
     const resHeaders = {
       'access-control-allow-credentials': 'true',
       'access-control-expose-headers': 'Retry-After',
@@ -161,7 +158,7 @@ describe('Result Endpoint', function () {
   })
 
   test('Request body is not modified on error', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs')
     const resHeaders = {
       'access-control-allow-credentials': 'true',
       'access-control-expose-headers': 'Retry-After',
@@ -191,7 +188,7 @@ describe('Result Endpoint', function () {
   })
 
   test('Returns error response on function error', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs')
 
     requestSpy.mockImplementation((): any => {
       const emitter = new EventEmitter()
@@ -223,7 +220,7 @@ describe('Result Endpoint', function () {
   })
 
   test('HTTP GET without suffix', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs')
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
         expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
@@ -237,7 +234,7 @@ describe('Result Endpoint', function () {
   })
 
   test('HTTP GET with suffix', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/with/suffix')
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/with/suffix')
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
         expect(url.toString()).toBe(`${defaultOrigin}/with/suffix${search}`)
@@ -254,14 +251,14 @@ describe('Result Endpoint', function () {
   })
 
   test('HTTP GET with bad suffix', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
+    const req = mockRequestGet('https://fp.domain.com', 'fpjswith/bad/suffix')
     await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledTimes(1)
   })
 
   test('HTTP POST without suffix', async () => {
-    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs')
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
         expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
@@ -274,7 +271,7 @@ describe('Result Endpoint', function () {
   })
 
   test('HTTP POST with suffix', async () => {
-    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs/with/suffix')
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
         expect(url.toString()).toBe(`${defaultOrigin}/with/suffix${search}`)
@@ -291,14 +288,14 @@ describe('Result Endpoint', function () {
   })
 
   test('HTTP POST with bad suffix', async () => {
-    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
+    const req = mockRequestPost('https://fp.domain.com', 'fpjswith/bad/suffix')
     await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
     expect(https.request).toHaveBeenCalledTimes(1)
   })
 
   test('Suffix with a dot', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/.suffix')
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/.suffix')
 
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
@@ -313,7 +310,7 @@ describe('Result Endpoint', function () {
 
   Object.values(Region).forEach((region) => {
     test(`Suffix with a dot for region ${region}`, async () => {
-      const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/.suffix', {
+      const req = mockRequestGet('https://fp.domain.com', 'fpjs/.suffix', {
         region,
       })
 
@@ -336,7 +333,7 @@ describe('Result Endpoint', function () {
   })
 
   test('Suffix with a dot for invalid region', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId/.suffix', {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/.suffix', {
       region: 'invalid',
     })
 
@@ -354,7 +351,7 @@ describe('Result Endpoint', function () {
   test.each(['invalid', 'usa', 'EU', 'US', 'AP', '.invalid'])(
     'Should set default (US) region when invalid region is provided in query parameter: %s',
     async (region) => {
-      const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId', {
+      const req = mockRequestGet('https://fp.domain.com', 'fpjs', {
         region,
       })
 
@@ -393,7 +390,7 @@ describe('Browser caching endpoint', () => {
       responseStream.emit('end')
       return Reflect.construct(ClientRequest, args)
     })
-    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId/with/suffix')
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs/with/suffix')
     const context = mockContext()
     const res = await proxyFn(req, context)
     expect(res.headers.get('cache-control')).toBe(cacheControlValue)

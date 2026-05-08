@@ -158,7 +158,11 @@ describe('updateResponseHeadersForAgentDownload', () => {
 
 describe('prepareHeadersForIngressAPI', () => {
   it('should set all proxy headers if proxy secret is defined, preserving the original headers', () => {
-    const result = prepareHeadersForIngressAPI(mockReq, 'secret')
+    const result = prepareHeadersForIngressAPI({
+      request: mockReq,
+      isAuthorizedMethodCall: true,
+      preSharedSecret: 'secret',
+    })
 
     expect(result['fpjs-proxy-client-ip']).toBe('127.0.0.1')
     expect(result['fpjs-proxy-secret']).toBe('secret')
@@ -167,7 +171,11 @@ describe('prepareHeadersForIngressAPI', () => {
   })
 
   it('should set the other proxy headers, even if proxy secret is not defined, preserving the original headers', () => {
-    const result = prepareHeadersForIngressAPI(mockReq, undefined)
+    const result = prepareHeadersForIngressAPI({
+      request: mockReq,
+      isAuthorizedMethodCall: true,
+      preSharedSecret: undefined,
+    })
 
     expect(result['fpjs-proxy-client-ip']).toBe('127.0.0.1')
     expect(result['fpjs-proxy-forwarded-host']).toBe('fpjs.sh')

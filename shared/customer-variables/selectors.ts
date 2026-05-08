@@ -10,10 +10,19 @@ export const getResultUri = async (variables: CustomerVariables) =>
 
 export const getStatusUri = async (variables: CustomerVariables) => `${await getRoutePrefix(variables)}/${STATUS_PATH}`
 
+export const getPreSharedSecret = async (variables: CustomerVariables) =>
+  variables
+    .getVariable(CustomerVariableName.PreSharedSecret)
+    .then(extractVariable)
+    .then((v) => v ?? undefined)
+
 const extractVariable = (result: GetVariableResult) => result.value
 
-const getRoutePrefix = async (variables: CustomerVariables) =>
-  variables.getVariable(CustomerVariableName.RoutePrefix).then(extractVariable)
+export const getRoutePrefix = async (variables: CustomerVariables) =>
+  variables
+    .getVariable(CustomerVariableName.RoutePrefix)
+    .then(extractVariable)
+    .then((v) => v ?? '')
 
 const getAgentDownloadPath = async (variables: CustomerVariables) =>
   variables.getVariable(CustomerVariableName.AgentDownloadPath).then(extractVariable)

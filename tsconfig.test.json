@@ -5,5 +5,5 @@
   },
   "extends": "./tsconfig.json",
   "exclude": ["dist", "node_modules", "e2e"],
-  "include": ["**/*.test.ts", "**/test/*.ts"]
+  "include": ["**/*.test.ts", "**/test/*.ts", "proxy", "management"]
 }

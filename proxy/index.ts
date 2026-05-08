@@ -1,13 +1,17 @@
 import { HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
-import { downloadAgent } from './handlers/agent'
-import { _handleIngress, handleIngress } from './handlers/ingress'
+import { handleIngress } from './handlers/ingress'
 import { CustomerVariables } from '../shared/customer-variables/CustomerVariables'
 import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables'
-import { CustomerVariableName } from '../shared/customer-variables/types'
 import { handleStatus } from './handlers/status'
 import { removeTrailingSlashes } from '../shared/routing'
-import { getAgentDownloadUri, getResultUri, getStatusUri } from '../shared/customer-variables/selectors'
-import { HttpResponse404 } from './http/responses'
+import {
+  getAgentDownloadUri,
+  getPreSharedSecret,
+  getResultUri,
+  getRoutePrefix,
+  getStatusUri,
+} from '../shared/customer-variables/selectors'
+import { stripRoutePrefix } from './utils/paths'
 
 export const proxyFn = async (req: HttpRequest, context: InvocationContext): Promise<HttpResponse> => {
   context.debug('Handling request', {
@@ -36,7 +40,13 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
   const resultPathMatches = path.match(resultUriRegex)
 
   if (path === (await getAgentDownloadUri(customerVariables))) {
-    return await downloadAgent({ httpRequest: req, logger: context, path })
+    return await handleIngress({
+      httpRequest: req,
+      logger: context,
+      preSharedSecret: await getPreSharedSecret(customerVariables),
+      suffix: path,
+      requestType: 'agentV3',
+    })
   } else if (resultPathMatches?.length) {
     let suffix = ''
     if (resultPathMatches && resultPathMatches.length >= 1) {
@@ -45,9 +55,7 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
     return await handleIngress({
       httpRequest: req,
       logger: context,
-      preSharedSecret: await customerVariables
-        .getVariable(CustomerVariableName.PreSharedSecret)
-        .then((v) => v.value ?? undefined),
+      preSharedSecret: await getPreSharedSecret(customerVariables),
       suffix,
       requestType: 'ingressV3',
     })
@@ -57,7 +65,13 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
       customerVariables,
     })
   } else {
-    return new HttpResponse404(path)
+    return await handleIngress({
+      httpRequest: req,
+      logger: context,
+      preSharedSecret: await getPreSharedSecret(customerVariables),
+      suffix: stripRoutePrefix(path, await getRoutePrefix(customerVariables)),
+      requestType: 'v4',
+    })
   }
 }
 export default proxyFn

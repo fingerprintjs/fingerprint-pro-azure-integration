@@ -18,3 +18,7 @@ export function getV3AgentPath(params: URLSearchParams): string {
   const lv: string = loaderVersion ? `/loader_v${loaderVersion}.js` : ''
   return `/v${version}/${apiKey}${lv}`
 }
+
+export function stripRoutePrefix(path: string, prefix: string) {
+  return path.replace(new RegExp(`^${prefix}`), '')
+}

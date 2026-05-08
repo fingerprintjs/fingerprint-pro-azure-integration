@@ -84,12 +84,24 @@ export function getHost(request: Pick<HttpRequest, 'headers' | 'url'>) {
   return request.headers.get('x-forwarded-host') || new URL(request.url).hostname
 }
 
-export function prepareHeadersForIngressAPI(
-  request: HttpRequest,
-  preSharedSecret?: string,
+interface PrepareHeadersForIngressAPIParams {
+  request: HttpRequest
+  isAuthorizedMethodCall: boolean
+  preSharedSecret?: string
   logger?: InvocationContext
-) {
+}
+
+export function prepareHeadersForIngressAPI({
+  request,
+  isAuthorizedMethodCall,
+  preSharedSecret,
+  logger,
+}: PrepareHeadersForIngressAPIParams) {
   const headers = filterRequestHeaders(request.headers)
+
+  if (!isAuthorizedMethodCall) {
+    return headers
+  }
 
   headers['fpjs-proxy-client-ip'] = resolveClientIp(request, logger)
   const host = getHost(request)
