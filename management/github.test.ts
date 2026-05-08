@@ -18,18 +18,6 @@ const mockRelease = {
       state: 'uploaded',
       content_type: 'application/zip',
     },
-    {
-      name: 'v1.0.0.zip',
-      url: 'https://api.github.com/repos/owner/repo/releases/assets/123',
-      state: 'uploaded',
-      content_type: 'application/zip',
-    },
-    {
-      name: 'v1.0.0.txt',
-      url: 'https://api.github.com/repos/owner/repo/releases/assets/456',
-      state: 'uploaded',
-      content_type: 'text/plain',
-    },
   ],
   assets_url: 'https://api.github.com/repos/owner/repo/releases/123/assets',
   tag_name: 'v1.0.0',
