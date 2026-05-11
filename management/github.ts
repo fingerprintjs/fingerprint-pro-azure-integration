@@ -74,13 +74,23 @@ export async function getLatestFunctionZip(
     ? await getLatestGithubReleaseWithPrelease(token)
     : await getLatestGithubRelease(token)
 
-  if (!isSemverGreater(release.tag_name, version)) {
-    logger?.verbose(`Latest release ${release.tag_name} is not greater than current version ${version}`)
+  // Parse tag to include only version
+  let tagName: string
+  if (release.tag_name?.includes('@')) {
+    // Example tag: @fingerprint/azure-frontdoor-proxy@1.6.0
+    const split = release.tag_name.split('@')
+    tagName = split[split.length - 1]
+  } else {
+    tagName = release?.tag_name
+  }
+
+  if (!isSemverGreater(tagName, version)) {
+    logger?.verbose(`Latest release ${tagName} is not greater than current version ${version}`)
 
     return null
   }
 
-  const releaseSemver = parse(release.tag_name)
+  const releaseSemver = parse(tagName)
   const versionSemver = parse(version)
 
   if (releaseSemver?.major !== versionSemver?.major) {
@@ -88,7 +98,7 @@ export async function getLatestFunctionZip(
     return null
   }
 
-  logger?.verbose(`Found new release ${release.tag_name}`, release.assets)
+  logger?.verbose(`Found new release ${tagName}`, release.assets)
 
   const asset = await findFunctionZip(release.assets)
 
@@ -98,7 +108,7 @@ export async function getLatestFunctionZip(
     ? {
         file: await downloadReleaseAsset(asset.url, token, logger),
         name: asset.name,
-        version: release.tag_name,
+        version: tagName,
       }
     : null
 }
