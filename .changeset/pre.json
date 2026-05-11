@@ -4,5 +4,7 @@
   "initialVersions": {
     "@fingerprint/azure-frontdoor-proxy": "1.5.1"
   },
-  "changesets": []
+  "changesets": [
+    "deep-jeans-exist"
+  ]
 }
