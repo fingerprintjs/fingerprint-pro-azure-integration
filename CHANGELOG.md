@@ -1,10 +1,10 @@
-## [1.5.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.5.0...v1.5.1) (2025-03-20)
-
 ## 1.6.0-rc.0
 
 ### Minor Changes
 
 - Prevent automatic upgrade to next major version. ([f5b841e](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/f5b841eb990402a942aac80a3c5552accad64224))
+
+## [1.5.1](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/compare/v1.5.0...v1.5.1) (2025-03-20)
 
 ### Bug Fixes
 
