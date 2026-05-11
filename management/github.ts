@@ -1,6 +1,7 @@
 import { config } from './config'
 import { isSemverGreater } from './semver'
 import { Logger } from '@azure/functions'
+import { parse } from 'semver'
 
 export function bearer(token?: string) {
   return `Bearer ${token}`
@@ -76,6 +77,14 @@ export async function getLatestFunctionZip(
   if (!isSemverGreater(release.tag_name, version)) {
     logger?.verbose(`Latest release ${release.tag_name} is not greater than current version ${version}`)
 
+    return null
+  }
+
+  const releaseSemver = parse(release.tag_name)
+  const versionSemver = parse(version)
+
+  if (releaseSemver?.major !== versionSemver?.major) {
+    logger?.verbose("Major versions doesn't match, skipping")
     return null
   }
 
