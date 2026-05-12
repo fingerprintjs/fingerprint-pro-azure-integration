@@ -1,3 +1,9 @@
+## 1.6.0-rc.1
+
+### Patch Changes
+
+- Handle scoped tag names when comparing release versions ([cf2d0f6](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/cf2d0f675d9d3c1319523e24b74ba581aa687d28))
+
 ## 1.6.0-rc.0
 
 ### Minor Changes

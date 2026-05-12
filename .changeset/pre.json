@@ -5,6 +5,7 @@
     "@fingerprint/azure-frontdoor-proxy": "1.5.1"
   },
   "changesets": [
-    "deep-jeans-exist"
+    "deep-jeans-exist",
+    "tidy-years-cry"
   ]
 }
