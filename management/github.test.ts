@@ -10,7 +10,7 @@ import {
 
 const mockRelease = {
   url: 'https://api.github.com/repos/owner/repo/releases/123',
-  name: 'v1.0.0',
+  name: 'v1.1.0',
   assets: [
     {
       name: 'package.zip',
@@ -20,7 +20,7 @@ const mockRelease = {
     },
   ],
   assets_url: 'https://api.github.com/repos/owner/repo/releases/123/assets',
-  tag_name: 'v1.0.0',
+  tag_name: '@fingerprint/azure-frontdoor-proxy@v1.1.0',
 } satisfies GithubRelease
 
 beforeEach(() => {
@@ -70,16 +70,47 @@ describe('getLatestFunctionZip', () => {
   })
 
   it('should return latest zip if release version is greater than function version', async () => {
-    const result = await getLatestFunctionZip(undefined, undefined, '0.0.1')
+    const result = await getLatestFunctionZip(undefined, undefined, '1.0.0')
 
     expect(result?.name).toEqual(mockRelease.assets[0].name)
-    expect(result?.version).toEqual(mockRelease.tag_name)
+    expect(result?.version).toEqual('v1.1.0')
     expect(result?.file.byteLength).toEqual(4)
     expect(result?.file.toString()).toEqual('Test')
   })
 
+  it('should return latest zip if release version is greater than function version for pre-release', async () => {
+    fetchMock.reset()
+    fetchMock.get(`https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases`, [
+      {
+        ...mockRelease,
+        tag_name: `@fingerprint/azure-frontdoor-proxy@v1.1.0-rc.1`,
+      },
+    ])
+    fetchMock.get(mockRelease.assets[0].url, 'Test')
+
+    const result = await getLatestFunctionZip(undefined, undefined, '1.0.0', true)
+
+    expect(result?.name).toEqual(mockRelease.assets[0].name)
+    expect(result?.version).toEqual('v1.1.0-rc.1')
+    expect(result?.file.byteLength).toEqual(4)
+    expect(result?.file.toString()).toEqual('Test')
+  })
+
+  it.each(['2.0.0', '2.0.0-rc.1'])('should return null if major versions does not match', async (tagName) => {
+    fetchMock.reset()
+    fetchMock.get(`https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases/latest`, {
+      ...mockRelease,
+      tag_name: `@fingerprint/azure-frontdoor-proxy@${tagName}`,
+    })
+
+    const result = await getLatestFunctionZip(undefined, undefined, '1.5.0')
+
+    expect(result).toBeNull()
+    expect(fetchMock.calls()).toHaveLength(1)
+  })
+
   it('should return undefined if version is the same', async () => {
-    const result = await getLatestFunctionZip(undefined, undefined, '1.0.0')
+    const result = await getLatestFunctionZip(undefined, undefined, '1.1.0')
 
     expect(result).toBeNull()
   })
