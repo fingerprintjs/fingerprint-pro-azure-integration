@@ -1,3 +1,13 @@
+## 1.6.0
+
+### Minor Changes
+
+- Prevent automatic upgrade to next major version. ([f5b841e](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/f5b841eb990402a942aac80a3c5552accad64224))
+
+### Patch Changes
+
+- Handle scoped tag names when comparing release versions ([cf2d0f6](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/cf2d0f675d9d3c1319523e24b74ba581aa687d28))
+
 ## 1.6.0-rc.1
 
 ### Patch Changes
