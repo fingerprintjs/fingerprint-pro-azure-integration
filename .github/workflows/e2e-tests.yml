@@ -5,6 +5,10 @@ on:
     branches-ignore:
       - main
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   mock-e2e:
     name: Mock E2E
