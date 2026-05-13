@@ -7,7 +7,7 @@ import { updateResponseHeaders } from './headers'
 
 type SendHttpRequestResult = {
   response: IncomingMessage
-  data: Buffer
+  data: Buffer | Uint8Array
 }
 
 /**
@@ -45,9 +45,12 @@ function sendHttpRequest(
       response.on('end', () => {
         const payload = Buffer.concat(chunks)
 
+        // Buffer must be wrapped in Uint8Array for binary responses — Azure's HttpResponse
+        // serializes Buffer via toString(), which corrupts compressed data (e.g. gzip'd JS)
+        // and results in an empty 200. Plain Uint8Array bypasses that path and keeps raw bytes intact.
         resolve({
           response,
-          data: payload,
+          data: isBinary ? new Uint8Array(payload) : payload,
         })
       })
     })
@@ -111,7 +114,7 @@ export async function sendIngressRequest(
 
     const dataString = data.toString('utf-8')
 
-    console.debug('Response from Ingress API', {
+    context.debug('Response from Ingress API', {
       statusCode: response.statusCode,
       payload: dataString,
       isJavascript,
@@ -119,7 +122,7 @@ export async function sendIngressRequest(
 
     return new HttpResponse({
       status: response.statusCode ?? 500,
-      body: dataString,
+      body: data,
       headers: updateResponseHeaders(response.headers, isJavascript),
     })
   } catch (error) {
