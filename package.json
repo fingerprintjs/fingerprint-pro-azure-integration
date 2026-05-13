@@ -9,7 +9,7 @@
     "build": "rimraf dist && NODE_OPTIONS=\"--max_old_space_size=4098\" rollup -c rollup.config.mjs && cp host.json dist && node scripts/copyLocalSettings.mjs",
     "build:release": "FPDCN=fpcdn.io INGRESS_API=api.fpjs.io IS_RELEASE_BUILD=true pnpm build",
     "prepare-package": "./scripts/preparePackage.sh",
-    "watch": "pnpm build --watch",
+    "watch": "pnpm build && rollup -c rollup.config.mjs --watch",
     "prepare": "husky install",
     "lint": "eslint --ext .js,.ts --ignore-path .gitignore --max-warnings 0 .",
     "lint:fix": "pnpm lint --fix",
