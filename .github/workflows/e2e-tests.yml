@@ -129,11 +129,6 @@ jobs:
       - name: Zip
         run: pnpm prepare-package
 
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Deploy infrastructure
         run: pnpm e2e-deploy-infra
         env:
