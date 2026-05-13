@@ -3,7 +3,7 @@ name: E2E Tests
 on:
   push:
     branches-ignore:
-      - test
+      - main
 
 jobs:
   mock-e2e:
