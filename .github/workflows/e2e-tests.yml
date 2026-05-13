@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install && pnpm exec playwright install
 
-      - name: Build functions
+      - name: Build
         run: pnpm build
         env:
           FPCDN: ${{ secrets.MOCK_FPCDN }}
@@ -110,7 +110,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install && pnpm dlx playwright install
 
-      - name: Build functions
+      - name: Build
         run: pnpm build
         env:
           FPCDN: fpcdn.io
