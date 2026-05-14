@@ -1,145 +1,95 @@
 import fetchMock from 'fetch-mock'
 import { StatusInfo } from '../shared/status'
 import { performHealthCheckAfterUpdate } from './healthCheck'
+import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings'
 
 describe('performHealthCheckAfterUpdate', () => {
-  const mockClient = {
-    webApps: {
-      beginCreateOrUpdateAndWait: jest.fn(),
-    },
+  const mockCopyPoller = {
+    pollUntilDone: jest.fn().mockResolvedValue(undefined),
   }
+
+  const mockBackupBlobClient = {
+    beginCopyFromURL: jest.fn().mockResolvedValue(mockCopyPoller),
+    url: `https://storageaccount.blob.core.windows.net/function-releases/${BACKUP_PACKAGE_BLOB}`,
+  }
+
+  const mockReleasedBlobClient = {
+    beginCopyFromURL: jest.fn().mockResolvedValue(mockCopyPoller),
+    url: `https://storageaccount.blob.core.windows.net/function-releases/${RELEASED_PACKAGE_BLOB}`,
+  }
+
   const mockStorageClient = {
     deleteBlob: jest.fn(),
+    getBlockBlobClient: jest.fn().mockImplementation((name: string) => {
+      if (name === BACKUP_PACKAGE_BLOB) {
+        return mockBackupBlobClient
+      }
+      if (name === RELEASED_PACKAGE_BLOB) {
+        return mockReleasedBlobClient
+      }
+      throw new Error(`Unexpected blob name: ${name}`)
+    }),
   }
 
   const statusUrl = 'https://example.org/fpjs/status'
-  const oldFunctionZipUrl = 'https://storageaccount.blob.core.windows.net/function-zips/zipname.zip'
-  const newFunctionZipUrl = 'https://storageaccount.blob.core.windows.net/function-zips/v1.0.0.zip'
-
-  const mockSite = {
-    location: 'eastus',
-    functionAppConfig: {
-      deployment: {
-        storage: {
-          type: 'blobContainer',
-          value: oldFunctionZipUrl,
-          authentication: {
-            type: 'UserAssignedIdentity',
-          },
-        },
-      },
-    },
-  }
 
   beforeEach(() => {
     jest.restoreAllMocks()
-
     mockStorageClient.deleteBlob.mockClear()
-    mockClient.webApps.beginCreateOrUpdateAndWait.mockClear()
-
+    mockBackupBlobClient.beginCopyFromURL.mockClear()
+    mockReleasedBlobClient.beginCopyFromURL.mockClear()
+    mockCopyPoller.pollUntilDone.mockClear()
     fetchMock.reset()
   })
 
-  it('should remove old function from storage if health check passed', async () => {
+  it('should delete backup if health check passed', async () => {
     fetchMock.get(statusUrl, {
       version: '1.0.0',
       envInfo: [],
     } as StatusInfo)
 
     await performHealthCheckAfterUpdate({
-      site: mockSite as any,
-      appName: 'test-app',
-      resourceGroupName: 'test-resource',
-      client: mockClient as any,
-      oldFunctionZipUrl,
       newVersion: '1.0.0',
       statusUrl,
       storageClient: mockStorageClient as any,
       checkInterval: 500,
-      newFunctionZipUrl,
+      restartApp: jest.fn(),
     })
 
-    expect(mockStorageClient.deleteBlob).toHaveBeenCalledWith('zipname.zip')
+    expect(mockStorageClient.deleteBlob).toHaveBeenCalledWith(BACKUP_PACKAGE_BLOB)
   })
 
   it('should retry status request', async () => {
-    fetchMock.getOnce(statusUrl, {
-      version: '0.0.1',
-      envInfo: [],
-    } as StatusInfo)
-
-    fetchMock.getOnce(
-      statusUrl,
-      {
-        version: '0.0.1',
-        envInfo: [],
-      } as StatusInfo,
-      { overwriteRoutes: false }
-    )
-
-    fetchMock.getOnce(
-      statusUrl,
-      {
-        version: '1.0.0',
-        envInfo: [],
-      } as StatusInfo,
-      { overwriteRoutes: false }
-    )
+    fetchMock.getOnce(statusUrl, { version: '0.0.1', envInfo: [] } as StatusInfo)
+    fetchMock.getOnce(statusUrl, { version: '0.0.1', envInfo: [] } as StatusInfo, { overwriteRoutes: false })
+    fetchMock.getOnce(statusUrl, { version: '1.0.0', envInfo: [] } as StatusInfo, { overwriteRoutes: false })
 
     await performHealthCheckAfterUpdate({
-      site: mockSite as any,
-      appName: 'test-app',
-      resourceGroupName: 'test-resource',
-      client: mockClient as any,
-      oldFunctionZipUrl,
       newVersion: '1.0.0',
       statusUrl,
       storageClient: mockStorageClient as any,
       checkInterval: 500,
-      newFunctionZipUrl,
+      restartApp: jest.fn(),
     })
 
-    expect(mockStorageClient.deleteBlob).toHaveBeenCalledWith('zipname.zip')
+    expect(mockStorageClient.deleteBlob).toHaveBeenCalledWith(BACKUP_PACKAGE_BLOB)
   })
 
-  it('should rollback on timeout', async () => {
-    fetchMock.get(
-      statusUrl,
-      {
-        version: '0.0.1',
-        envInfo: [],
-      } as StatusInfo,
-      { overwriteRoutes: false }
-    )
+  it('should rollback by restoring backup on timeout', async () => {
+    fetchMock.get(statusUrl, { version: '0.0.1', envInfo: [] } as StatusInfo, { overwriteRoutes: false })
 
     await expect(
       performHealthCheckAfterUpdate({
-        site: mockSite as any,
-        appName: 'test-app',
-        resourceGroupName: 'test-resource',
-        client: mockClient as any,
-        oldFunctionZipUrl,
         newVersion: '1.0.0',
         statusUrl,
         storageClient: mockStorageClient as any,
         checkInterval: 100,
-        newFunctionZipUrl,
+        restartApp: jest.fn(),
       })
     ).rejects.toThrow('Version mismatch, expected: 1.0.0, received: 0.0.1')
 
-    expect(mockStorageClient.deleteBlob).toHaveBeenCalledTimes(0)
-    expect(mockClient.webApps.beginCreateOrUpdateAndWait).toHaveBeenCalledWith(
-      'test-resource',
-      'test-app',
-      expect.objectContaining({
-        functionAppConfig: expect.objectContaining({
-          deployment: expect.objectContaining({
-            storage: expect.objectContaining({
-              value: oldFunctionZipUrl,
-            }),
-          }),
-        }),
-      })
-    )
+    expect(mockStorageClient.deleteBlob).not.toHaveBeenCalled()
+    expect(mockReleasedBlobClient.beginCopyFromURL).toHaveBeenCalledWith(mockBackupBlobClient.url)
+    expect(mockCopyPoller.pollUntilDone).toHaveBeenCalled()
   }, 30_000)
 })

@@ -5,7 +5,8 @@ import { getLatestFunctionZip } from './github'
 import { gatherEnvs } from './env'
 import { getSiteStatusUrl } from './site'
 import { performHealthCheckAfterUpdate } from './healthCheck'
-import { USER_ASSIGNED_ENTITY_CLIENT_ID } from './settings'
+import { createPackageBackup } from './storage'
+import { RELEASED_PACKAGE_BLOB, USER_ASSIGNED_ENTITY_CLIENT_ID } from './settings'
 import { config } from './config'
 import crypto from 'crypto'
 import { TimerHandler } from '@azure/functions/types/timer'
@@ -60,9 +61,7 @@ const managementFn: TimerHandler = async (timer, context) => {
       getSiteStatusUrl(client, resourceGroupName, appName, context),
     ])
 
-    const deploymentStorage = site.functionAppConfig?.deployment?.storage
-    context.debug('Deployment storage', deploymentStorage)
-    const containerUrl = deploymentStorage?.value
+    const containerUrl = site.functionAppConfig?.deployment?.storage?.value
 
     if (!containerUrl) {
       context.warn('No deployment storage URL found in functionAppConfig')
@@ -76,42 +75,28 @@ const managementFn: TimerHandler = async (timer, context) => {
     const accountName = storageUrl.hostname.split('.')[0]
     const containerName = storageUrl.pathname.split('/').filter(Boolean)[0]
 
-    const blobName = 'released-package.zip'
-    const newBlobUrl = `https://${accountName}.blob.core.windows.net/${containerName}/${blobName}`
-
-    context.debug('New function blob URL', newBlobUrl)
-
     const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, credentials)
     const containerClient = blobServiceClient.getContainerClient(containerName)
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName)
 
-    await blockBlobClient.uploadData(latestFunction.file)
+    await createPackageBackup(containerClient, context)
 
-    await client.webApps.beginCreateOrUpdateAndWait(resourceGroupName, appName, {
-      ...site,
-      functionAppConfig: {
-        ...site.functionAppConfig,
-        deployment: {
-          ...site.functionAppConfig?.deployment,
-          storage: {
-            ...deploymentStorage,
-            value: newBlobUrl,
-          },
-        },
-      },
-    })
+    await containerClient.getBlockBlobClient(RELEASED_PACKAGE_BLOB).uploadData(latestFunction.file)
+    context.debug('Uploaded new package', latestFunction.version)
+    context.debug('Restarting function app')
+    const restartApp = async () => {
+      context.debug('Restarting function app')
+      await client.webApps.restart(resourceGroupName, appName)
+      context.debug('Function app restarted')
+    }
+
+    await restartApp()
 
     await performHealthCheckAfterUpdate({
       newVersion: latestFunction.version,
       statusUrl,
-      oldFunctionZipUrl: containerUrl,
-      logger: context,
-      resourceGroupName,
-      appName,
-      client,
-      site,
       storageClient: containerClient,
-      newFunctionZipUrl: newBlobUrl,
+      logger: context,
+      restartApp,
     })
   } catch (error) {
     context.error(error)

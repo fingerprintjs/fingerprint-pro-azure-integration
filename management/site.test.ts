@@ -14,6 +14,7 @@ describe('getSiteStatusUrl', () => {
   it('should return correct url for proxy function', async () => {
     client.webApps.listFunctions.mockImplementation(async function* () {
       yield {
+        name: 'function',
         config: {
           scriptFile: './fingerprint-pro-azure-function-management.js',
         },
@@ -23,6 +24,7 @@ describe('getSiteStatusUrl', () => {
         config: {
           scriptFile: './fingerprint-pro-azure-function.js',
         },
+        name: 'fpjs/proxy',
         invokeUrlTemplate: 'https://example.com/{*restofpath}',
       }
     })

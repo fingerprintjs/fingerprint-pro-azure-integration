@@ -1,36 +1,15 @@
-import { Site, WebSiteManagementClient } from '@azure/arm-appservice'
+import { ContainerClient } from '@azure/storage-blob'
 import { InvocationContext } from '@azure/functions'
+import { restorePackageFromBackup } from './storage'
 
 export interface PerformRollbackParams {
-  site: Site
-  client: WebSiteManagementClient
-  resourceGroupName: string
-  appName: string
-  oldFunctionZipUrl: string
+  storageClient: ContainerClient
   logger?: InvocationContext
+  restartApp: () => Promise<void>
 }
 
-export async function performRollback({
-  site,
-  client,
-  resourceGroupName,
-  appName,
-  oldFunctionZipUrl,
-  logger,
-}: PerformRollbackParams) {
-  logger?.debug(`Rolling back to ${oldFunctionZipUrl}`)
-
-  await client.webApps.beginCreateOrUpdateAndWait(resourceGroupName, appName, {
-    ...site,
-    functionAppConfig: {
-      ...site.functionAppConfig,
-      deployment: {
-        ...site.functionAppConfig?.deployment,
-        storage: {
-          ...site.functionAppConfig?.deployment?.storage,
-          value: oldFunctionZipUrl,
-        },
-      },
-    },
-  })
+export async function performRollback({ storageClient, logger, restartApp }: PerformRollbackParams) {
+  logger?.debug('Rolling back to previous package')
+  await restorePackageFromBackup(storageClient, logger)
+  await restartApp()
 }
