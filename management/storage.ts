@@ -10,8 +10,8 @@ export function removeOldFunctionFromStorage(
   const oldZipName = extractBlobName(oldZipUrl)
   const newZipName = extractBlobName(newZipUrl)
 
-  if (oldZipName === newZipName) {
-    logger?.debug('Old function zip is the same as the new one, skipping removal')
+  if (!oldZipName || oldZipName === newZipName) {
+    logger?.debug('Old function zip is the same as the new one or has no blob name, skipping removal')
 
     return
   }

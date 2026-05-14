@@ -1,12 +1,11 @@
 import fetchMock from 'fetch-mock'
 import { StatusInfo } from '../shared/status'
 import { performHealthCheckAfterUpdate } from './healthCheck'
-import { WEBSITE_RUN_FROM_PACKAGE } from './settings'
 
 describe('performHealthCheckAfterUpdate', () => {
   const mockClient = {
     webApps: {
-      updateApplicationSettings: jest.fn(),
+      beginCreateOrUpdateAndWait: jest.fn(),
     },
   }
   const mockStorageClient = {
@@ -17,10 +16,26 @@ describe('performHealthCheckAfterUpdate', () => {
   const oldFunctionZipUrl = 'https://storageaccount.blob.core.windows.net/function-zips/zipname.zip'
   const newFunctionZipUrl = 'https://storageaccount.blob.core.windows.net/function-zips/v1.0.0.zip'
 
+  const mockSite = {
+    location: 'eastus',
+    functionAppConfig: {
+      deployment: {
+        storage: {
+          type: 'blobContainer',
+          value: oldFunctionZipUrl,
+          authentication: {
+            type: 'UserAssignedIdentity',
+          },
+        },
+      },
+    },
+  }
+
   beforeEach(() => {
     jest.restoreAllMocks()
 
     mockStorageClient.deleteBlob.mockClear()
+    mockClient.webApps.beginCreateOrUpdateAndWait.mockClear()
 
     fetchMock.reset()
   })
@@ -32,7 +47,7 @@ describe('performHealthCheckAfterUpdate', () => {
     } as StatusInfo)
 
     await performHealthCheckAfterUpdate({
-      settings: {},
+      site: mockSite as any,
       appName: 'test-app',
       resourceGroupName: 'test-resource',
       client: mockClient as any,
@@ -72,7 +87,7 @@ describe('performHealthCheckAfterUpdate', () => {
     )
 
     await performHealthCheckAfterUpdate({
-      settings: {},
+      site: mockSite as any,
       appName: 'test-app',
       resourceGroupName: 'test-resource',
       client: mockClient as any,
@@ -99,7 +114,7 @@ describe('performHealthCheckAfterUpdate', () => {
 
     await expect(
       performHealthCheckAfterUpdate({
-        settings: {},
+        site: mockSite as any,
         appName: 'test-app',
         resourceGroupName: 'test-resource',
         client: mockClient as any,
@@ -113,10 +128,18 @@ describe('performHealthCheckAfterUpdate', () => {
     ).rejects.toThrow('Version mismatch, expected: 1.0.0, received: 0.0.1')
 
     expect(mockStorageClient.deleteBlob).toHaveBeenCalledTimes(0)
-    expect(mockClient.webApps.updateApplicationSettings).toHaveBeenCalledWith('test-resource', 'test-app', {
-      properties: {
-        [WEBSITE_RUN_FROM_PACKAGE]: oldFunctionZipUrl,
-      },
-    })
+    expect(mockClient.webApps.beginCreateOrUpdateAndWait).toHaveBeenCalledWith(
+      'test-resource',
+      'test-app',
+      expect.objectContaining({
+        functionAppConfig: expect.objectContaining({
+          deployment: expect.objectContaining({
+            storage: expect.objectContaining({
+              value: oldFunctionZipUrl,
+            }),
+          }),
+        }),
+      })
+    )
   }, 30_000)
 })

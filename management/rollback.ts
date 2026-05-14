@@ -1,9 +1,8 @@
-import { StringDictionary, WebSiteManagementClient } from '@azure/arm-appservice'
-import { WEBSITE_RUN_FROM_PACKAGE } from './settings'
+import { Site, WebSiteManagementClient } from '@azure/arm-appservice'
 import { InvocationContext } from '@azure/functions'
 
 export interface PerformRollbackParams {
-  settings: StringDictionary
+  site: Site
   client: WebSiteManagementClient
   resourceGroupName: string
   appName: string
@@ -12,20 +11,26 @@ export interface PerformRollbackParams {
 }
 
 export async function performRollback({
-  settings,
+  site,
   client,
   resourceGroupName,
   appName,
   oldFunctionZipUrl,
   logger,
 }: PerformRollbackParams) {
-  if (!settings.properties) {
-    settings.properties = {}
-  }
-
-  settings.properties[WEBSITE_RUN_FROM_PACKAGE] = oldFunctionZipUrl
-
   logger?.debug(`Rolling back to ${oldFunctionZipUrl}`)
 
-  await client.webApps.updateApplicationSettings(resourceGroupName, appName, settings)
+  await client.webApps.beginCreateOrUpdateAndWait(resourceGroupName, appName, {
+    ...site,
+    functionAppConfig: {
+      ...site.functionAppConfig,
+      deployment: {
+        ...site.functionAppConfig?.deployment,
+        storage: {
+          ...site.functionAppConfig?.deployment?.storage,
+          value: oldFunctionZipUrl,
+        },
+      },
+    },
+  })
 }

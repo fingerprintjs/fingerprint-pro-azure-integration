@@ -1,6 +1,6 @@
 import { InvocationContext } from '@azure/functions'
 import { StatusInfo } from '../shared/status'
-import { StringDictionary, WebSiteManagementClient } from '@azure/arm-appservice'
+import { Site, WebSiteManagementClient } from '@azure/arm-appservice'
 import { performRollback } from './rollback'
 import { ContainerClient } from '@azure/storage-blob'
 import { removeOldFunctionFromStorage } from './storage'
@@ -13,7 +13,7 @@ export interface PerformHealthCheckAfterUpdateParams {
   oldFunctionZipUrl: string
   logger?: InvocationContext
   statusUrl: string
-  settings: StringDictionary
+  site: Site
   client: WebSiteManagementClient
   resourceGroupName: string
   appName: string
@@ -25,7 +25,7 @@ export async function performHealthCheckAfterUpdate({
   newVersion,
   statusUrl,
   logger,
-  settings,
+  site,
   appName,
   client,
   resourceGroupName,
@@ -43,7 +43,7 @@ export async function performHealthCheckAfterUpdate({
 
     await performRollback({
       oldFunctionZipUrl,
-      settings,
+      site,
       appName,
       client,
       resourceGroupName,
