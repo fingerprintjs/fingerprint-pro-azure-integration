@@ -1,7 +1,7 @@
 import { HttpRequest, InvocationContext } from '@azure/functions'
 import { config } from '../utils/config'
 import { prepareHeadersForIngressAPI } from '../utils/headers'
-import { addTrafficMonitoringSearchParamsForVisitorIdRequest } from '../utils/traffic'
+import { addTrafficMonitoringSearchParamsForIngressRequest } from '../utils/traffic'
 import { getValidRegion, Region } from '../utils/region'
 import { getV3AgentPath, INGRESS_CDN_PATH } from '../utils/paths'
 import { isMethodAuthorized } from '../utils/request'
@@ -43,10 +43,6 @@ export async function handleIngress({
   const url = new URL(getIngressAPIHost(region) + suffix)
   url.search = httpRequest.query.toString()
 
-  addTrafficMonitoringSearchParamsForVisitorIdRequest(url)
-
-  logger.debug('Performing request', url.toString())
-
   const isAuthorizedMethodCall = isMethodAuthorized(httpRequest.method)
 
   const headers = prepareHeadersForIngressAPI({
@@ -57,11 +53,14 @@ export async function handleIngress({
   })
 
   // Include cookies only for authorized methods
-
   if (!isAuthorizedMethodCall) {
     logger.debug('Removing cookie header for browser cache request')
     delete headers['cookie']
+  } else {
+    addTrafficMonitoringSearchParamsForIngressRequest(url)
   }
+
+  logger.debug('Performing request', url.toString())
 
   return sendIngressRequest(httpRequest, headers, url, logger)
 }
