@@ -22,8 +22,7 @@ export default async function setup(config: FullConfig) {
     invariant(target.url, `URL for ${target.name} not found`)
 
     const queryParams = new URLSearchParams({
-      scriptUrlPattern: `/${target.testInfo.routePrefix}/${target.testInfo.agentDownloadPath}?apiKey=<apiKey>&loaderVersion=<loaderVersion>`,
-      endpoint: `/${target.testInfo.routePrefix}/${target.testInfo.getResultPath}`,
+      integrationPath: target.testInfo.routePrefix,
     })
 
     const url = new URL(target.url)
