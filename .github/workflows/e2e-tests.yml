@@ -35,7 +35,7 @@ jobs:
           version: 9
 
       - name: Install dependencies
-        run: pnpm install && pnpm exec playwright install
+        run: pnpm install
 
       - name: Build
         run: pnpm build
@@ -108,7 +108,7 @@ jobs:
           version: 9
 
       - name: Install dependencies
-        run: pnpm install && pnpm dlx playwright install
+        run: pnpm install && pnpm exec playwright install --with-deps
 
       - name: Build
         run: pnpm build
