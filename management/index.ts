@@ -61,6 +61,7 @@ const managementFn: TimerHandler = async (timer, context) => {
     ])
 
     const deploymentStorage = site.functionAppConfig?.deployment?.storage
+    context.debug('Deployment storage', deploymentStorage)
     const containerUrl = deploymentStorage?.value
 
     if (!containerUrl) {
@@ -69,7 +70,7 @@ const managementFn: TimerHandler = async (timer, context) => {
       return
     }
 
-    context.debug('containerUrl', containerUrl)
+    context.debug('Container URL', containerUrl)
 
     const storageUrl = new URL(containerUrl)
     const accountName = storageUrl.hostname.split('.')[0]
@@ -78,13 +79,13 @@ const managementFn: TimerHandler = async (timer, context) => {
     const blobName = 'released-package.zip'
     const newBlobUrl = `https://${accountName}.blob.core.windows.net/${containerName}/${blobName}`
 
+    context.debug('New function blob URL', newBlobUrl)
+
     const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, credentials)
     const containerClient = blobServiceClient.getContainerClient(containerName)
     const blockBlobClient = containerClient.getBlockBlobClient(blobName)
 
     await blockBlobClient.uploadData(latestFunction.file)
-
-    context.debug('newBlobUrl', newBlobUrl)
 
     await client.webApps.beginCreateOrUpdateAndWait(resourceGroupName, appName, {
       ...site,
