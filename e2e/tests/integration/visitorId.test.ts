@@ -57,7 +57,7 @@ test.describe('visitorId', () => {
     expect(apiRequestUrl.searchParams.get('ci')).toContain(`js/`)
   })
 
-  test.only(`should show correct visitorId using function endpoints with Agent V4`, async ({
+  test(`should show correct visitorId using function endpoints with Agent V4`, async ({
     page,
     baseURL,
     azureTestInfo,
@@ -81,9 +81,9 @@ test.describe('visitorId', () => {
     await checkResponseV4(page)
 
     const requests = getRequests()
-    expect(requests).toHaveLength(3)
+    expect(requests).toHaveLength(4)
 
-    const [agentRequest, , apiRequest] = requests
+    const [agentRequest, , , apiRequest] = requests
 
     const agentRequestUrl = new URL(agentRequest.url())
     expect(agentRequestUrl.hostname).toBe(rootUrl.hostname)
