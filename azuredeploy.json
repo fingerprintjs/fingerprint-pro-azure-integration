@@ -50,7 +50,7 @@
     },
     "functionAppName": {
       "type": "string",
-      "defaultValue": "fingerprint-pro-azure-integration-app",
+      "defaultValue": "azure-frontdoor-proxy-app",
       "metadata": {
         "description": "Suffix for function app, storage account, and key vault names."
       }
