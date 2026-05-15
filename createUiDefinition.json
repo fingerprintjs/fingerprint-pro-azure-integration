@@ -71,7 +71,7 @@
           {
             "name": "routePrefix",
             "type": "Microsoft.Common.TextBox",
-            "label": "Route Prefix",
+            "label": "Route Prefix (your `FPJS_ROUTE_PREFIX` variable value)",
             "defaultValue": "fpjs"
           },
           {
@@ -104,7 +104,7 @@
             "name": "preSharedSecret",
             "type": "Microsoft.Common.PasswordBox",
             "label": {
-              "password": "Pre-Shared Secret",
+              "password": "Proxy Secret",
               "confirmPassword": "Confirm Secret"
             }
           }
