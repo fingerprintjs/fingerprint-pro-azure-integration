@@ -68,7 +68,7 @@
       "defaultValue": "agent",
       "minLength": 1,
       "metadata": {
-        "description": "Agent download path"
+        "description": "Agent download path (required only for JS Agent V3)"
       }
     },
     "getResultPath": {
@@ -76,7 +76,7 @@
       "defaultValue": "result",
       "minLength": 1,
       "metadata": {
-        "description": "Get result path"
+        "description": "Get result path (required only for JS Agent V3)"
       }
     },
     "preSharedSecret": {
