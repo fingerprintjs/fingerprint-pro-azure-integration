@@ -46,7 +46,7 @@ export async function getTmpStorageContainerClient() {
  * */
 export async function deployAppToTempStorage() {
   const containerClient = await getTmpStorageContainerClient()
-  const blobName = `released-package.zip`
+  const blobName = `released-package-${Date.now()}.zip`
   const blobClient = containerClient.getBlockBlobClient(blobName)
 
   const zip = fs.readFileSync(functionZipPath)
