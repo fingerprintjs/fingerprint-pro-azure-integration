@@ -63,6 +63,12 @@
         "description": "Route prefix"
       }
     },
+    "preSharedSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Pre-shared proxy secret issued in Fingerprint Pro dashboard"
+      }
+    },
     "agentDownloadPath": {
       "type": "string",
       "defaultValue": "agent",
@@ -77,12 +83,6 @@
       "minLength": 1,
       "metadata": {
         "description": "Get result path (required only for JS Agent V3)"
-      }
-    },
-    "preSharedSecret": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Pre-shared proxy secret issued in Fingerprint Pro dashboard"
       }
     }
   },

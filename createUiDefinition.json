@@ -1,0 +1,88 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [
+      {
+        "name": "functionAppName",
+        "type": "Microsoft.Common.TextBox",
+        "label": "Function App Name",
+        "defaultValue": "azure-frontdoor-proxy-app"
+      },
+      {
+        "name": "location",
+        "type": "Microsoft.Common.DropDown",
+        "label": "Location",
+        "defaultValue": "EastUS",
+        "constraints": {
+          "allowedValues": [
+            {
+              "label": "Value one",
+              "description": "The value to select for option 1.",
+              "value": "one"
+            },
+            {
+              "label": "Value two",
+              "description": "The value to select for option 2.",
+              "value": "two"
+            }
+          ]
+        }
+      }
+    ],
+    "steps": [
+      {
+        "name": "routingConfig",
+        "label": "Routing Configuration",
+        "subLabel": {
+          "preValidation": "Configure route paths",
+          "postValidation": "Done"
+        },
+        "bladeTitle": "Routing",
+        "elements": [
+          {
+            "name": "routePrefix",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Route Prefix",
+            "defaultValue": "fpjs"
+          },
+          {
+            "name": "agentDownloadPath",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Agent Download Path",
+            "defaultValue": "agent"
+          },
+          {
+            "name": "getResultPath",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Get Result Path",
+            "defaultValue": "result"
+          }
+        ]
+      },
+      {
+        "name": "security",
+        "label": "Security",
+        "elements": [
+          {
+            "name": "preSharedSecret",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Pre-Shared Secret",
+              "confirmPassword": "Confirm Secret"
+            }
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "location": "[basics('location')]",
+      "functionAppName": "[basics('functionAppName')]",
+      "routePrefix": "[steps('routingConfig').routePrefix]",
+      "agentDownloadPath": "[steps('routingConfig').agentDownloadPath]",
+      "getResultPath": "[steps('routingConfig').getResultPath]",
+      "preSharedSecret": "[steps('security').preSharedSecret]"
+    }
+  }
+}
