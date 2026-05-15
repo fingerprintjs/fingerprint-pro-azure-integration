@@ -24,13 +24,36 @@ async function doMockTests() {
     const resultUrl = new URL(host)
     resultUrl.pathname = resultPath
 
+    const integrationUrl = new URL(host)
+    integrationUrl.pathname = info.routePrefix
+
     console.info('Running mock server for', host)
     console.info('Agent download path:', agentPath)
     console.info('Get result path:', resultPath)
 
+    const args = {
+      'api-url': `https://${apiUrl}`,
+      'integration-url': integrationUrl.toString(),
+      'cdn-path': agentPath,
+      'ingress-path': resultPath,
+      'traffic-name': 'fingerprintjs-pro-cloudfront',
+      'integration-version': pkg.version,
+      'enable-new-tests': 'true',
+    } as Record<string, string | string[]>
+
+    const argsString = Object.entries(args)
+      .flatMap(([key, value]) => {
+        if (typeof value === 'string') {
+          return `--${key}="${value}"`
+        }
+
+        return value.map((v) => `--${key}="${v}"`)
+      })
+      .join(' ')
+
     try {
       execSync(
-        `npm exec -y "git+https://github.com/fingerprintjs/dx-team-mock-for-proxy-integrations-e2e-tests.git" -- --api-url="https://${apiUrl}" --cdn-proxy-url="${agentUrl.toString()}" --ingress-proxy-url="${resultUrl.toString()}" --traffic-name="fingerprint-pro-azure" --integration-version=${pkg.version}`,
+        `npm exec -y "git+https://github.com/fingerprintjs/dx-team-mock-for-proxy-integrations-e2e-tests.git" -- ${argsString}`,
         {
           stdio: 'inherit',
         }
