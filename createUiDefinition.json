@@ -75,7 +75,7 @@
             "defaultValue": "fpjs"
           },
           {
-            "name": "advancedSection",
+            "name": "legacyOptions",
             "type": "Microsoft.Common.Section",
             "label": "Legacy JS Agent V3 Options",
             "elements": [
@@ -115,8 +115,8 @@
       "location": "[basics('location')]",
       "functionAppName": "[basics('functionAppName')]",
       "routePrefix": "[steps('routingConfig').routePrefix]",
-      "agentDownloadPath": "[steps('routingConfig').agentDownloadPath]",
-      "getResultPath": "[steps('routingConfig').getResultPath]",
+      "agentDownloadPath": "[steps('routingConfig').legacyOptions.agentDownloadPath]",
+      "getResultPath": "[steps('routingConfig').legacyOptions.getResultPath]",
       "preSharedSecret": "[steps('security').preSharedSecret]"
     }
   }
