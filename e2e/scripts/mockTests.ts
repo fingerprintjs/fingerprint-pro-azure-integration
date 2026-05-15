@@ -14,28 +14,21 @@ async function doMockTests() {
   }
 
   for (const info of testInfo.tests) {
-    const agentPath = `${info.routePrefix}/${info.agentDownloadPath}`
-    const resultPath = `${info.routePrefix}/${info.getResultPath}`
     const host = info.frontdoorUrl
-
-    const agentUrl = new URL(host)
-    agentUrl.pathname = agentPath
-
-    const resultUrl = new URL(host)
-    resultUrl.pathname = resultPath
 
     const integrationUrl = new URL(host)
     integrationUrl.pathname = info.routePrefix
 
     console.info('Running mock server for', host)
-    console.info('Agent download path:', agentPath)
-    console.info('Get result path:', resultPath)
+    console.info('Integration URL', integrationUrl.toString())
+    console.info('Agent download path:', info.agentDownloadPath)
+    console.info('Get result path:', info.getResultPath)
 
     const args = {
       'api-url': `https://${apiUrl}`,
       'integration-url': integrationUrl.toString(),
-      'cdn-path': agentPath,
-      'ingress-path': resultPath,
+      'cdn-path': info.agentDownloadPath,
+      'ingress-path': info.getResultPath,
       'traffic-name': 'fingerprintjs-pro-cloudfront',
       'integration-version': pkg.version,
       'enable-new-tests': 'true',
