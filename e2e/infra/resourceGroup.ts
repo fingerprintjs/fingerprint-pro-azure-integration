@@ -22,7 +22,7 @@ export async function removeResourceGroupAndWait(name: string) {
 }
 
 export async function removeResourceGroup(name: string) {
-  console.info('Removing resource group', name)
+  console.info('Beginning resource group removal', name)
 
   await resourcesClient.resourceGroups.beginDelete(name)
 }
