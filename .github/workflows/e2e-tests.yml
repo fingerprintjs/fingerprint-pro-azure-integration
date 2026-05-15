@@ -2,6 +2,9 @@ name: E2E Tests
 
 on:
   pull_request: 
+    paths-ignore:
+      - '*.md'
+      - 'createUiDefinition.json'
 
 permissions:
   id-token: write
