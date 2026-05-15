@@ -60,9 +60,7 @@ describe('Agent Endpoint V4', () => {
 
     const [url] = requestSpy.mock.calls[0]
 
-    expect(url.toString()).toEqual(
-      `https://${origin}/web/v4/ujKG34hUYKLJKJ1F?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress`
-    )
+    expect(url.toString()).toEqual(`https://${origin}/web/v4/ujKG34hUYKLJKJ1F`)
   })
 
   test('Browser cache set to an hour when original value is higher', async () => {

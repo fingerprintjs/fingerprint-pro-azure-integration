@@ -140,7 +140,7 @@ describe('Ingress Endpoint V4', () => {
 
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
-        expect(url.toString()).toBe(`${defaultOrigin}/${search}`)
+        expect(url.toString()).toBe(`${defaultOrigin}/`)
       },
       responseHeaders: resHeaders,
     })
@@ -229,7 +229,7 @@ describe('Ingress Endpoint V4', () => {
 
     await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
-    expect(https.request).toHaveBeenCalledWith(`${defaultOrigin}/${search}`, expect.anything(), expect.anything())
+    expect(https.request).toHaveBeenCalledWith(`${defaultOrigin}/`, expect.anything(), expect.anything())
     expect(https.request).toHaveBeenCalledTimes(1)
   })
 
@@ -237,16 +237,12 @@ describe('Ingress Endpoint V4', () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/with/suffix')
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
-        expect(url.toString()).toBe(`${defaultOrigin}/with/suffix${search}`)
+        expect(url.toString()).toBe(`${defaultOrigin}/with/suffix`)
       },
     })
     await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
-    expect(https.request).toHaveBeenCalledWith(
-      `${defaultOrigin}/with/suffix${search}`,
-      expect.anything(),
-      expect.anything()
-    )
+    expect(https.request).toHaveBeenCalledWith(`${defaultOrigin}/with/suffix`, expect.anything(), expect.anything())
     expect(https.request).toHaveBeenCalledTimes(1)
   })
 

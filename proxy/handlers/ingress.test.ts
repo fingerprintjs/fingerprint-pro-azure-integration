@@ -64,7 +64,7 @@ describe('Result Endpoint', function () {
   })
 
   test('Traffic monitoring', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
     requestSpy.mockImplementationOnce((...args) => {
       const [url, options] = args
       expect(url).toBe(`${defaultOrigin}/${search}`)
@@ -132,7 +132,7 @@ describe('Result Endpoint', function () {
   })
 
   test('Request body and headers are not modified, expect strict-transport-security and transfer-encoding', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultId')
+    const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
     const resHeaders = {
       'access-control-allow-credentials': 'true',
       'access-control-expose-headers': 'Retry-After',
@@ -232,7 +232,7 @@ describe('Result Endpoint', function () {
 
     await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
-    expect(https.request).toHaveBeenCalledWith(`${defaultOrigin}/${search}`, expect.anything(), expect.anything())
+    expect(https.request).toHaveBeenCalledWith(`${defaultOrigin}/`, expect.anything(), expect.anything())
     expect(https.request).toHaveBeenCalledTimes(1)
   })
 
@@ -245,11 +245,7 @@ describe('Result Endpoint', function () {
     })
     await proxyFn(req, mockContext())
     expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
-    expect(https.request).toHaveBeenCalledWith(
-      `${defaultOrigin}/with/suffix${search}`,
-      expect.anything(),
-      expect.anything()
-    )
+    expect(https.request).toHaveBeenCalledWith(`${defaultOrigin}/with/suffix`, expect.anything(), expect.anything())
     expect(https.request).toHaveBeenCalledTimes(1)
   })
 
