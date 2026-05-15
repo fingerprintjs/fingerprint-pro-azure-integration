@@ -17,16 +17,43 @@
         "defaultValue": "EastUS",
         "constraints": {
           "allowedValues": [
-            {
-              "label": "Value one",
-              "description": "The value to select for option 1.",
-              "value": "one"
-            },
-            {
-              "label": "Value two",
-              "description": "The value to select for option 2.",
-              "value": "two"
-            }
+            { "label": "EastUS", "value": "EastUS" },
+            { "label": "EastUS2", "value": "EastUS2" },
+            { "label": "WestUS", "value": "WestUS" },
+            { "label": "WestEurope", "value": "WestEurope" },
+            { "label": "EastAsia", "value": "EastAsia" },
+            { "label": "SouthEastAsia", "value": "SouthEastAsia" },
+            { "label": "JapanEast", "value": "JapanEast" },
+            { "label": "JapanWest", "value": "JapanWest" },
+            { "label": "NorthCentralUS", "value": "NorthCentralUS" },
+            { "label": "SouthCentralUS", "value": "SouthCentralUS" },
+            { "label": "CentralUS", "value": "CentralUS" },
+            { "label": "NorthEurope", "value": "NorthEurope" },
+            { "label": "BrazilSouth", "value": "BrazilSouth" },
+            { "label": "AustraliaEast", "value": "AustraliaEast" },
+            { "label": "AustraliaSouthEast", "value": "AustraliaSouthEast" },
+            { "label": "SouthIndia", "value": "SouthIndia" },
+            { "label": "CentralIndia", "value": "CentralIndia" },
+            { "label": "WestIndia", "value": "WestIndia" },
+            { "label": "CanadaEast", "value": "CanadaEast" },
+            { "label": "CanadaCentral", "value": "CanadaCentral" },
+            { "label": "WestUS2", "value": "WestUS2" },
+            { "label": "WestCentralUS", "value": "WestCentralUS" },
+            { "label": "UKSouth", "value": "UKSouth" },
+            { "label": "UKWest", "value": "UKWest" },
+            { "label": "KoreaCentral", "value": "KoreaCentral" },
+            { "label": "KoreaSouth", "value": "KoreaSouth" },
+            { "label": "FranceCentral", "value": "FranceCentral" },
+            { "label": "AustraliaCentral", "value": "AustraliaCentral" },
+            { "label": "SouthAfricaNorth", "value": "SouthAfricaNorth" },
+            { "label": "UAENorth", "value": "UAENorth" },
+            { "label": "SwitzerlandNorth", "value": "SwitzerlandNorth" },
+            { "label": "GermanyWestCentral", "value": "GermanyWestCentral" },
+            { "label": "NorwayEast", "value": "NorwayEast" },
+            { "label": "WestUS3", "value": "WestUS3" },
+            { "label": "JioIndiaWest", "value": "JioIndiaWest" },
+            { "label": "SwedenCentral", "value": "SwedenCentral" },
+            { "label": "QatarCentral", "value": "QatarCentral" }
           ]
         }
       }
@@ -48,16 +75,24 @@
             "defaultValue": "fpjs"
           },
           {
-            "name": "agentDownloadPath",
-            "type": "Microsoft.Common.TextBox",
-            "label": "Agent Download Path",
-            "defaultValue": "agent"
-          },
-          {
-            "name": "getResultPath",
-            "type": "Microsoft.Common.TextBox",
-            "label": "Get Result Path",
-            "defaultValue": "result"
+            "name": "advancedSection",
+            "type": "Microsoft.Common.Section",
+            "label": "Legacy JS Agent V3 Options",
+            "elements": [
+              {
+                "name": "agentDownloadPath",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Agent Download Path",
+                "defaultValue": "agent"
+              },
+              {
+                "name": "getResultPath",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Get Result Path",
+                "defaultValue": "result"
+              }
+            ],
+            "visible": true
           }
         ]
       },
