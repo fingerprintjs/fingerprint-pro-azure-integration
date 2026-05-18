@@ -43,7 +43,6 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          FPCDN: ${{ secrets.MOCK_FPCDN }}
           INGRESS_API: ${{ secrets.MOCK_INGRESS_API }}
           NODE_OPTIONS: "--max_old_space_size=16384"
           IS_RELEASE_BUILD: true
