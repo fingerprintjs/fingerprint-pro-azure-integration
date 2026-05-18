@@ -2,6 +2,9 @@ import { execSync } from 'child_process'
 import { readTestInfo } from '../shared/testInfo'
 import pkg from '../../package.json'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 async function doMockTests() {
   let hasError = false
@@ -19,11 +22,6 @@ async function doMockTests() {
     const integrationUrl = new URL(host)
     integrationUrl.pathname = info.routePrefix
 
-    console.info('Running mock server for', host)
-    console.info('Integration URL', integrationUrl.toString())
-    console.info('Agent download path:', info.agentDownloadPath)
-    console.info('Get result path:', info.getResultPath)
-
     const args = {
       'api-url': `https://${apiUrl}`,
       'integration-url': integrationUrl.toString(),
@@ -33,6 +31,8 @@ async function doMockTests() {
       'integration-version': pkg.version,
       'enable-new-tests': 'true',
     } as Record<string, string | string[]>
+
+    console.info('Running mock tests with args:', args)
 
     const argsString = Object.entries(args)
       .flatMap(([key, value]) => {
