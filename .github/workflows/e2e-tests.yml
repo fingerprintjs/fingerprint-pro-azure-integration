@@ -72,7 +72,7 @@ jobs:
         run: pnpm test:mock-e2e
         env:
           CI: 'true'
-          API_URL: ${{ secrets.MOCK_FPCDN }}
+          API_URL: ${{ secrets.MOCK_INGRESS_API }}
 
       - name: Destroy infrastructure
         if: always()
