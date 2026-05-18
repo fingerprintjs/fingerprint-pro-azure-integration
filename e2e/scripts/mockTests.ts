@@ -27,7 +27,7 @@ async function doMockTests() {
       'integration-url': integrationUrl.toString(),
       'cdn-path': info.agentDownloadPath,
       'ingress-path': info.getResultPath,
-      'traffic-name': 'fingerprintjs-pro-azure',
+      'traffic-name': 'fingerprint-pro-azure',
       'integration-version': pkg.version,
       'enable-new-tests': 'true',
     } as Record<string, string | string[]>
