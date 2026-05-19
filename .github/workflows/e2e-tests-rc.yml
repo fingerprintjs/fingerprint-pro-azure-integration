@@ -52,8 +52,8 @@ jobs:
         run: pnpm build:example-website
         env:
           VITE_API_KEY: ${{ secrets.API_KEY }}
-          VITE_ENDPOINT: ${{ secrets.VITE_ENDPOINT }}
-          VITE_SCRIPT_URL_PATTERN: ${{ secrets.VITE_SCRIPT_URL_PATTERN }}
+          VITE_RESULT_PATH: result
+          VITE_AGENT_PATH: agent
           NODE_OPTIONS: "--max_old_space_size=16384"
 
       - name: Deploy infrastructure

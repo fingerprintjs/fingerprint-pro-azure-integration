@@ -59,11 +59,7 @@ describe('Agent Endpoint', () => {
     const res = await proxyFn(req, ctx)
 
     expect(requestSpy).toHaveBeenCalledTimes(1)
-    expect(requestSpy).toHaveBeenCalledWith(
-      `https://${origin}/web/v3/?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress`,
-      expect.anything(),
-      expect.anything()
-    )
+    expect(requestSpy).toHaveBeenCalledWith(`https://${origin}/web/v3/`, expect.anything(), expect.anything())
 
     expect(await res.text()).toEqual(agentScript)
   })
@@ -81,7 +77,7 @@ describe('Agent Endpoint', () => {
     const [url] = requestSpy.mock.calls[0]
 
     expect(url.toString()).toEqual(
-      `https://${origin}/web/v5/ujKG34hUYKLJKJ1F?apiKey=ujKG34hUYKLJKJ1F&version=5&customQuery=123&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress`
+      `https://${origin}/web/v5/ujKG34hUYKLJKJ1F?apiKey=ujKG34hUYKLJKJ1F&version=5&customQuery=123`
     )
   })
 
@@ -96,9 +92,7 @@ describe('Agent Endpoint', () => {
 
     const [url] = requestSpy.mock.calls[0]
 
-    expect(url.toString()).toEqual(
-      `https://${origin}/web/v5/ujKG34hUYKLJKJ1F?apiKey=ujKG34hUYKLJKJ1F&version=5&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress`
-    )
+    expect(url.toString()).toEqual(`https://${origin}/web/v5/ujKG34hUYKLJKJ1F?apiKey=ujKG34hUYKLJKJ1F&version=5`)
   })
 
   test('Call with version and loaderVersion', async () => {
@@ -114,7 +108,7 @@ describe('Agent Endpoint', () => {
     const [url] = requestSpy.mock.calls[0]
 
     expect(url.toString()).toEqual(
-      `https://${origin}/web/v5/ujKG34hUYKLJKJ1F/loader_v3.6.5.js?apiKey=ujKG34hUYKLJKJ1F&version=5&loaderVersion=3.6.5&ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress`
+      `https://${origin}/web/v5/ujKG34hUYKLJKJ1F/loader_v3.6.5.js?apiKey=ujKG34hUYKLJKJ1F&version=5&loaderVersion=3.6.5`
     )
   })
 

@@ -2,6 +2,9 @@ name: E2E Tests
 
 on:
   pull_request: 
+    paths-ignore:
+      - '*.md'
+      - 'createUiDefinition.json'
 
 permissions:
   id-token: write
@@ -40,7 +43,6 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          FPCDN: ${{ secrets.MOCK_FPCDN }}
           INGRESS_API: ${{ secrets.MOCK_INGRESS_API }}
           NODE_OPTIONS: "--max_old_space_size=16384"
           IS_RELEASE_BUILD: true
@@ -49,8 +51,9 @@ jobs:
         run: pnpm build:example-website
         env:
           VITE_API_KEY: ${{ secrets.API_KEY }}
-          VITE_ENDPOINT: ${{ secrets.VITE_ENDPOINT }}
-          VITE_SCRIPT_URL_PATTERN: ${{ secrets.VITE_SCRIPT_URL_PATTERN }}
+          VITE_RESULT_PATH: result
+          VITE_AGENT_PATH: agent
+          VITE_INTEGRATION_PATH: integration
           NODE_OPTIONS: "--max_old_space_size=16384"
 
       - name: Zip
@@ -69,7 +72,7 @@ jobs:
         run: pnpm test:mock-e2e
         env:
           CI: 'true'
-          API_URL: ${{ secrets.MOCK_FPCDN }}
+          API_URL: ${{ secrets.MOCK_INGRESS_API }}
 
       - name: Destroy infrastructure
         if: always()

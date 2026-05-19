@@ -6,7 +6,7 @@ async function main() {
   const options = getOptions()
 
   outputOptions(options)
-  outputAzureStatus(options).catch(console.error)
+  outputAzureStatus(options.integrationPath).catch(console.error)
 
   handleVisitorData(options)
 }
@@ -20,12 +20,13 @@ function outputOptions(options: FingerprintOptions) {
 
   target.innerHTML = `
     <h2>Configuration</h2>
-    ${writeConfiguration('endpoint', options.endpoint?.toString() ?? 'default')}
-    ${writeConfiguration('scriptUrlPattern', options.scriptUrlPattern?.toString() ?? 'default')}
+    <pre>
+${JSON.stringify(options, null, 2)}
+    </pre>
     `
 }
 
-async function outputAzureStatus(options: FingerprintOptions) {
+async function outputAzureStatus(integrationPath: string) {
   const target = document.querySelector('.integration-info')
 
   if (!target) {
@@ -33,7 +34,7 @@ async function outputAzureStatus(options: FingerprintOptions) {
   }
 
   try {
-    const status = await checkAzureStatus(options)
+    const status = await checkAzureStatus(integrationPath)
 
     target.setAttribute('data-ok', 'true')
     target.innerHTML = `

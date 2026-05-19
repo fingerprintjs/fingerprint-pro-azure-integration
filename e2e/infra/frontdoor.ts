@@ -122,7 +122,7 @@ export async function provisionFrontDoor({
         id: functionAppOriginGroup.id,
       },
       supportedProtocols: [KnownAFDEndpointProtocols.Http, KnownAFDEndpointProtocols.Https],
-      patternsToMatch: [`/${functionAppRoutePrefix}/*`],
+      patternsToMatch: [`/${functionAppRoutePrefix}/*`, `/${functionAppRoutePrefix}`],
       cacheConfiguration: {
         queryStringCachingBehavior: KnownAfdQueryStringCachingBehavior.UseQueryString,
       },

@@ -1,9 +1,8 @@
-import { LoadOptions } from '@fingerprintjs/fingerprintjs-pro'
-import { getVisitorData } from './fingerprint'
+import { FingerprintOptions, getVisitorData } from './fingerprint'
 
 type Text = string | { html: string }
 
-export function handleVisitorData(options: LoadOptions) {
+export function handleVisitorData(options: FingerprintOptions) {
   const button = document.querySelector<HTMLButtonElement>('#getData')
 
   if (!button) {
@@ -15,7 +14,7 @@ export function handleVisitorData(options: LoadOptions) {
   button.addEventListener('click', () => getAndPrintData(options))
 }
 
-async function getAndPrintData(options: LoadOptions) {
+async function getAndPrintData(options: FingerprintOptions) {
   const output = document.querySelector('.output')
   if (!output) {
     throw new Error("The output element isn't found in the HTML code")
@@ -25,7 +24,6 @@ async function getAndPrintData(options: LoadOptions) {
 
   try {
     const { response, responseLoadTime, agentLoadTime } = await getVisitorData(options)
-    const { confidence } = response
 
     console.log('Got response', response)
 
@@ -50,21 +48,6 @@ async function getAndPrintData(options: LoadOptions) {
       content: `${agentLoadTime}ms`,
       size: 'big',
       id: 'time',
-    })
-    addOutputSection({
-      output,
-      header: 'Confidence score:',
-      content: String(confidence.score),
-      id: 'confidence',
-      comment: confidence.comment
-        ? {
-            html: confidence.comment.replace(
-              /(upgrade\s+to\s+)?pro(\s+version)?(:\s+(https?:\/\/\S+))?/gi,
-              '<a href="$4" target="_blank">$&</a>'
-            ),
-          }
-        : '',
-      size: 'big',
     })
     addOutputSection({ output, header: 'User agent:', content: navigator.userAgent, id: 'userAgent' })
   } catch (error) {

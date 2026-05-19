@@ -2,6 +2,9 @@ import { execSync } from 'child_process'
 import { readTestInfo } from '../shared/testInfo'
 import pkg from '../../package.json'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 async function doMockTests() {
   let hasError = false
@@ -14,23 +17,36 @@ async function doMockTests() {
   }
 
   for (const info of testInfo.tests) {
-    const agentPath = `${info.routePrefix}/${info.agentDownloadPath}`
-    const resultPath = `${info.routePrefix}/${info.getResultPath}`
     const host = info.frontdoorUrl
 
-    const agentUrl = new URL(host)
-    agentUrl.pathname = agentPath
+    const integrationUrl = new URL(host)
+    integrationUrl.pathname = info.routePrefix
 
-    const resultUrl = new URL(host)
-    resultUrl.pathname = resultPath
+    const args = {
+      'api-url': `https://${apiUrl}`,
+      'integration-url': integrationUrl.toString(),
+      'cdn-path': info.agentDownloadPath,
+      'ingress-path': info.getResultPath,
+      'traffic-name': 'fingerprint-pro-azure',
+      'integration-version': pkg.version,
+      'enable-new-tests': 'true',
+    } as Record<string, string | string[]>
 
-    console.info('Running mock server for', host)
-    console.info('Agent download path:', agentPath)
-    console.info('Get result path:', resultPath)
+    console.info('Running mock tests with args:', args)
+
+    const argsString = Object.entries(args)
+      .flatMap(([key, value]) => {
+        if (typeof value === 'string') {
+          return `--${key}="${value}"`
+        }
+
+        return value.map((v) => `--${key}="${v}"`)
+      })
+      .join(' ')
 
     try {
       execSync(
-        `npm exec -y "git+https://github.com/fingerprintjs/dx-team-mock-for-proxy-integrations-e2e-tests.git" -- --api-url="https://${apiUrl}" --cdn-proxy-url="${agentUrl.toString()}" --ingress-proxy-url="${resultUrl.toString()}" --traffic-name="fingerprint-pro-azure" --integration-version=${pkg.version}`,
+        `npm exec -y "git+https://github.com/fingerprintjs/dx-team-mock-for-proxy-integrations-e2e-tests.git" -- ${argsString}`,
         {
           stdio: 'inherit',
         }
