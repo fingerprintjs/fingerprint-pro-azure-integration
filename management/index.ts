@@ -85,7 +85,6 @@ const managementFn: TimerHandler = async (timer, context) => {
 
     await containerClient.getBlockBlobClient(RELEASED_PACKAGE_BLOB).uploadData(latestFunction.file)
     context.debug('Uploaded new package', latestFunction.version)
-    context.debug('Restarting function app')
     const restartApp = async () => {
       context.debug('Restarting function app')
       await client.webApps.restart(resourceGroupName, appName)
