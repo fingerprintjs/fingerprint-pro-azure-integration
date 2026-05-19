@@ -31,11 +31,11 @@ export async function performHealthCheckAfterUpdate({
       logger,
       restartApp,
     })
+
+    throw error
   })
 
-  await deletePackageBackup(storageClient, logger).catch((error) => {
-    logger?.error('Failed to delete package backup', error)
-  })
+  await deletePackageBackup(storageClient, logger)
 }
 
 async function runHealthCheckSchedule(

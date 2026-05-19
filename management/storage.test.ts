@@ -8,6 +8,7 @@ const mockCopyPoller = {
 const mockBackupBlobClient = {
   beginCopyFromURL: jest.fn().mockResolvedValue(mockCopyPoller),
   url: `https://storageaccount.blob.core.windows.net/function-releases/${BACKUP_PACKAGE_BLOB}`,
+  exists: jest.fn().mockResolvedValue(false),
 }
 
 const mockReleasedBlobClient = {
