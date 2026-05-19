@@ -5,6 +5,12 @@ import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings'
 export async function createPackageBackup(containerClient: ContainerClient, logger?: InvocationContext) {
   const sourceClient = containerClient.getBlockBlobClient(RELEASED_PACKAGE_BLOB)
   const destClient = containerClient.getBlockBlobClient(BACKUP_PACKAGE_BLOB)
+
+  if (await destClient.exists()) {
+    logger?.debug('Deleting existing backup', destClient.url)
+    await destClient.delete()
+  }
+
   logger?.debug('Creating backup of current released package', sourceClient.url, '->', destClient.url)
   const poller = await destClient.beginCopyFromURL(sourceClient.url)
   await poller.pollUntilDone()
