@@ -23,10 +23,7 @@ export async function performHealthCheckAfterUpdate({
   checkInterval,
   restartApp,
 }: PerformHealthCheckAfterUpdateParams) {
-  try {
-    await runHealthCheckSchedule(statusUrl, newVersion, checkInterval, logger)
-    await deletePackageBackup(storageClient, logger)
-  } catch (error) {
+  await runHealthCheckSchedule(statusUrl, newVersion, checkInterval, logger).catch(async (error) => {
     logger?.error('Health check failed', error)
 
     await performRollback({
@@ -34,9 +31,11 @@ export async function performHealthCheckAfterUpdate({
       logger,
       restartApp,
     })
+  })
 
-    throw error
-  }
+  await deletePackageBackup(storageClient, logger).catch((error) => {
+    logger?.error('Failed to delete package backup', error)
+  })
 }
 
 async function runHealthCheckSchedule(
