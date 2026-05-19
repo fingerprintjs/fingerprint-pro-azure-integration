@@ -23,7 +23,9 @@ export async function performHealthCheckAfterUpdate({
   checkInterval,
   restartApp,
 }: PerformHealthCheckAfterUpdateParams) {
-  await runHealthCheckSchedule(statusUrl, newVersion, checkInterval, logger).catch(async (error) => {
+  try {
+    await runHealthCheckSchedule(statusUrl, newVersion, checkInterval, logger)
+  } catch (error) {
     logger?.error('Health check failed', error)
 
     await performRollback({
@@ -33,7 +35,7 @@ export async function performHealthCheckAfterUpdate({
     })
 
     throw error
-  })
+  }
 
   await deletePackageBackup(storageClient, logger)
 }
