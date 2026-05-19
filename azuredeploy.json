@@ -118,9 +118,15 @@
           {
             "actions": [
               "*/read",
-              "Microsoft.Web/sites/write",
               "Microsoft.Web/sites/restart/action",
-              "Microsoft.ManagedIdentity/userAssignedIdentities/assign/action"
+              "Microsoft.Storage/storageAccounts/listKeys/action",
+              "Microsoft.Storage/storageAccounts/blobServices/containers/delete",
+              "Microsoft.Storage/storageAccounts/blobServices/containers/write",
+              "Microsoft.Storage/storageAccounts/blobServices/containers/read",
+              "Microsoft.Storage/storageAccounts/blobServices/generateUserDelegationKey/action",
+              "Microsoft.Web/sites/config/list/action",
+              "Microsoft.Web/sites/config/write",
+              "Microsoft.Web/sites/functions/read"
             ],
             "notActions": [],
             "dataActions": [
