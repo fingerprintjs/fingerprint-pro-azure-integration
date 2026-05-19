@@ -10,6 +10,7 @@ import { RELEASED_PACKAGE_BLOB, USER_ASSIGNED_ENTITY_CLIENT_ID } from './setting
 import { config } from './config'
 import crypto from 'crypto'
 import { TimerHandler } from '@azure/functions/types/timer'
+import { performRollback } from './rollback'
 
 const managementFn: TimerHandler = async (timer, context) => {
   if (timer.isPastDue) {
@@ -89,7 +90,18 @@ const managementFn: TimerHandler = async (timer, context) => {
       context.debug('Function app restarted')
     }
 
-    await restartApp()
+    try {
+      await restartApp()
+    } catch (e) {
+      context.error('Failed to restart function', e)
+      // Since app restart failed, we don't pass `restartApp` here. The only goal of the rollback here is to just restore the old deployment package.
+      await performRollback({
+        storageClient: containerClient,
+        logger: context,
+      })
+
+      throw e
+    }
 
     await performHealthCheckAfterUpdate({
       newVersion: latestFunction.version,

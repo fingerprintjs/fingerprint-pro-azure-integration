@@ -5,11 +5,11 @@ import { restorePackageFromBackup } from './storage'
 export interface PerformRollbackParams {
   storageClient: ContainerClient
   logger?: InvocationContext
-  restartApp: () => Promise<void>
+  restartApp?: () => Promise<void>
 }
 
 export async function performRollback({ storageClient, logger, restartApp }: PerformRollbackParams) {
   logger?.debug('Rolling back to previous package')
   await restorePackageFromBackup(storageClient, logger)
-  await restartApp()
+  await restartApp?.()
 }
