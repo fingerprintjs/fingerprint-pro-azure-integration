@@ -10,8 +10,8 @@
 <a href="https://github.com/fingerprintjs/azure-frontdoor-proxy">
   <img src="https://img.shields.io/github/v/release/fingerprintjs/azure-frontdoor-proxy" alt="Current version">
 </a>
-<a href="https://fingerprintjs.github.io/fingerprint-pro-azure-integration">
-  <img src="https://fingerprintjs.github.io/fingerprint-pro-azure-integration/badges.svg" alt="coverage">
+<a href="https://fingerprintjs.github.io/azure-frontdoor-proxy">
+  <img src="https://fingerprintjs.github.io/azure-frontdoor-proxy/badges.svg" alt="coverage">
 </a>
 <a href="https://opensource.org/licenses/MIT">
   <img src="https://img.shields.io/:license-mit-blue.svg" alt="MIT license">
