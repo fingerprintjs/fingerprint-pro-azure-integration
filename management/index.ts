@@ -73,10 +73,12 @@ const managementFn: TimerHandler = async (timer, context) => {
     context.debug('Container URL', containerUrl)
 
     const storageUrl = new URL(containerUrl)
-    const accountName = storageUrl.hostname.split('.')[0]
     const containerName = storageUrl.pathname.split('/').filter(Boolean)[0]
 
-    const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, credentials)
+    context.debug('Creating blob service client', storageUrl.origin)
+    const blobServiceClient = new BlobServiceClient(storageUrl.origin, credentials)
+
+    context.debug('Creating container client', containerName)
     const containerClient = blobServiceClient.getContainerClient(containerName)
 
     await createPackageBackup(containerClient, context)
