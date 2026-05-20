@@ -39,7 +39,10 @@ export async function handleIngress({
 
   const region = httpRequest.query.get('region') ?? Region.us
 
-  const url = new URL(getIngressAPIHost(region) + suffix)
+  const url = new URL(getIngressAPIHost(region))
+  if (suffix) {
+    url.pathname = suffix
+  }
   url.search = httpRequest.query.toString()
 
   const isAuthorizedMethodCall = isMethodAuthorized(httpRequest.method)
