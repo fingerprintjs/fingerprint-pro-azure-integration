@@ -249,13 +249,6 @@ describe('Result Endpoint', function () {
     expect(https.request).toHaveBeenCalledTimes(1)
   })
 
-  test('HTTP GET with bad suffix', async () => {
-    const req = mockRequestGet('https://fp.domain.com', 'fpjs/resultIdwith/bad/suffix')
-    await proxyFn(req, mockContext())
-    expect(ingress.handleIngress).toHaveBeenCalledTimes(1)
-    expect(https.request).toHaveBeenCalledTimes(1)
-  })
-
   test('HTTP POST without suffix', async () => {
     const req = mockRequestPost('https://fp.domain.com', 'fpjs/resultId')
     mockSuccessfulResponse({

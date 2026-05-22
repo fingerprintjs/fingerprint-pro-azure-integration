@@ -30,8 +30,7 @@ export async function handleIngress({
       suffix = `/${INGRESS_CDN_PATH}${getV3AgentPath(httpRequest.query)}`
       break
 
-    case 'ingressV3':
-      // For the rest, so the "ingressV3" request, we'll extract path using path matches. It's an approach that was used in the old ingress handler.
+    default:
       if (suffix && !suffix.startsWith('/')) {
         suffix = '/' + suffix
       }
@@ -40,7 +39,10 @@ export async function handleIngress({
 
   const region = httpRequest.query.get('region') ?? Region.us
 
-  const url = new URL(getIngressAPIHost(region) + suffix)
+  const url = new URL(getIngressAPIHost(region))
+  if (suffix) {
+    url.pathname = suffix
+  }
   url.search = httpRequest.query.toString()
 
   const isAuthorizedMethodCall = isMethodAuthorized(httpRequest.method)

@@ -20,5 +20,5 @@ export function getV3AgentPath(params: URLSearchParams): string {
 }
 
 export function stripRoutePrefix(path: string, prefix: string) {
-  return path.replace(new RegExp(`^${prefix}`), '')
+  return path.startsWith(prefix) ? path.slice(prefix.length) : path
 }

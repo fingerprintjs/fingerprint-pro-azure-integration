@@ -31,7 +31,6 @@ test.describe('visitorId', () => {
       endpoint: azureTestInfo.getResultPath,
       agentPath: azureTestInfo.agentDownloadPath,
     })
-    console.debug(queryParams.toString())
     await page.goto(`/?${queryParams.toString()}`, {
       waitUntil: 'networkidle',
     })
