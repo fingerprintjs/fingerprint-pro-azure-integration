@@ -1,3 +1,42 @@
+## 2.0.0-test.0
+
+### Major Changes
+
+- Migrate to a **Flex Consumption** plan and **runtime 4.x**.
+
+  > [!IMPORTANT]
+  > Microsoft is retiring the Consumption plan. [Learn more about the consumption plan change](https://learn.microsoft.com/en-us/azure/azure-functions/migration/migrate-plan-consumption-to-flex?tabs=azure-cli%2Ccopilot-cli%2Csystem-assigned%2Ccontinuous%2Cbicep%2Ctraces-table&pivots=platform-linux#migration-methods).
+
+  > [!TIP]
+  > To use the new plan, you need to re-deploy the function app using the v2 version. [See the migration guide for details.](https://docs.fingerprint.com/docs/azure-proxy-integration-migration-from-v1-to-v2) ([ecfc104](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/ecfc1049ac64d6d197b07bc7ddad049275a53693))
+
+### Minor Changes
+
+- Update Node.js runtime to 24. ([e685126](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/e685126490199424ec05d3d8993fba2f00293bab))
+- Add support for JS Agent V4.
+
+  > [!NOTE]
+  > This change adds support for Fingerprint [JavaScript agent v4](https://docs.fingerprint.com/reference/js-agent-v4). Compatibility with JavaScript agent v3 is maintained, you can upgrade to the latest JavaScript agent at your convenience.
+  >
+  > When upgrading to the JavaScript agent v4, remove the `scriptUrlPattern` and `endpoint` options. Replace them with a single `endpoints` option pointing to your Front Door integration domain:
+  >
+  > ```diff
+  > - const fpPromise = FingerprintJS.load({
+  > -   apiKey: PUBLIC_API_KEY,
+  > -   scriptUrlPattern: "https://yourwebsite.com/ROUTE_PREFIX/AGENT_SCRIPT_DOWNLOAD_PATH?apiKey=<apiKey>&version=<version>&loaderVersion=<loaderVersion>",
+  > -   endpoint: "https://yourwebsite.com/ROUTE_PREFIX/GET_RESULT_PATH?region=eu",
+  > - });
+  >
+  > + const fpPromise = Fingerprint.start({
+  > +   apiKey: PUBLIC_API_KEY,
+  > +   endpoints: "https://yourwebsite.com/ROUTE_PREFIX/?region=eu",
+  > + });
+  > ```
+
+  To migrate your v1 integration to v2, [see the migration guide.](https://docs.fingerprint.com/docs/azure-proxy-integration-migration-from-v1-to-v2) ([db41124](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/db41124634f10ee3444434984c435072f1981e9e))
+
+- Bump @azure/\* dependencies to the latest version. ([5d20f07](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/5d20f073855cea9f1ae9938fc6de1114d2286813))
+
 ## 1.6.0
 
 ### Minor Changes

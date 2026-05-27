@@ -2,7 +2,13 @@
   "mode": "pre",
   "tag": "test",
   "initialVersions": {
-    "@fingerprint/azure-frontdoor-proxy": "1.5.0"
+    "@fingerprint/azure-frontdoor-proxy": "1.5.0",
+    "example-website": "0.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "cold-eels-shop",
+    "neat-yaks-begin",
+    "ninety-bees-ring",
+    "some-buttons-attend"
+  ]
 }
