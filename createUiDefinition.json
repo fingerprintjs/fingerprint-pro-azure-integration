@@ -103,6 +103,9 @@
           {
             "name": "preSharedSecret",
             "type": "Microsoft.Common.PasswordBox",
+            "constraints": {
+              "required": true
+            },
             "label": {
               "password": "Proxy Secret",
               "confirmPassword": "Confirm Secret"

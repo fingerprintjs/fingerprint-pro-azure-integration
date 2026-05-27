@@ -27,6 +27,7 @@ describe('Ingress Endpoint V4', () => {
 
       Object.assign(response, {
         headers: responseHeaders,
+        setEncoding: jest.fn(),
       })
 
       Object.assign(request, {
@@ -172,6 +173,7 @@ describe('Ingress Endpoint V4', () => {
       Object.assign(emitter, {
         statusCode: 500,
         headers: resHeaders,
+        setEncoding: jest.fn(),
       })
 
       callback(emitter)

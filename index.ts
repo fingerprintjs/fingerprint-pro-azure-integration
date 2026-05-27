@@ -5,7 +5,6 @@ import proxyFn from './proxy'
 app.timer('management', {
   schedule: '*/30 * * * *',
   handler: managementFn,
-  // TODO Make this configurable by build flags
   runOnStartup: false,
 })
 

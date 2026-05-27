@@ -27,6 +27,7 @@ describe('Result Endpoint', function () {
 
       Object.assign(response, {
         headers: responseHeaders,
+        setEncoding: jest.fn(),
       })
 
       Object.assign(request, {
@@ -175,6 +176,7 @@ describe('Result Endpoint', function () {
       Object.assign(emitter, {
         statusCode: 500,
         headers: resHeaders,
+        setEncoding: jest.fn(),
       })
 
       callback(emitter)
