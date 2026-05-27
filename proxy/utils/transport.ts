@@ -27,15 +27,10 @@ function sendHttpRequest(
   return new Promise<SendHttpRequestResult>((resolve, reject) => {
     const request = https.request(url.toString(), options, (response) => {
       const chunks: Buffer[] = []
-      const isBinary = Boolean(response.headers['content-encoding'])
 
-      if (isBinary) {
-        response.setEncoding('binary')
-      }
-
+      response.setEncoding('binary')
       response.on('data', (data) => {
-        const encoding = isBinary ? 'binary' : undefined
-        const chunk = Buffer.isBuffer(data) ? data : Buffer.from(data, encoding)
+        const chunk = Buffer.isBuffer(data) ? data : Buffer.from(data, 'binary')
 
         chunks.push(chunk)
       })
@@ -50,7 +45,7 @@ function sendHttpRequest(
         // and results in an empty 200. Plain Uint8Array bypasses that path and keeps raw bytes intact.
         resolve({
           response,
-          data: isBinary ? new Uint8Array(payload) : payload,
+          data: new Uint8Array(payload),
         })
       })
     })
