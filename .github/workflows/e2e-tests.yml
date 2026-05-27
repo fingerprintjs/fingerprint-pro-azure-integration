@@ -1,7 +1,9 @@
 name: E2E Tests
 
 on:
-  pull_request: 
+  schedule:
+    - cron: '30 2 * * *'
+  pull_request:
     paths-ignore:
       - '*.md'
       - 'createUiDefinition.json'
