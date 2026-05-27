@@ -1,3 +1,9 @@
+## 2.0.0-test.1
+
+### Minor Changes
+
+- Update management function to support runtime 4.x and Flex Consumption plan ([cf68344](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/cf68344d11510431c0a6d727e05cd5d4ac61757f))
+
 ## 2.0.0-test.0
 
 ### Major Changes
