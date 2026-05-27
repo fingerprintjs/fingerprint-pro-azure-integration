@@ -1,6 +1,6 @@
 import { config } from './config'
 import { isSemverGreater } from './semver'
-import { Logger } from '@azure/functions'
+import { InvocationContext } from '@azure/functions'
 import { parse } from 'semver'
 
 export function bearer(token?: string) {
@@ -36,8 +36,8 @@ export async function getLatestGithubRelease(token?: string) {
   return (await response.json()) as GithubRelease
 }
 
-export async function downloadReleaseAsset(url: string, token?: string, logger?: Logger) {
-  logger?.verbose(`Downloading release asset from ${url}`)
+export async function downloadReleaseAsset(url: string, token?: string, logger?: InvocationContext) {
+  logger?.debug(`Downloading release asset from ${url}`)
 
   const headers: Record<string, string> = {
     Accept: 'application/octet-stream',
@@ -61,7 +61,7 @@ export async function findFunctionZip(assets: GithubReleaseAsset[]) {
 }
 
 export async function getLatestFunctionZip(
-  logger?: Logger,
+  logger?: InvocationContext,
   token?: string,
   version = config.version,
   allowPrerelease = false
@@ -85,7 +85,7 @@ export async function getLatestFunctionZip(
   }
 
   if (!isSemverGreater(tagName, version)) {
-    logger?.verbose(`Latest release ${tagName} is not greater than current version ${version}`)
+    logger?.debug(`Latest release ${tagName} is not greater than current version ${version}`)
 
     return null
   }
@@ -94,15 +94,15 @@ export async function getLatestFunctionZip(
   const versionSemver = parse(version)
 
   if (releaseSemver?.major !== versionSemver?.major) {
-    logger?.verbose("Major versions doesn't match, skipping")
+    logger?.debug("Major versions doesn't match, skipping")
     return null
   }
 
-  logger?.verbose(`Found new release ${tagName}`, release.assets)
+  logger?.debug(`Found new release ${tagName}`, release.assets)
 
   const asset = await findFunctionZip(release.assets)
 
-  logger?.verbose(`Found asset ${asset?.name} for release ${release.tag_name}`, asset)
+  logger?.debug(`Found asset ${asset?.name} for release ${release.tag_name}`, asset)
 
   return asset
     ? {

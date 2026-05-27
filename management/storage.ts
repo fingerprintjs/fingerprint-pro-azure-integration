@@ -1,22 +1,22 @@
 import { ContainerClient } from '@azure/storage-blob'
-import { Logger } from '@azure/functions'
+import { InvocationContext } from '@azure/functions'
 
 export function removeOldFunctionFromStorage(
   oldZipUrl: string,
   newZipUrl: string,
   storageClient: ContainerClient,
-  logger?: Logger
+  logger?: InvocationContext
 ) {
   const oldZipName = extractBlobName(oldZipUrl)
   const newZipName = extractBlobName(newZipUrl)
 
   if (oldZipName === newZipName) {
-    logger?.verbose('Old function zip is the same as the new one, skipping removal')
+    logger?.debug('Old function zip is the same as the new one, skipping removal')
 
     return
   }
 
-  logger?.verbose(`Removing old function zip file ${oldZipName} from storage`)
+  logger?.debug(`Removing old function zip file ${oldZipName} from storage`)
 
   return storageClient.deleteBlob(oldZipName)
 }

@@ -21,8 +21,8 @@ const config: Config = {
     timeout: isCi ? 100_000 : 30_000,
   },
   projects: testInfo.tests.map((info) => ({
+    name: info.frontdoorUrl,
     use: {
-      name: info.frontdoorUrl,
       baseURL: info.frontdoorUrl,
       headless: true,
       ignoreHTTPSErrors: true,

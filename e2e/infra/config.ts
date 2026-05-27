@@ -1,4 +1,7 @@
 import invariant from 'tiny-invariant'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const subscriptionId = process.env.AZURE_SUBSCRIPTION_ID
 const storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME

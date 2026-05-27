@@ -1,38 +1,35 @@
-import { HttpRequest, Logger } from '@azure/functions'
+import { HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
 import { config } from '../utils/config'
 import * as https from 'https'
 import { filterRequestHeaders, updateResponseHeadersForAgentDownload } from '../utils/headers'
-import { HttpRequestQuery, HttpResponseSimple } from '@azure/functions/types/http'
 import { addTrafficMonitoringSearchParamsForProCDN } from '../utils/traffic'
 import { IntegrationError } from '../errors/IntegrationError'
 
 export interface DownloadAgentParams {
   httpRequest: HttpRequest
-  logger: Logger
+  logger: InvocationContext
   path: string
 }
 
 const DEFAULT_VERSION = '3'
 
-function copySearchParams(query: HttpRequestQuery, newURL: URL): void {
-  const params = new URLSearchParams(query)
-
-  newURL.search = params.toString()
+function copySearchParams(query: URLSearchParams, newURL: URL): void {
+  newURL.search = query.toString()
 }
 
-export async function downloadAgent({ httpRequest, logger, path }: DownloadAgentParams): Promise<HttpResponseSimple> {
-  const apiKey = httpRequest.query.apiKey
-  const version = httpRequest.query.version ?? DEFAULT_VERSION
-  const loaderVersion = httpRequest.query.loaderVersion
+export async function downloadAgent({ httpRequest, logger, path }: DownloadAgentParams): Promise<HttpResponse> {
+  const apiKey = httpRequest.query.get('apiKey')
+  const version = httpRequest.query.get('version') ?? DEFAULT_VERSION
+  const loaderVersion = httpRequest.query.get('loaderVersion')
 
   if (!apiKey) {
-    return {
+    return new HttpResponse({
       status: 500,
       headers: {
         'Content-Type': 'application/json',
       },
       body: new IntegrationError('API Key is missing', path).toBody(),
-    }
+    })
   }
 
   const url = new URL(`https://${config.fpcdn}`)
@@ -41,13 +38,13 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
   url.pathname = getEndpoint(apiKey, version, loaderVersion)
   addTrafficMonitoringSearchParamsForProCDN(url)
 
-  logger.verbose('Downloading agent from', url.toString())
+  logger.debug('Downloading agent from', url.toString())
 
   const headers = filterRequestHeaders(httpRequest.headers)
 
   delete headers['cookie']
 
-  return new Promise<HttpResponseSimple>((resolve) => {
+  return new Promise<HttpResponse>((resolve) => {
     const data: any[] = []
 
     const request = https.request(
@@ -67,11 +64,13 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
           const body = Buffer.concat(data)
           const responseHeaders = updateResponseHeadersForAgentDownload(response.headers)
 
-          resolve({
-            status: response.statusCode ?? 500,
-            headers: responseHeaders,
-            body: new Uint8Array(body),
-          })
+          resolve(
+            new HttpResponse({
+              status: response.statusCode ?? 500,
+              headers: responseHeaders,
+              body: new Uint8Array(body),
+            })
+          )
         })
       }
     )
@@ -79,20 +78,22 @@ export async function downloadAgent({ httpRequest, logger, path }: DownloadAgent
     request.on('error', (error) => {
       logger.error('unable to download agent', { error })
 
-      resolve({
-        status: 500,
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-        body: 'error',
-      })
+      resolve(
+        new HttpResponse({
+          status: 500,
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+          body: 'error',
+        })
+      )
     })
 
     request.end()
   })
 }
 
-function getEndpoint(apiKey: string | undefined, version: string, loaderVersion: string | undefined): string {
-  const lv: string = loaderVersion !== undefined && loaderVersion !== '' ? `/loader_v${loaderVersion}.js` : ''
+function getEndpoint(apiKey: string | null, version: string, loaderVersion: string | null): string {
+  const lv: string = loaderVersion ? `/loader_v${loaderVersion}.js` : ''
   return `/v${version}/${apiKey}${lv}`
 }

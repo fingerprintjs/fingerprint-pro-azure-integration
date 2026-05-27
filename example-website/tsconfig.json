@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "Es2020",
+    "noEmit": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

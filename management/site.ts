@@ -1,6 +1,6 @@
 import { FunctionEnvelope, WebSiteManagementClient } from '@azure/arm-appservice'
 import { StatusFormat } from '../shared/status'
-import { Logger } from '@azure/functions'
+import { InvocationContext } from '@azure/functions'
 import { CustomerVariables } from '../shared/customer-variables/CustomerVariables'
 import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables'
 import { getStatusUri } from '../shared/customer-variables/selectors'
@@ -10,7 +10,7 @@ export async function getSiteStatusUrl(
   client: WebSiteManagementClient,
   resourceGroupName: string,
   siteName: string,
-  logger?: Logger
+  logger?: InvocationContext
 ) {
   const customerVariables = new CustomerVariables([new EnvCustomerVariables()], logger)
 
@@ -29,7 +29,7 @@ async function findProxyFunction(
   client: WebSiteManagementClient,
   resourceGroupName: string,
   siteName: string,
-  logger?: Logger
+  logger?: InvocationContext
 ) {
   const functions = client.webApps.listFunctions(resourceGroupName, siteName)
 
@@ -38,7 +38,7 @@ async function findProxyFunction(
       return fn
     }
 
-    logger?.verbose(`Function ${fn.name} is not a proxy function`)
+    logger?.debug(`Function ${fn.name} is not a proxy function`)
   }
 
   throw new Error(`Could not find proxy function for ${siteName} in ${resourceGroupName} resource group`)

@@ -1,15 +1,9 @@
 {
   "compilerOptions": {
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    "composite": true
   },
   "extends": "./tsconfig.json",
-  "exclude": [
-    "dist",
-    "node_modules",
-    "e2e"
-  ],
-  "include": [
-    "**/*.test.ts",
-    "test"
-  ]
+  "exclude": ["dist", "node_modules", "e2e"],
+  "include": ["**/*.test.ts", "**/test/*.ts"]
 }

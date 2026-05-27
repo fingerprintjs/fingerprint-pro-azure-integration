@@ -1,41 +1,40 @@
-import { HttpRequest, Logger } from '@azure/functions'
+import { HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
 import { config } from '../utils/config'
 import * as https from 'https'
 import { prepareHeadersForIngressAPI, updateResponseHeaders } from '../utils/headers'
-import { HttpResponseSimple } from '@azure/functions/types/http'
 import { generateErrorResponse } from '../utils/errorResponse'
 import { addTrafficMonitoringSearchParamsForVisitorIdRequest } from '../utils/traffic'
 import { getValidRegion, Region } from '../utils/region'
+import { toError } from '../utils/error'
 
 export interface HandleIngressParams {
   httpRequest: HttpRequest
-  logger: Logger
+  logger: InvocationContext
   preSharedSecret?: string
   suffix?: string
 }
 
-export function handleIngress({
+export async function handleIngress({
   httpRequest,
   logger,
   preSharedSecret,
   suffix,
-}: HandleIngressParams): Promise<HttpResponseSimple> {
+}: HandleIngressParams): Promise<HttpResponse> {
   if (suffix && !suffix.startsWith('/')) {
     suffix = '/' + suffix
   }
 
-  const { region = Region.us } = httpRequest.query
-  const url = new URL(getIngressAPIHost(region) + suffix)
+  const region = httpRequest.query.get('region') ?? Region.us
 
-  Object.entries(httpRequest.query).forEach(([key, value]) => {
-    url.searchParams.append(key, value)
-  })
+  const url = new URL(getIngressAPIHost(region) + suffix)
+  url.search = httpRequest.query.toString()
+
   addTrafficMonitoringSearchParamsForVisitorIdRequest(url)
 
-  logger.verbose('Performing request', url.toString())
+  logger.debug('Performing request', url.toString())
 
   if (preSharedSecret) {
-    logger.verbose('Pre-shared secret is set')
+    logger.debug('Pre-shared secret is set')
   } else {
     logger.warn('Pre-shared secret is not set')
   }
@@ -44,10 +43,29 @@ export function handleIngress({
 
   // No need to send cookies for browser cache request
   if (suffix) {
+    logger.debug('Removing cookie header for browser cache request')
     delete headers['cookie']
   }
 
-  return new Promise<HttpResponseSimple>((resolve) => {
+  let requestBody: Buffer | undefined = undefined
+
+  if (httpRequest.body) {
+    try {
+      requestBody = Buffer.from(await httpRequest.arrayBuffer())
+    } catch (e) {
+      logger.error('unable to handle request body', { error: e })
+
+      return new HttpResponse({
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(generateErrorResponse(toError(e))),
+      })
+    }
+  }
+
+  return new Promise<HttpResponse>((resolve) => {
     const data: any[] = []
 
     const request = https.request(
@@ -60,15 +78,19 @@ export function handleIngress({
         response.on('data', (chunk) => data.push(chunk))
 
         response.on('end', () => {
+          logger.debug('Response from Ingress API', response.statusCode)
+
           const payload = Buffer.concat(data)
 
-          logger.verbose('Response from Ingress API', response.statusCode, payload.toString('utf-8'))
+          logger.debug('Response from Ingress API', response.statusCode, payload.toString('utf-8'))
 
-          resolve({
-            status: response.statusCode ? response.statusCode : 500,
-            headers: updateResponseHeaders(response.headers),
-            body: payload,
-          })
+          resolve(
+            new HttpResponse({
+              status: response.statusCode ? response.statusCode : 500,
+              headers: updateResponseHeaders(response.headers),
+              body: payload,
+            })
+          )
         })
       }
     )
@@ -76,17 +98,19 @@ export function handleIngress({
     request.on('error', (error) => {
       logger.error('unable to handle result', { error })
 
-      resolve({
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(generateErrorResponse(error)),
-      })
+      resolve(
+        new HttpResponse({
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(generateErrorResponse(error)),
+        })
+      )
     })
 
-    if (httpRequest.bufferBody) {
-      request.write(httpRequest.bufferBody)
+    if (requestBody) {
+      request.write(requestBody)
     }
 
     request.end()

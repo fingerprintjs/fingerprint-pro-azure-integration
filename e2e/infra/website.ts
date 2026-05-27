@@ -13,11 +13,10 @@ if (!fs.existsSync(websiteDistPath)) {
   throw new Error(`Website dist folder not found at ${websiteDistPath}`)
 }
 
-export async function deployWebsite(resourceGroup: string) {
-  const accountName = `e2ewebsite${Date.now()}`
+export async function deployWebsite(resourceGroup: string, name: string) {
+  const accountName = `e2e${name}${resourceGroup.replace(/[^0-9]/gi, '')}`
 
   console.info(`Creating storage account for website: ${accountName}`)
-
   const poll = await storageClient.storageAccounts.beginCreate(resourceGroup, accountName, {
     kind: KnownKind.StorageV2,
     location: 'westus',
@@ -30,6 +29,7 @@ export async function deployWebsite(resourceGroup: string) {
   })
 
   const account = await poll.pollUntilDone()
+
   invariant(account.primaryEndpoints?.web, 'Storage account web endpoint not found')
   const accountUrl = `https://${account.name}.blob.core.windows.net/$web`
 
@@ -37,7 +37,7 @@ export async function deployWebsite(resourceGroup: string) {
   const key = keys?.keys?.[0]?.value
   invariant(key, 'Storage account key not found')
 
-  console.info(`Storage account created: ${account.name}`)
+  console.info(`Storage account ready: ${account.name}`)
 
   console.info('Enabling static website...')
   execSync(

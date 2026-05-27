@@ -2,31 +2,9 @@ import { CustomerVariables } from '../../shared/customer-variables/CustomerVaria
 import { CustomerVariableType } from '../../shared/customer-variables/types'
 import { EnvCustomerVariables } from '../../shared/customer-variables/EnvCustomerVariables'
 import { handleStatus } from './status'
-import { HttpRequest, Form, FormPart } from '@azure/functions'
+import { mockRequestGet } from '../../shared/test/azure'
 
-const fp: FormPart = {
-  value: Buffer.from(''),
-}
-const form: Form = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  get: (_: string) => fp,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getAll: (_: string) => [fp],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  has: (_: string) => true,
-  length: 0,
-  *[Symbol.iterator]() {},
-}
-const req: HttpRequest = {
-  method: 'GET',
-  url: 'https://fp.domain.com/fpjs/status',
-  headers: {},
-  query: {},
-  params: {},
-  user: null,
-  get: (x) => x,
-  parseFormBody: () => form,
-}
+const req = mockRequestGet('https://fp.domain.com', '/fpjs/status')
 
 function removeNonce(body: string): string {
   const nonceParam = " nonce='"
@@ -53,7 +31,7 @@ describe('Handle status', () => {
       customerVariables: customerVariables,
     })
 
-    expect(removeNonce(result.body)).toMatchInlineSnapshot(`
+    expect(removeNonce(await result.text())).toMatchInlineSnapshot(`
     "
         <html lang='en-US'>
           <head>
@@ -107,7 +85,7 @@ describe('Handle status', () => {
       customerVariables: customerVariables,
     })
 
-    expect(removeNonce(result.body)).toMatchInlineSnapshot(`
+    expect(removeNonce(await result.text())).toMatchInlineSnapshot(`
     "
         <html lang='en-US'>
           <head>

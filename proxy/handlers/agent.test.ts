@@ -1,5 +1,5 @@
 import https from 'https'
-import proxy from '../index'
+import proxyFn from '../index'
 import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet } from '../../shared/test/azure'
 
@@ -51,13 +51,13 @@ describe('Agent Endpoint', () => {
 
   test('Call with no params', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/agent')
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    const res = await proxyFn(req, ctx)
 
     expect(requestSpy).toHaveBeenCalledTimes(0)
 
-    expect(JSON.parse(ctx.res?.body)).toEqual({
+    expect(await res.json()).toEqual({
       message: 'API Key is missing',
       path: 'fpjs/agent',
       vendor: 'Fingerprint Pro Azure Function',
@@ -70,9 +70,9 @@ describe('Agent Endpoint', () => {
       version: '5',
       customQuery: '123',
     })
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    await proxyFn(req, ctx)
 
     const [url] = requestSpy.mock.calls[0]
 
@@ -86,9 +86,9 @@ describe('Agent Endpoint', () => {
       apiKey: 'ujKG34hUYKLJKJ1F',
       version: '5',
     })
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    await proxyFn(req, ctx)
 
     const [url] = requestSpy.mock.calls[0]
 
@@ -103,9 +103,9 @@ describe('Agent Endpoint', () => {
       version: '5',
       loaderVersion: '3.6.5',
     })
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    await proxyFn(req, ctx)
 
     const [url] = requestSpy.mock.calls[0]
 
@@ -121,7 +121,7 @@ describe('Agent Endpoint', () => {
       loaderVersion: 'foo.bar2/baz',
     })
 
-    await proxy(mockContext(req), req)
+    await proxyFn(req, mockContext())
 
     const [url] = requestSpy.mock.calls[0]
 
@@ -139,13 +139,11 @@ describe('Agent Endpoint', () => {
       'cache-control': 'public, max-age=3613',
     })
 
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    const res = await proxyFn(req, ctx)
 
-    expect(ctx.res?.headers).toEqual({
-      'cache-control': 'public, max-age=3600, s-maxage=60',
-    })
+    expect(res.headers).toEqual(new Headers({ 'cache-control': 'public, max-age=3600, s-maxage=60' }))
   })
 
   test('Browser cache is the same when original value is lower than an hour', async () => {
@@ -159,13 +157,15 @@ describe('Agent Endpoint', () => {
       'cache-control': 'public, max-age=100',
     })
 
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    const res = await proxyFn(req, ctx)
 
-    expect(ctx.res?.headers).toEqual({
-      'cache-control': 'public, max-age=100, s-maxage=60',
-    })
+    expect(res.headers).toEqual(
+      new Headers({
+        'cache-control': 'public, max-age=100, s-maxage=60',
+      })
+    )
   })
 
   test('Proxy cache set to a minute when original value is higher', async () => {
@@ -179,13 +179,15 @@ describe('Agent Endpoint', () => {
       'cache-control': 'public, max-age=3613, s-maxage=575500',
     })
 
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    const res = await proxyFn(req, ctx)
 
-    expect(ctx.res?.headers).toEqual({
-      'cache-control': 'public, max-age=3600, s-maxage=60',
-    })
+    expect(res.headers).toEqual(
+      new Headers({
+        'cache-control': 'public, max-age=3600, s-maxage=60',
+      })
+    )
   })
 
   test('Proxy cache is the same when original value is lower than a minute', async () => {
@@ -199,13 +201,15 @@ describe('Agent Endpoint', () => {
       'cache-control': 'public, max-age=3613, s-maxage=10',
     })
 
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    const res = await proxyFn(req, ctx)
 
-    expect(ctx.res?.headers).toEqual({
-      'cache-control': 'public, max-age=3600, s-maxage=10',
-    })
+    expect(res.headers).toEqual(
+      new Headers({
+        'cache-control': 'public, max-age=3600, s-maxage=10',
+      })
+    )
   })
 
   test('Response headers are the same, but strict-transport-security is removed', async () => {
@@ -221,14 +225,16 @@ describe('Agent Endpoint', () => {
       'some-header': 'some-value',
     })
 
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    const res = await proxyFn(req, ctx)
 
-    expect(ctx.res?.headers).toEqual({
-      'content-type': 'text/javascript; charset=utf-8',
-      'some-header': 'some-value',
-    })
+    expect(res.headers).toEqual(
+      new Headers({
+        'content-type': 'text/javascript; charset=utf-8',
+        'some-header': 'some-value',
+      })
+    )
   })
 
   test('Req body and headers are the same, expect cookies, which should be omitted', async () => {
@@ -238,27 +244,31 @@ describe('Agent Endpoint', () => {
       loaderVersion: '3.6.5',
     })
 
-    req.headers = {
-      cookie:
-        '_iidt=GlMQaHMfzYvomxCuA7Uymy7ArmjH04jPkT+enN7j/Xk8tJG+UYcQV+Qw60Ry4huw9bmDoO/smyjQp5vLCuSf8t4Jow==; auth_token=123456',
-      'cache-control': 'no-cache',
-      'content-type': 'text/javascript; charset=utf-8',
-      'accept-language': 'en-US',
-      'user-agent': 'Mozilla/5.0',
-      'x-some-header': 'some value',
-    } as any
+    Array.from(req.headers.keys()).forEach((key) => req.headers.delete(key))
 
-    const ctx = mockContext(req)
+    req.headers.set(
+      'cookie',
+      '_iidt=GlMQaHMfzYvomxCuA7Uymy7ArmjH04jPkT+enN7j/Xk8tJG+UYcQV+Qw60Ry4huw9bmDoO/smyjQp5vLCuSf8t4Jow==; auth_token=123456'
+    )
+    req.headers.set('cache-control', 'no-cache')
+    req.headers.set('content-type', 'text/javascript; charset=utf-8')
+    req.headers.set('accept-language', 'en-US')
+    req.headers.set('user-agent', 'Mozilla/5.0')
+    req.headers.set('x-some-header', 'some value')
 
-    await proxy(ctx, req)
+    const ctx = mockContext()
 
-    const body = Buffer.from(ctx.res?.body as string, 'base64').toString('utf-8')
+    const res = await proxyFn(req, ctx)
+
+    const body = await res.text()
     const [, options] = requestSpy.mock.calls[0]
 
     expect(body).toEqual(agentScript)
 
+    const reqHeadersDict = Object.fromEntries(req.headers.entries())
+
     expect(options.headers).toEqual({
-      ...req.headers,
+      ...reqHeadersDict,
       cookie: undefined,
     })
   })
@@ -278,11 +288,11 @@ describe('Agent Endpoint', () => {
       loaderVersion: '3.6.5',
     })
 
-    const ctx = mockContext(req)
+    const ctx = mockContext()
 
-    await proxy(ctx, req)
+    const res = await proxyFn(req, ctx)
 
-    expect(ctx.res?.body).toEqual('error')
-    expect(ctx.res?.status).toEqual(500)
+    expect(await res.text()).toEqual('error')
+    expect(res.status).toEqual(500)
   })
 })

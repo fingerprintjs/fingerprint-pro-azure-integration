@@ -1,31 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  BindingDefinition,
-  Context,
-  ContextBindingData,
-  ExecutionContext,
-  Form,
-  FormPart,
-  HttpRequest,
-  Logger,
-  TraceContext,
-} from '@azure/functions'
-import { HttpRequestQuery } from '@azure/functions/types/http'
+import { HttpRequest, InvocationContext } from '@azure/functions'
 
-const fp: FormPart = {
-  value: Buffer.from(''),
-}
-const form: Form = {
-  get: (_: string) => fp,
-  getAll: (_: string) => [fp],
-  has: (_: string) => true,
-  length: 0,
-  *[Symbol.iterator]() {},
-}
-export const mockRequestGet = (url: string, uri: string, query: HttpRequestQuery = {}) => {
-  return {
+export const mockRequestGet = (url: string, uri: string, query: Record<string, string> = {}) => {
+  return new HttpRequest({
     method: 'GET',
-    url: url, // 'https://fp.domain.com'
+    url, // 'https://fp.domain.com'
     headers: {
       'content-type': 'application/json',
       'content-length': '24354',
@@ -46,13 +25,10 @@ export const mockRequestGet = (url: string, uri: string, query: HttpRequestQuery
     params: {
       restOfPath: uri,
     },
-    user: null,
-    get: (x) => x,
-    parseFormBody: () => form,
-  } satisfies HttpRequest
+  })
 }
 export const mockRequestPost = (url: string, uri: string) => {
-  return {
+  return new HttpRequest({
     method: 'POST',
     url: url, // 'https://fp.domain.com'
     headers: {
@@ -75,33 +51,20 @@ export const mockRequestPost = (url: string, uri: string) => {
     params: {
       restOfPath: uri,
     },
-    user: null,
-    get: (x) => x,
-    parseFormBody: () => form,
-    bufferBody: Buffer.from(''),
-  } satisfies HttpRequest
+  })
 }
-export const mockContext = (req: HttpRequest): Context => {
-  const unk = undefined as unknown
-  const loggerUnknown = {
-    verbose: () => null,
-    warn: () => null,
-    error: () => null,
-  } as unknown
-  const trace = unk as TraceContext
-  const logger = loggerUnknown as Logger
-  const execution = unk as ExecutionContext
-  const bindings = unk as BindingDefinition
-  const contextBinding = unk as ContextBindingData
+export const mockContext = (): InvocationContext => {
   return {
-    bindingData: contextBinding,
-    bindingDefinitions: [],
-    bindings: bindings,
-    executionContext: execution,
+    extraInputs: undefined as any,
+    extraOutputs: undefined as any,
+    functionName: '',
     invocationId: '',
-    traceContext: trace,
-    done(_?: Error | string | null, __?: any): void {},
-    log: logger,
-    req,
+    options: undefined as any,
+    debug: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    trace: jest.fn(),
+    log: jest.fn(),
   }
 }

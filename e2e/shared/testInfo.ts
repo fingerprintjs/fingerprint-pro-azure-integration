@@ -50,6 +50,14 @@ export function readTestInfo(): TestMetadata {
   return JSON.parse(fs.readFileSync(filePath).toString())
 }
 
+export function safeReadTestInfo(): TestMetadata | null {
+  try {
+    return readTestInfo()
+  } catch {
+    return null
+  }
+}
+
 export function deleteTestInfo() {
   fs.rmSync(filePath)
 }

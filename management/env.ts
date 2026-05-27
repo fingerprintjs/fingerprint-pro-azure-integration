@@ -1,4 +1,4 @@
-import { Logger } from '@azure/functions'
+import { InvocationContext } from '@azure/functions'
 
 export function getEnv(name: string) {
   const value = process.env[name]
@@ -10,7 +10,7 @@ export function getEnv(name: string) {
   return value
 }
 
-export function gatherEnvs(logger: Logger) {
+export function gatherEnvs(logger: InvocationContext) {
   try {
     return {
       resourceGroupName: getEnv('RESOURCE_GROUP_NAME'),

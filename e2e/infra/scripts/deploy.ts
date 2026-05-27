@@ -1,5 +1,5 @@
-import { createResourceGroup, removeResourceGroup } from '../resourceGroup'
-import { addTestInfo, initTestInfo } from '../../shared/testInfo'
+import { createResourceGroup, removeResourceGroup, removeResourceGroupAndWait } from '../resourceGroup'
+import { addTestInfo, deleteTestInfo, initTestInfo, safeReadTestInfo } from '../../shared/testInfo'
 import { deployE2EInfrastructure, DeployE2EInfrastructureOptions, DeployE2EInfrastructureResult } from '../infra'
 import { destroyTestInfo } from '../destroyTestInfo'
 
@@ -12,24 +12,26 @@ async function main() {
 
   initTestInfo(resourceGroup)
 
+  const variants: DeployE2EInfrastructureOptions[] = [
+    {
+      resourceGroup,
+      routePrefix: 'fpjs',
+      agentDownloadPath: 'agent',
+      getResultPath: 'result',
+      name: 'fpjs',
+    },
+    {
+      resourceGroup,
+      routePrefix: getId(),
+      agentDownloadPath: getId(),
+      getResultPath: getId(),
+      name: 'dyn',
+    },
+  ]
+
   const results: DeployE2EInfrastructureResult[] = []
 
   try {
-    const variants: DeployE2EInfrastructureOptions[] = [
-      {
-        resourceGroup,
-        routePrefix: 'fpjs',
-        agentDownloadPath: 'agent',
-        getResultPath: 'result',
-      },
-      {
-        resourceGroup,
-        routePrefix: getId(),
-        agentDownloadPath: getId(),
-        getResultPath: getId(),
-      },
-    ]
-
     for (const variant of variants) {
       const result = await deployE2EInfrastructure(variant)
 
@@ -44,11 +46,35 @@ async function main() {
       await destroyTestInfo(result.testInfo)
     }
 
-    await removeResourceGroup(resourceGroup)
+    await removeResourceGroupAndWait(resourceGroup)
 
     throw error
   }
 }
+
+async function cleanup() {
+  console.info('Cleaning up before exiting...')
+  const testInfo = safeReadTestInfo()
+
+  if (testInfo) {
+    await removeResourceGroup(testInfo.resourceGroup)
+    deleteTestInfo()
+  }
+
+  console.info('Cleanup complete')
+}
+
+// Ctrl+C
+process.on('SIGINT', async () => {
+  await cleanup()
+  process.exit(0)
+})
+
+// kill <pid> (default kill signal)
+process.on('SIGTERM', async () => {
+  await cleanup()
+  process.exit(0)
+})
 
 main().catch((error) => {
   console.error(error)
