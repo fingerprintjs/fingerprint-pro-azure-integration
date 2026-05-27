@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for proxy/utils/cacheControl.ts</title>
+    <title>Code coverage report for proxy/utils/paths.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">proxy/utils</a> cacheControl.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">proxy/utils</a> paths.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -87,59 +87,53 @@
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<a name='L25'></a><a href='#L25'>25</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">57x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const CACHE_MAX_AGE = 3600
-const SHARED_CACHE_MAX_AGE = 60
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Path used for CDN request in ingress
+export const INGRESS_CDN_PATH = 'web'
 &nbsp;
-export function updateCacheControlHeader(headerValue: string): string {
-  let result = updateCacheControlAge(headerValue, 'max-age', CACHE_MAX_AGE)
-  result = updateCacheControlAge(result, 's-maxage', SHARED_CACHE_MAX_AGE)
+/**
+ * Constructs the endpoint URL for the agent based on the provided query parameters.
+ *
+ * @param {URLSearchParams} params - The query parameters containing information such as `apiKey`, `loaderVersion`, and `version`.
+ *                                  - `apiKey`: The API key used to identify the agent (default is an empty string if not provided).
+ *                                  - `loaderVersion`: The version of the loader, if provided, it is included in the endpoint path.
+ *                                  - `version`: The API version to use; defaults to '3' if not specified.
+ * @return {string} The constructed URL for the agent endpoint.
+ */
+export function getV3AgentPath(params: URLSearchParams): string {
+  const apiKey = params.get('apiKey') ?? ''
+  const loaderVersion = params.get('loaderVersion')
+  const version = params.get('version') ?? '3'
 &nbsp;
-  return result
+  const lv: string = loaderVersion ? `/loader_v${loaderVersion}.js` : ''
+  return `/v${version}/${apiKey}${lv}`
 }
 &nbsp;
-function updateCacheControlAge(headerValue: string, type: 'max-age' | 's-maxage', cacheMaxAge: number): string {
-  const cacheControlDirectives = headerValue.split(', ')
-  const maxAgeIndex = cacheControlDirectives.findIndex(
-    (directive) =&gt; directive.split('=')[0].trim().toLowerCase() === type
-  )
-&nbsp;
-  if (maxAgeIndex === -1) {
-    cacheControlDirectives.push(`${type}=${cacheMaxAge}`)
-  } else {
-    const oldMaxAge = Number(cacheControlDirectives[maxAgeIndex].split('=')[1])
-    const newMaxAge = Math.min(cacheMaxAge, oldMaxAge)
-    cacheControlDirectives[maxAgeIndex] = `${type}=${newMaxAge}`
-  }
-&nbsp;
-  return cacheControlDirectives.join(', ')
+export function stripRoutePrefix(path: string, prefix: string) {
+  return path.startsWith(prefix) ? path.slice(prefix.length) : path
 }
 &nbsp;</pre></td></tr></table></pre>
 
