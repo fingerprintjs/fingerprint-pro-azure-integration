@@ -20,17 +20,17 @@
   <img src="https://img.shields.io/discord/852099967190433792?style=logo&label=Discord&logo=Discord&logoColor=white" alt="Discord server">
 </a>
 
-# Fingerprint Pro Azure Integration
+# Fingerprint Azure Integration
 
 [![Deploy To Azure](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Fazure-frontdoor-proxy%2Fmain%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Fazure-frontdoor-proxy%2Fmain%2FcreateUiDefinition.json)
 [![Visualize](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/visualizebutton.svg?sanitize=true)](http://armviz.io/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Fazure-frontdoor-proxy%2Fmain%2Fazuredeploy.json)
 
 Fingerprint is a device intelligence platform offering industry-leading accuracy.
   
-Fingerprint Pro Azure Integration is responsible for:
+Fingerprint Azure Integration is responsible for:
 
-* Proxying download requests of the latest Fingerprint Pro JS Agent between your site and Fingerprint CDN.
-* Proxying identification requests and responses between your site and Fingerprint Pro API.
+* Proxying download requests of the latest Fingerprint JS Agent between your site and Fingerprint CDN.
+* Proxying identification requests and responses between your site and Fingerprint API.
   
 This [improves](https://dev.fingerprint.com/docs/azure-proxy-integration#the-benefits-of-using-the-azure-integration) both accurancy and reliability of visitor identification and bot detection on your site.
 
