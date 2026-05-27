@@ -1,28 +1,63 @@
-import { removeOldFunctionFromStorage } from './storage'
+import { createPackageBackup, deletePackageBackup, restorePackageFromBackup } from './storage'
+import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings'
 
-describe('removeOldFunctionFromStorage', () => {
-  it('should remove given zip from storage', async () => {
-    const client = {
-      deleteBlob: jest.fn(),
+const mockCopyPoller = {
+  pollUntilDone: jest.fn().mockResolvedValue(undefined),
+}
+
+const mockBackupBlobClient = {
+  beginCopyFromURL: jest.fn().mockResolvedValue(mockCopyPoller),
+  url: `https://storageaccount.blob.core.windows.net/function-releases/${BACKUP_PACKAGE_BLOB}`,
+  exists: jest.fn().mockResolvedValue(false),
+}
+
+const mockReleasedBlobClient = {
+  beginCopyFromURL: jest.fn().mockResolvedValue(mockCopyPoller),
+  url: `https://storageaccount.blob.core.windows.net/function-releases/${RELEASED_PACKAGE_BLOB}`,
+}
+
+const mockContainerClient = {
+  deleteBlob: jest.fn(),
+  getBlockBlobClient: jest.fn().mockImplementation((name: string) => {
+    if (name === BACKUP_PACKAGE_BLOB) {
+      return mockBackupBlobClient
     }
+    if (name === RELEASED_PACKAGE_BLOB) {
+      return mockReleasedBlobClient
+    }
+    throw new Error(`Unexpected blob name: ${name}`)
+  }),
+}
 
-    const oldZipUrl = 'https://storageaccount.blob.core.windows.net/function-zips/zipname.zip'
-    const newZipUrl = 'https://storageaccount.blob.core.windows.net/function-zips/v0.1.0.zip'
+beforeEach(() => {
+  jest.clearAllMocks()
+  mockCopyPoller.pollUntilDone.mockResolvedValue(undefined)
+  mockBackupBlobClient.beginCopyFromURL.mockResolvedValue(mockCopyPoller)
+  mockReleasedBlobClient.beginCopyFromURL.mockResolvedValue(mockCopyPoller)
+})
 
-    await removeOldFunctionFromStorage(oldZipUrl, newZipUrl, client as any)
+describe('createPackageBackup', () => {
+  it('should copy released-package.zip to released-package-backup.zip', async () => {
+    await createPackageBackup(mockContainerClient as any)
 
-    expect(client.deleteBlob).toHaveBeenCalledWith('zipname.zip')
+    expect(mockBackupBlobClient.beginCopyFromURL).toHaveBeenCalledWith(mockReleasedBlobClient.url)
+    expect(mockCopyPoller.pollUntilDone).toHaveBeenCalled()
   })
+})
 
-  it('should not remove given zip from storage if it is the same as the new one', async () => {
-    const client = {
-      deleteBlob: jest.fn(),
-    }
+describe('restorePackageFromBackup', () => {
+  it('should copy released-package-backup.zip back to released-package.zip', async () => {
+    await restorePackageFromBackup(mockContainerClient as any)
 
-    const oldZipUrl = 'https://storageaccount.blob.core.windows.net/function-zips/zipname.zip'
+    expect(mockReleasedBlobClient.beginCopyFromURL).toHaveBeenCalledWith(mockBackupBlobClient.url)
+    expect(mockCopyPoller.pollUntilDone).toHaveBeenCalled()
+  })
+})
 
-    await removeOldFunctionFromStorage(oldZipUrl, oldZipUrl, client as any)
+describe('deletePackageBackup', () => {
+  it('should delete released-package-backup.zip', async () => {
+    await deletePackageBackup(mockContainerClient as any)
 
-    expect(client.deleteBlob).not.toHaveBeenCalled()
+    expect(mockContainerClient.deleteBlob).toHaveBeenCalledWith(BACKUP_PACKAGE_BLOB)
   })
 })

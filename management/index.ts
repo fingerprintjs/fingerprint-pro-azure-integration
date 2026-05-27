@@ -1,16 +1,16 @@
 import { WebSiteManagementClient } from '@azure/arm-appservice'
 import { ManagedIdentityCredential } from '@azure/identity'
-import * as storageBlob from '@azure/storage-blob'
-import { BlobSASPermissions, StorageSharedKeyCredential } from '@azure/storage-blob'
-import { StorageManagementClient } from '@azure/arm-storage'
+import { BlobServiceClient } from '@azure/storage-blob'
 import { getLatestFunctionZip } from './github'
 import { gatherEnvs } from './env'
 import { getSiteStatusUrl } from './site'
 import { performHealthCheckAfterUpdate } from './healthCheck'
-import { USER_ASSIGNED_ENTITY_CLIENT_ID, WEBSITE_RUN_FROM_PACKAGE } from './settings'
+import { createPackageBackup } from './storage'
+import { RELEASED_PACKAGE_BLOB, USER_ASSIGNED_ENTITY_CLIENT_ID } from './settings'
 import { config } from './config'
 import crypto from 'crypto'
 import { TimerHandler } from '@azure/functions/types/timer'
+import { performRollback } from './rollback'
 
 const managementFn: TimerHandler = async (timer, context) => {
   if (timer.isPastDue) {
@@ -56,86 +56,64 @@ const managementFn: TimerHandler = async (timer, context) => {
     })
     context.info('Got client id', clientId)
 
-    const storageArmClient = new StorageManagementClient(credentials, subscriptionId)
     const client = new WebSiteManagementClient(credentials, subscriptionId)
-    const [settings, statusUrl] = await Promise.all([
-      client.webApps.listApplicationSettings(resourceGroupName, appName),
+    const [site, statusUrl] = await Promise.all([
+      client.webApps.get(resourceGroupName, appName),
       getSiteStatusUrl(client, resourceGroupName, appName, context),
     ])
 
-    const oldFunctionZipUrl = settings.properties?.[WEBSITE_RUN_FROM_PACKAGE]
+    const containerUrl = site.functionAppConfig?.deployment?.storage?.value
 
-    if (oldFunctionZipUrl) {
-      context.debug('storageUrl', oldFunctionZipUrl)
+    if (!containerUrl) {
+      context.warn('No deployment storage URL found in functionAppConfig')
 
-      const storageUrl = new URL(oldFunctionZipUrl)
-      const storageName = storageUrl.pathname.split('/')[1]
-      const accountName = storageUrl.hostname.split('.')[0]
-
-      context.debug('storageName', storageName)
-      context.debug('accountName', accountName)
-
-      const { keys } = await storageArmClient.storageAccounts.listKeys(resourceGroupName, accountName)
-
-      const key = keys?.[0].value
-
-      if (!key) {
-        context.warn('No storage keys found')
-
-        return
-      }
-
-      const containerUrl = `${storageUrl.origin}/${storageName}`
-      const storageClient = new storageBlob.ContainerClient(
-        containerUrl,
-        // We must use StorageSharedKeyCredential in order to generate SAS tokens
-        new StorageSharedKeyCredential(accountName, key)
-      )
-
-      const blobClient = storageClient.getBlockBlobClient(latestFunction.name)
-
-      await blobClient.uploadData(latestFunction.file)
-
-      const sas = await blobClient.generateSasUrl({
-        startsOn: new Date(),
-        expiresOn: getSasExpiration(),
-        permissions: BlobSASPermissions.from({
-          read: true,
-        }),
-      })
-
-      context.debug('sas', sas)
-
-      settings.properties![WEBSITE_RUN_FROM_PACKAGE] = sas
-
-      await client.webApps.updateApplicationSettings(resourceGroupName, appName, settings)
-
-      await performHealthCheckAfterUpdate({
-        newVersion: latestFunction.version,
-        statusUrl,
-        oldFunctionZipUrl: oldFunctionZipUrl,
-        logger: context,
-        resourceGroupName,
-        appName,
-        client,
-        settings,
-        storageClient,
-        newFunctionZipUrl: sas,
-      })
+      return
     }
+
+    context.debug('Container URL', containerUrl)
+
+    const storageUrl = new URL(containerUrl)
+    const containerName = storageUrl.pathname.split('/').filter(Boolean)[0]
+
+    context.debug('Creating blob service client', storageUrl.origin)
+    const blobServiceClient = new BlobServiceClient(storageUrl.origin, credentials)
+
+    context.debug('Creating container client', containerName)
+    const containerClient = blobServiceClient.getContainerClient(containerName)
+
+    await createPackageBackup(containerClient, context)
+
+    await containerClient.getBlockBlobClient(RELEASED_PACKAGE_BLOB).uploadData(latestFunction.file)
+    context.debug('Uploaded new package', latestFunction.version)
+    const restartApp = async () => {
+      context.debug('Restarting function app')
+      await client.webApps.restart(resourceGroupName, appName)
+      context.debug('Function app restarted')
+    }
+
+    try {
+      await restartApp()
+    } catch (e) {
+      context.error('Failed to restart function', e)
+      // Since app restart failed, we don't pass `restartApp` here. The only goal of the rollback here is to just restore the old deployment package.
+      await performRollback({
+        storageClient: containerClient,
+        logger: context,
+      })
+
+      throw e
+    }
+
+    await performHealthCheckAfterUpdate({
+      newVersion: latestFunction.version,
+      statusUrl,
+      storageClient: containerClient,
+      logger: context,
+      restartApp,
+    })
   } catch (error) {
     context.error(error)
   }
-}
-
-function getSasExpiration() {
-  // By default, when deploying using Azure CLI they generate a SAS token that expires in 10 years
-  const expirationYears = 10
-  const expiresOn = new Date()
-
-  expiresOn.setFullYear(expiresOn.getFullYear() + expirationYears)
-
-  return expiresOn
 }
 
 export default managementFn

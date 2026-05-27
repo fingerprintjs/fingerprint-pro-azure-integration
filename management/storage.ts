@@ -1,30 +1,35 @@
 import { ContainerClient } from '@azure/storage-blob'
 import { InvocationContext } from '@azure/functions'
+import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings'
 
-export function removeOldFunctionFromStorage(
-  oldZipUrl: string,
-  newZipUrl: string,
-  storageClient: ContainerClient,
-  logger?: InvocationContext
-) {
-  const oldZipName = extractBlobName(oldZipUrl)
-  const newZipName = extractBlobName(newZipUrl)
+export async function createPackageBackup(containerClient: ContainerClient, logger?: InvocationContext) {
+  const sourceClient = containerClient.getBlockBlobClient(RELEASED_PACKAGE_BLOB)
+  const destClient = containerClient.getBlockBlobClient(BACKUP_PACKAGE_BLOB)
 
-  if (oldZipName === newZipName) {
-    logger?.debug('Old function zip is the same as the new one, skipping removal')
-
-    return
+  if (await destClient.exists()) {
+    logger?.debug('Deleting existing backup', destClient.url)
+    await destClient.delete()
   }
 
-  logger?.debug(`Removing old function zip file ${oldZipName} from storage`)
-
-  return storageClient.deleteBlob(oldZipName)
+  logger?.debug('Creating backup of current released package', sourceClient.url, '->', destClient.url)
+  const poller = await destClient.beginCopyFromURL(sourceClient.url)
+  await poller.pollUntilDone()
+  logger?.debug('Backup created', BACKUP_PACKAGE_BLOB)
 }
 
-export function extractBlobName(fileUrl: string) {
-  const url = new URL(fileUrl)
+export async function restorePackageFromBackup(containerClient: ContainerClient, logger?: InvocationContext) {
+  logger?.debug('Restoring released package from backup')
+  const sourceClient = containerClient.getBlockBlobClient(BACKUP_PACKAGE_BLOB)
+  const destClient = containerClient.getBlockBlobClient(RELEASED_PACKAGE_BLOB)
+  const poller = await destClient.beginCopyFromURL(sourceClient.url)
+  await poller.pollUntilDone()
+}
 
-  const zipUrlParts = url.pathname.split('/')
-
-  return zipUrlParts[zipUrlParts.length - 1]
+export async function deletePackageBackup(containerClient: ContainerClient, logger?: InvocationContext) {
+  logger?.debug('Deleting package backup', BACKUP_PACKAGE_BLOB)
+  try {
+    await containerClient.deleteBlob(BACKUP_PACKAGE_BLOB)
+  } catch (e) {
+    logger?.error('Failed to delete package backup', e)
+  }
 }

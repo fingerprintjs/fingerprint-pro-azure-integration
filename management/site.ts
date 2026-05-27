@@ -17,7 +17,9 @@ export async function getSiteStatusUrl(
   const proxyFunction = await findProxyFunction(client, resourceGroupName, siteName, logger)
 
   const functionUrl = parseFunctionUrl(proxyFunction)
+  logger?.debug(`Proxy function url: ${functionUrl.toString()}`)
   const statusPath = removeTrailingSlashes(await getStatusUri(customerVariables))
+  logger?.debug(`Status path: ${statusPath}`)
 
   functionUrl.pathname = `${removeTrailingSlashes(functionUrl.pathname)}/${statusPath}`
   functionUrl.searchParams.set('format', StatusFormat.JSON)
@@ -35,6 +37,7 @@ async function findProxyFunction(
 
   for await (const fn of functions) {
     if (isProxyFunction(fn)) {
+      logger?.debug(`Found proxy function: ${fn.name}`)
       return fn
     }
 
@@ -45,10 +48,7 @@ async function findProxyFunction(
 }
 
 export function isProxyFunction(fn: FunctionEnvelope) {
-  return (
-    fn.config?.scriptFile === './fingerprint-pro-azure-function.js' ||
-    fn.name?.endsWith('fingerprint-pro-azure-function')
-  )
+  return fn.name?.endsWith('/proxy')
 }
 
 export function parseFunctionUrl(fn: FunctionEnvelope) {

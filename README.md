@@ -7,11 +7,11 @@
    </picture>
   </a>
 <p align="center">
-<a href="https://github.com/fingerprintjs/fingerprint-pro-azure-integration">
-  <img src="https://img.shields.io/github/v/release/fingerprintjs/fingerprint-pro-azure-integration" alt="Current version">
+<a href="https://github.com/fingerprintjs/azure-frontdoor-proxy">
+  <img src="https://img.shields.io/github/v/release/fingerprintjs/azure-frontdoor-proxy" alt="Current version">
 </a>
-<a href="https://fingerprintjs.github.io/fingerprint-pro-azure-integration">
-  <img src="https://fingerprintjs.github.io/fingerprint-pro-azure-integration/badges.svg" alt="coverage">
+<a href="https://fingerprintjs.github.io/azure-frontdoor-proxy">
+  <img src="https://fingerprintjs.github.io/azure-frontdoor-proxy/badges.svg" alt="coverage">
 </a>
 <a href="https://opensource.org/licenses/MIT">
   <img src="https://img.shields.io/:license-mit-blue.svg" alt="MIT license">
@@ -22,8 +22,8 @@
 
 # Fingerprint Azure Integration
 
-[![Deploy To Azure](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Fazure-frontdoor-proxy%2Fmain%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Fazure-frontdoor-proxy%2Fmain%2FcreateUiDefinition.json)
-[![Visualize](https://raw.githubusercontent.com/fingerprintjs/fingerprint-pro-azure-integration/main/assets/azure/visualizebutton.svg?sanitize=true)](http://armviz.io/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Fazure-frontdoor-proxy%2Fmain%2Fazuredeploy.json)
+[![Deploy To Azure](https://raw.githubusercontent.com/fingerprintjs/azure-frontdoor-proxy/main/assets/azure/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Fazure-frontdoor-proxy%2Fmain%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Fazure-frontdoor-proxy%2Fmain%2FcreateUiDefinition.json)
+[![Visualize](https://raw.githubusercontent.com/fingerprintjs/azure-frontdoor-proxy/main/assets/azure/visualizebutton.svg?sanitize=true)](http://armviz.io/?load=https%3A%2F%2Fraw.githubusercontent.com%2Ffingerprintjs%2Fazure-frontdoor-proxy%2Fmain%2Fazuredeploy.json)
 
 Fingerprint is a device intelligence platform offering industry-leading accuracy.
   
@@ -54,4 +54,4 @@ To set up the Azure integration, you need to:
 See [Azure Proxy Integration guide](https://dev.fingerprint.com/docs/azure-proxy-integration) in our documentation for step-by-step instructions. If you have any questions, reach out to our [support team](https://fingerprint.com/support/). 
 
 ## License
-This project is licensed under the MIT license. See the [LICENSE](https://github.com/fingerprintjs/fingerprint-pro-azure-integration/blob/main/LICENSE) file for more info.
+This project is licensed under the MIT license. See the [LICENSE](https://github.com/fingerprintjs/azure-frontdoor-proxy/blob/main/LICENSE) file for more info.
