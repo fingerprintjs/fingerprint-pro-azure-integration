@@ -51,7 +51,7 @@ To set up the Azure integration, you need to:
 1. Create and configure required resources in your Azure infrastructure - a deployment template is available.
 2. [Configure](https://dev.fingerprint.com/docs/install-the-javascript-agent#configuring-the-agent) the Fingerprint JavaScript Agent on your site to communicate with your created Azure function.
 
-See [Azure Proxy Integration guide](https://dev.fingerprint.com/docs/azure-proxy-integration-v2) in our documentation for step-by-step instructions. If you have any questions, reach out to our [support team](https://fingerprint.com/support/). 
+See [Azure Proxy Integration guide](https://dev.fingerprint.com/docs/azure-proxy-integration) in our documentation for step-by-step instructions. If you have any questions, reach out to our [support team](https://fingerprint.com/support/). 
 
 ## License
 This project is licensed under the MIT license. See the [LICENSE](https://github.com/fingerprintjs/azure-frontdoor-proxy/blob/main/LICENSE) file for more info.
