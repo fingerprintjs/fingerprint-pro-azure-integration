@@ -6,9 +6,9 @@ export function getSiteUrl(siteName: string) {
   return `https://${siteName}.azurewebsites.net`
 }
 
-export function getStatusUrl(baseUrl: string) {
+export function getStatusUrl(baseUrl: string, integrationPath: string) {
   const url = new URL(baseUrl)
-  url.pathname = '/fpjs/status'
+  url.pathname = `/${integrationPath}/status`
   url.searchParams.set('format', StatusFormat.JSON)
 
   return url.toString()

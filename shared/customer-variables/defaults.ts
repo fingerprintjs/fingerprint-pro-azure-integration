@@ -1,12 +1,12 @@
-import { CustomerVariableValue, CustomerVariableType } from './types'
+import { CustomerVariableValue, CustomerVariableName } from './types'
 
 const defaultCustomerVariables = {
-  [CustomerVariableType.RoutePrefix]: 'fpjs',
-  [CustomerVariableType.GetResultPath]: 'resultId',
-  [CustomerVariableType.PreSharedSecret]: null,
-  [CustomerVariableType.AgentDownloadPath]: 'agent',
-} satisfies Readonly<Record<CustomerVariableType, CustomerVariableValue>>
+  [CustomerVariableName.RoutePrefix]: 'fpjs',
+  [CustomerVariableName.GetResultPath]: 'resultId',
+  [CustomerVariableName.PreSharedSecret]: null,
+  [CustomerVariableName.AgentDownloadPath]: 'agent',
+} satisfies Readonly<Record<CustomerVariableName, CustomerVariableValue>>
 
-export function getDefaultCustomerVariable(variable: CustomerVariableType): CustomerVariableValue {
+export function getDefaultCustomerVariable(variable: CustomerVariableName): CustomerVariableValue {
   return defaultCustomerVariables[variable]
 }

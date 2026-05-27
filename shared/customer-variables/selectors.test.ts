@@ -1,7 +1,7 @@
 import { CustomerVariables } from './CustomerVariables'
 import { EnvCustomerVariables } from './EnvCustomerVariables'
 import { getAgentDownloadUri, getResultUri, getStatusUri } from './selectors'
-import { CustomerVariableType } from './types'
+import { CustomerVariableName } from './types'
 
 describe('customer variables selectors', () => {
   describe('from env', () => {
@@ -10,9 +10,9 @@ describe('customer variables selectors', () => {
 
     test('with env variables', async () => {
       const env = {
-        [CustomerVariableType.AgentDownloadPath]: 'greiodsfkljlds',
-        [CustomerVariableType.RoutePrefix]: 'eifjdsnmzxcn',
-        [CustomerVariableType.GetResultPath]: 'eiwflsdkadlsjdsa',
+        [CustomerVariableName.AgentDownloadPath]: 'greiodsfkljlds',
+        [CustomerVariableName.RoutePrefix]: 'eifjdsnmzxcn',
+        [CustomerVariableName.GetResultPath]: 'eiwflsdkadlsjdsa',
       }
 
       const customerVariables = getHeaderCustomerVariables(env)

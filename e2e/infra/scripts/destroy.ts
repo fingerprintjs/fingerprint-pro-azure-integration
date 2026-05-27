@@ -1,4 +1,4 @@
-import { removeResourceGroupAndWait } from '../resourceGroup'
+import { removeResourceGroup } from '../resourceGroup'
 import { deleteTestInfo, readTestInfo } from '../../shared/testInfo'
 import { destroyTestInfo } from '../destroyTestInfo'
 
@@ -9,7 +9,7 @@ async function main() {
     await destroyTestInfo(info)
   }
 
-  await removeResourceGroupAndWait(testInfo.resourceGroup)
+  await removeResourceGroup(testInfo.resourceGroup)
 
   deleteTestInfo()
 }

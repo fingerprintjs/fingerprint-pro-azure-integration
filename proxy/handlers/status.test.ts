@@ -1,5 +1,5 @@
 import { CustomerVariables } from '../../shared/customer-variables/CustomerVariables'
-import { CustomerVariableType } from '../../shared/customer-variables/types'
+import { CustomerVariableName } from '../../shared/customer-variables/types'
 import { EnvCustomerVariables } from '../../shared/customer-variables/EnvCustomerVariables'
 import { handleStatus } from './status'
 import { mockRequestGet } from '../../shared/test/azure'
@@ -19,10 +19,10 @@ describe('Handle status', () => {
     const getHeaderCustomerVariables = (env: typeof process.env) =>
       new CustomerVariables([new EnvCustomerVariables(env)])
     const env = {
-      [CustomerVariableType.AgentDownloadPath]: 'qwertyt',
-      [CustomerVariableType.RoutePrefix]: 'dsgfkjdfs',
-      [CustomerVariableType.GetResultPath]: 'fdgvdsfgfds',
-      [CustomerVariableType.PreSharedSecret]: 'aadddddd',
+      [CustomerVariableName.AgentDownloadPath]: 'qwertyt',
+      [CustomerVariableName.RoutePrefix]: 'dsgfkjdfs',
+      [CustomerVariableName.GetResultPath]: 'fdgvdsfgfds',
+      [CustomerVariableName.PreSharedSecret]: 'aadddddd',
     }
     const customerVariables = getHeaderCustomerVariables(env)
 

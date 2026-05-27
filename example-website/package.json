@@ -7,5 +7,5 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "version": null
+  "version": "0.0.0"
 }

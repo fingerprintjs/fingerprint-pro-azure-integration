@@ -1,7 +1,7 @@
 import { HttpRequest, HttpResponse } from '@azure/functions'
 import { CustomerVariables } from '../../shared/customer-variables/CustomerVariables'
 import { maybeObfuscateVariable } from '../../shared/customer-variables/maybeObfuscateVariable'
-import { CustomerVariableType } from '../../shared/customer-variables/types'
+import { CustomerVariableName } from '../../shared/customer-variables/types'
 import { EnvVarInfo, StatusFormat, StatusInfo } from '../../shared/status'
 
 export interface HandleStatusParams {
@@ -11,7 +11,7 @@ export interface HandleStatusParams {
 
 async function getEnvInfo(customerVariables: CustomerVariables) {
   const infoArray: EnvVarInfo[] = await Promise.all(
-    Object.values(CustomerVariableType).map(async (variableType) => {
+    Object.values(CustomerVariableName).map(async (variableType) => {
       const value = await customerVariables.getVariable(variableType)
 
       return {

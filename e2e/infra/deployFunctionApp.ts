@@ -60,7 +60,7 @@ export async function deployFunctionApp({
   console.info(`App deployed with id #${website.id} 🎉`)
   console.info('Performing health check...')
 
-  await doHealthCheck(website.name)
+  await doHealthCheck(website.name, routePrefix)
 
   console.info('Health check passed!')
 

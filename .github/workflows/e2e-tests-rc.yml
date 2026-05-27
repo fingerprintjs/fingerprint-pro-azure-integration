@@ -1,0 +1,81 @@
+name: E2E Tests RC
+
+on:
+  release: 
+    types: [published]
+
+permissions: 
+  id-token: write
+  contents: read
+
+jobs:
+  rc-e2e:
+    name: RC E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    # Azure OIDC token is configured to run on this env
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: 'Install latest node version'
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      - name: 'Install pnpm'
+        uses: pnpm/action-setup@129abb77bf5884e578fcaf1f37628e41622cc371
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install && pnpm exec playwright install --with-deps
+
+      - name: Output tag
+        run: echo $TAG
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+
+      - name: Download release artifact from GitHub
+        run: pnpm exec ts-node scripts/downloadGithubReleasePackage.ts
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+
+      - name: Build website
+        run: pnpm build:example-website
+        env:
+          VITE_API_KEY: ${{ secrets.API_KEY }}
+          VITE_RESULT_PATH: result
+          VITE_AGENT_PATH: agent
+          NODE_OPTIONS: "--max_old_space_size=16384"
+
+      - name: Deploy infrastructure
+        run: pnpm e2e-deploy-infra
+        env:
+          AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+          AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
+          AZURE_STORAGE_RESOURCE_GROUP: ${{ secrets.AZURE_STORAGE_RESOURCE_GROUP }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          FPJS_PRE_SHARED_SECRET: ${{ secrets.FPJS_PRE_SHARED_SECRET }}
+
+      - name: Run e2e tests
+        run: pnpm test:e2e
+        env:
+          CI: 'true'
+
+      - name: Destroy infrastructure
+        if: always()
+        run: pnpm e2e-destroy-infra
+        env:
+          AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+          AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
+          AZURE_STORAGE_RESOURCE_GROUP: ${{ secrets.AZURE_STORAGE_RESOURCE_GROUP }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          FPJS_PRE_SHARED_SECRET: ${{ secrets.FPJS_PRE_SHARED_SECRET }}
