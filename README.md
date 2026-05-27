@@ -32,7 +32,7 @@ Fingerprint Pro Azure Integration is responsible for:
 * Proxying download requests of the latest Fingerprint Pro JS Agent between your site and Fingerprint CDN.
 * Proxying identification requests and responses between your site and Fingerprint Pro API.
   
-This [improves](https://dev.fingerprint.com/docs/azure-proxy-integration-v2#the-benefits-of-using-the-azure-integration) both accurancy and reliability of visitor identification and bot detection on your site.
+This [improves](https://dev.fingerprint.com/docs/azure-proxy-integration#the-benefits-of-using-the-azure-integration) both accurancy and reliability of visitor identification and bot detection on your site.
 
 ## Requirements
 
