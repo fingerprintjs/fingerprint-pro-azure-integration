@@ -162,6 +162,14 @@ jobs:
         env:
           CI: 'true'
 
+      - name: Azure Re-Login
+        uses: azure/login@v3
+        if: always()
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: Destroy infrastructure
         if: always()
         run: pnpm e2e-destroy-infra
