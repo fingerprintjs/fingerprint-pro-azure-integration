@@ -84,6 +84,7 @@ jobs:
 
       - name: Azure Re-Login
         uses: azure/login@v3
+        if: always()
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
