@@ -2,6 +2,7 @@ import { DefaultAzureCredential } from '@azure/identity'
 import { ResourceManagementClient } from '@azure/arm-resources'
 
 const RESOURCE_GROUP_NAME_REGEX = /^fpjs-dev-e2e-(\d+)$/
+// 6h
 const MAX_AGE_MS = 6 * 60 * 60 * 1000
 
 async function main() {
