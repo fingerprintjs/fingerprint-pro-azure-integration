@@ -1,0 +1,51 @@
+name: Cleanup dangling resource groups
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only log resource groups that would be deleted'
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  cleanup:
+    name: Cleanup
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Azure OIDC token is configured to run on this env
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: 'Install latest node version'
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      - name: 'Install pnpm'
+        uses: pnpm/action-setup@129abb77bf5884e578fcaf1f37628e41622cc371
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Cleanup dangling resource groups
+        run: pnpm cleanup-dangling-resource-groups
+        env:
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          DRY_RUN: ${{ inputs.dry_run }}
