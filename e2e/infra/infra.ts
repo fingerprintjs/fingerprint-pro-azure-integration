@@ -50,12 +50,13 @@ export async function deployE2EInfrastructure({
     })
     const functionAppHost = functionApp.hostNames?.[0] || functionApp.enabledHostNames?.[0]
     invariant(functionAppHost, 'functionAppHost is required')
+    console.info(`Function app URL: https://${functionAppHost}`)
 
     const { url: frontdoorUrl, waitForFrontDoor } = await provisionFrontDoor({
       resourceGroup,
       websiteHost: new URL(website.url).host,
       functionAppHost,
-      functionHealthStatusPath: `/fpjs/${STATUS_PATH}`,
+      functionHealthStatusPath: `/${routePrefix}/${STATUS_PATH}`,
       functionAppRoutePrefix: routePrefix,
       name,
     })
