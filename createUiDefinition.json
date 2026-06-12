@@ -104,7 +104,7 @@
             "name": "maximumInstanceCount",
             "type": "Microsoft.Common.TextBox",
             "label": "Maximum Instance Count",
-            "defaultValue": "2",
+            "defaultValue": "100",
             "constraints": {
               "required": true,
               "regex": "^[1-9][0-9]*$",

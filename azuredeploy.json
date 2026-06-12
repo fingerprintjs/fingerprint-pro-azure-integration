@@ -87,7 +87,7 @@
     },
     "maximumInstanceCount": {
       "type": "int",
-      "defaultValue": 2,
+      "defaultValue": 100,
       "minValue": 1,
       "metadata": {
         "description": "Maximum number of function app instances"
@@ -123,11 +123,7 @@
         "description": "Role for Fingerprint Pro Function App",
         "permissions": [
           {
-            "actions": [
-              "*/read",
-              "Microsoft.Web/sites/restart/action",
-              "Microsoft.Web/sites/functions/read"
-            ],
+            "actions": ["*/read", "Microsoft.Web/sites/restart/action", "Microsoft.Web/sites/functions/read"],
             "notActions": [],
             "dataActions": [
               "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/delete",

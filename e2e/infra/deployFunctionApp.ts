@@ -48,7 +48,7 @@ export async function deployFunctionApp({
           value: routePrefix,
         },
         maximumInstanceCount: {
-          value: 4,
+          value: 100,
         },
       },
       mode: 'Incremental',
