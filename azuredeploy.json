@@ -84,6 +84,14 @@
       "metadata": {
         "description": "Get result path (required only for JS Agent V3)"
       }
+    },
+    "maximumInstanceCount": {
+      "type": "int",
+      "defaultValue": 2,
+      "minValue": 1,
+      "metadata": {
+        "description": "Maximum number of function app instances"
+      }
     }
   },
   "variables": {
@@ -99,7 +107,6 @@
     "functionNameComputed": "fingerprint-azure-integration-v2",
     "functionRuntime": "node",
     "functionRuntimeVersion": "24",
-    "maximumInstanceCount": 2,
     "instanceMemoryMB": 512,
     "packageZipUri": "https://github.com/fingerprintjs/azure-frontdoor-proxy/releases/latest/download/package.zip",
     "packageName": "released-package.zip",
@@ -266,7 +273,7 @@
           },
           "scaleAndConcurrency": {
             "instanceMemoryMB": "[variables('instanceMemoryMB')]",
-            "maximumInstanceCount": "[variables('maximumInstanceCount')]"
+            "maximumInstanceCount": "[parameters('maximumInstanceCount')]"
           },
           "runtime": {
             "name": "[variables('functionRuntime')]",
