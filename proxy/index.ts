@@ -32,8 +32,10 @@ async function withErrorHandling(callback: () => Promise<HttpResponse>, context:
 }
 
 export const proxyFn = async (req: HttpRequest, context: InvocationContext): Promise<HttpResponse> => {
-  context.debug('Handling request', {
+  context.debug(`Handling ${req.method} request`, {
     req,
+    // By default, passing `req` here prints only path and query string
+    headers: Array.from(req.headers.entries()),
     context,
   })
 
@@ -54,11 +56,17 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
   return withErrorHandling(async () => {
     const path = removeTrailingSlashes(restOfPath)
 
+    context.debug(`Handling path: ${path}`)
+
     const resultUri = await getResultUri(customerVariables)
     const resultUriRegex = new RegExp(`^${resultUri}(/.*)?$`)
     const resultPathMatches = path.match(resultUriRegex)
 
-    if (path === (await getAgentDownloadUri(customerVariables))) {
+    const agentDownloadUri = await getAgentDownloadUri(customerVariables)
+    context.debug(`Agent download URI: ${agentDownloadUri}`)
+
+    if (path === agentDownloadUri) {
+      context.debug('Handling agent download')
       return await handleIngress({
         httpRequest: req,
         logger: context,
@@ -71,6 +79,7 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
       if (resultPathMatches && resultPathMatches.length >= 1) {
         suffix = resultPathMatches[1] ?? ''
       }
+      context.debug(`Handling result path: ${suffix}`, { resultPathMatches })
       return await handleIngress({
         httpRequest: req,
         logger: context,
@@ -78,19 +87,25 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
         suffix,
         requestType: 'ingressV3',
       })
-    } else if (path === (await getStatusUri(customerVariables))) {
-      return await handleStatus({
-        httpRequest: req,
-        customerVariables,
-      })
     } else {
-      return await handleIngress({
-        httpRequest: req,
-        logger: context,
-        preSharedSecret: await getPreSharedSecret(customerVariables),
-        suffix: stripRoutePrefix(path, await getRoutePrefix(customerVariables)),
-        requestType: 'v4',
-      })
+      const statusUri = await getStatusUri(customerVariables)
+      context.debug(`Status URI: ${statusUri}`)
+      if (path === statusUri) {
+        context.debug('Handling status path')
+        return await handleStatus({
+          httpRequest: req,
+          customerVariables,
+        })
+      } else {
+        context.debug(`Handling path: ${path} via ingress`)
+        return await handleIngress({
+          httpRequest: req,
+          logger: context,
+          preSharedSecret: await getPreSharedSecret(customerVariables),
+          suffix: stripRoutePrefix(path, await getRoutePrefix(customerVariables)),
+          requestType: 'v4',
+        })
+      }
     }
   }, context)
 }
