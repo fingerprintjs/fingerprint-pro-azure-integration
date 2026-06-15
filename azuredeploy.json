@@ -89,6 +89,7 @@
       "type": "int",
       "defaultValue": 100,
       "minValue": 1,
+      "maxValue": 1000,
       "metadata": {
         "description": "Maximum number of function app instances"
       }
