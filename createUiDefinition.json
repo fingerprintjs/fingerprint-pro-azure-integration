@@ -101,6 +101,18 @@
         "label": "Scaling",
         "elements": [
           {
+            "name": "text1",
+            "type": "Microsoft.Common.TextBlock",
+            "visible": true,
+            "options": {
+              "text": "Please provide the maximum number of instances for the proxy function.",
+              "link": {
+                "label": "Learn more",
+                "uri": "https://learn.microsoft.com/en-us/azure/azure-functions/event-driven-scaling?tabs=azure-cli#understanding-scaling-behaviors"
+              }
+            }
+          },
+          {
             "name": "maximumInstanceCount",
             "type": "Microsoft.Common.TextBox",
             "label": "Maximum Instance Count",
@@ -118,6 +130,16 @@
                   "message": "Must be between 40 and 1000."
                 }
               ]
+            }
+          },
+          {
+            "name": "infoBox1",
+            "type": "Microsoft.Common.InfoBox",
+            "visible": true,
+            "options": {
+              "icon": "Info",
+              "text": "The default maximum instance count controls how far the proxy scales out under load. The default suits most deployments, but the right value depends on your traffic patterns and per-instance concurrency - raising it improves resilience to spikes, while lowering it caps peak cost. See the guidance on tuning HTTP scale before changing it.",
+              "uri": "https://techcommunity.microsoft.com/blog/appsonazureblog/how-to-achieve-high-http-scale-with-azure-functions-flex-consumption/4169736"
             }
           }
         ]
