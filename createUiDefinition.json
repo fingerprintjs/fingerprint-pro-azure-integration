@@ -104,11 +104,20 @@
             "name": "maximumInstanceCount",
             "type": "Microsoft.Common.TextBox",
             "label": "Maximum Instance Count",
+            "toolTip": "The maximum number of instances for the proxy function. Must be between 40 and 1000.",
             "defaultValue": "100",
             "constraints": {
               "required": true,
-              "regex": "^[1-9][0-9]*$",
-              "validationMessage": "Must be a positive integer."
+              "validations": [
+                {
+                  "regex": "^[1-9][0-9]*$",
+                  "message": "Must be a positive integer."
+                },
+                {
+                  "regex": "^([4-9][0-9]|[1-9][0-9]{2}|1000)$",
+                  "message": "Must be between 40 and 1000."
+                }
+              ]
             }
           }
         ]
