@@ -34,8 +34,6 @@ async function withErrorHandling(callback: () => Promise<HttpResponse>, context:
 export const proxyFn = async (req: HttpRequest, context: InvocationContext): Promise<HttpResponse> => {
   context.debug(`Handling ${req.method} request`, {
     req,
-    // By default, passing `req` here prints only path and query string
-    headers: Array.from(req.headers.entries()),
     context,
   })
 
