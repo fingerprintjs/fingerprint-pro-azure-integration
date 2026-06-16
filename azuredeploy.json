@@ -84,6 +84,15 @@
       "metadata": {
         "description": "Get result path (required only for JS Agent V3)"
       }
+    },
+    "maximumInstanceCount": {
+      "type": "int",
+      "defaultValue": 100,
+      "minValue": 1,
+      "maxValue": 1000,
+      "metadata": {
+        "description": "Maximum number of function app instances"
+      }
     }
   },
   "variables": {
@@ -99,7 +108,6 @@
     "functionNameComputed": "fingerprint-azure-integration-v2",
     "functionRuntime": "node",
     "functionRuntimeVersion": "24",
-    "maximumInstanceCount": 2,
     "instanceMemoryMB": 512,
     "packageZipUri": "https://github.com/fingerprintjs/azure-frontdoor-proxy/releases/latest/download/package.zip",
     "packageName": "released-package.zip",
@@ -116,11 +124,7 @@
         "description": "Role for Fingerprint Pro Function App",
         "permissions": [
           {
-            "actions": [
-              "*/read",
-              "Microsoft.Web/sites/restart/action",
-              "Microsoft.Web/sites/functions/read"
-            ],
+            "actions": ["*/read", "Microsoft.Web/sites/restart/action", "Microsoft.Web/sites/functions/read"],
             "notActions": [],
             "dataActions": [
               "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/delete",
@@ -266,7 +270,7 @@
           },
           "scaleAndConcurrency": {
             "instanceMemoryMB": "[variables('instanceMemoryMB')]",
-            "maximumInstanceCount": "[variables('maximumInstanceCount')]"
+            "maximumInstanceCount": "[parameters('maximumInstanceCount')]"
           },
           "runtime": {
             "name": "[variables('functionRuntime')]",

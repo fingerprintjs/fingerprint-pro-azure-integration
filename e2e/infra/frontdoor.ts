@@ -47,8 +47,10 @@ export async function provisionFrontDoor({
 
   console.info('Creating origin groups...')
 
+  const functionOrigin = `function-app-${id}`
+  const websiteOrigin = `website-${id}`
   const [functionAppOriginGroup, websiteOriginGroup] = await Promise.all([
-    cdnClient.afdOriginGroups.beginCreateAndWait(resourceGroup, profileName, 'function-app', {
+    cdnClient.afdOriginGroups.beginCreateAndWait(resourceGroup, profileName, functionOrigin, {
       loadBalancingSettings: {
         sampleSize: 4,
         successfulSamplesRequired: 3,
@@ -62,7 +64,7 @@ export async function provisionFrontDoor({
       },
       sessionAffinityState: KnownSessionAffinityEnabledState.Disabled,
     }),
-    cdnClient.afdOriginGroups.beginCreateAndWait(resourceGroup, profileName, 'website', {
+    cdnClient.afdOriginGroups.beginCreateAndWait(resourceGroup, profileName, websiteOrigin, {
       loadBalancingSettings: {
         sampleSize: 4,
         successfulSamplesRequired: 3,
@@ -84,7 +86,7 @@ export async function provisionFrontDoor({
   console.info('Creating origins...')
 
   await Promise.all([
-    cdnClient.afdOrigins.beginCreateAndWait(resourceGroup, profileName, functionAppOriginGroup.name, 'function-app', {
+    cdnClient.afdOrigins.beginCreateAndWait(resourceGroup, profileName, functionAppOriginGroup.name, functionOrigin, {
       hostName: functionAppHost,
       originHostHeader: functionAppHost,
       httpPort: 80,
@@ -93,7 +95,7 @@ export async function provisionFrontDoor({
       weight: 1000,
       enforceCertificateNameCheck: true,
     }),
-    cdnClient.afdOrigins.beginCreateAndWait(resourceGroup, profileName, websiteOriginGroup.name, 'website', {
+    cdnClient.afdOrigins.beginCreateAndWait(resourceGroup, profileName, websiteOriginGroup.name, websiteOrigin, {
       hostName: websiteHost,
       originHostHeader: websiteHost,
       httpPort: 80,
@@ -117,7 +119,7 @@ export async function provisionFrontDoor({
   console.info('Creating route...')
 
   await Promise.all([
-    cdnClient.routes.beginCreateAndWait(resourceGroup, profileName, endpoint.name, 'function-app', {
+    cdnClient.routes.beginCreateAndWait(resourceGroup, profileName, endpoint.name, functionOrigin, {
       originGroup: {
         id: functionAppOriginGroup.id,
       },
@@ -130,7 +132,7 @@ export async function provisionFrontDoor({
       linkToDefaultDomain: KnownLinkToDefaultDomain.Enabled,
       httpsRedirect: KnownHttpsRedirect.Enabled,
     }),
-    cdnClient.routes.beginCreateAndWait(resourceGroup, profileName, endpoint.name, 'proxy', {
+    cdnClient.routes.beginCreateAndWait(resourceGroup, profileName, endpoint.name, websiteOrigin, {
       originGroup: {
         id: websiteOriginGroup.id,
       },
