@@ -1,3 +1,9 @@
+## 2.1.0
+
+### Minor Changes
+
+- Introduce `maximumInstanceCount` parameter for managing the maximum instace count and set the default value to `100`. ([03aa4cf](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/03aa4cfcea36a23538d8637bc759110bd4788e96))
+
 ## 2.0.0
 
 ### Major Changes
