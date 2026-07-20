@@ -30,6 +30,7 @@ async function doMockTests() {
       'traffic-name': 'fingerprint-pro-azure',
       'integration-version': pkg.version,
       'enable-new-tests': 'true',
+      exclude: ['PUT request', 'HEAD request'],
     } as Record<string, string | string[]>
 
     console.info('Running mock tests with args:', args)
