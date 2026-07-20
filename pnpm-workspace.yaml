@@ -4,3 +4,4 @@ packages:
 
 allowBuilds:
   azure-functions-core-tools: true
+  core-js: false
