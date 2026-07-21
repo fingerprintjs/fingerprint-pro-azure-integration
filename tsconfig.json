@@ -14,13 +14,15 @@
     "sourceMap": true,
     "exactOptionalPropertyTypes": false
   },
-  "include": ["proxy", "management"],
   "references": [
     {
       "path": "./tsconfig.app.json"
     },
     {
       "path": "./tsconfig.test.json"
+    },
+    {
+      "path": "./tsconfig.vite.json"
     }
   ]
 }
