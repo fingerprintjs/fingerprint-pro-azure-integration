@@ -250,7 +250,9 @@ describe('Agent Endpoint', () => {
       loaderVersion: '3.6.5',
     })
 
-    Array.from(req.headers.keys()).forEach((key) => req.headers.delete(key))
+    Array.from(req.headers.keys()).forEach((key) => {
+      req.headers.delete(key)
+    })
 
     req.headers.set(
       'cookie',

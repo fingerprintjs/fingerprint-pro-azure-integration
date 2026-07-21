@@ -163,7 +163,9 @@ describe('Agent Endpoint V4', () => {
   test('Req body and headers are the same, expect cookies, which should be omitted', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
-    Array.from(req.headers.keys()).forEach((key) => req.headers.delete(key))
+    Array.from(req.headers.keys()).forEach((key) => {
+      req.headers.delete(key)
+    })
 
     req.headers.set(
       'cookie',

@@ -46,7 +46,7 @@ describe('performHealthCheckAfterUpdate', () => {
     fetchMock.get(statusUrl, {
       version: '1.0.0',
       envInfo: [],
-    } as StatusInfo)
+    })
 
     await performHealthCheckAfterUpdate({
       newVersion: '1.0.0',
@@ -60,9 +60,9 @@ describe('performHealthCheckAfterUpdate', () => {
   })
 
   it('should retry status request', async () => {
-    fetchMock.getOnce(statusUrl, { version: '0.0.1', envInfo: [] } as StatusInfo)
-    fetchMock.getOnce(statusUrl, { version: '0.0.1', envInfo: [] } as StatusInfo, { overwriteRoutes: false })
-    fetchMock.getOnce(statusUrl, { version: '1.0.0', envInfo: [] } as StatusInfo, { overwriteRoutes: false })
+    fetchMock.getOnce(statusUrl, { version: '0.0.1', envInfo: [] })
+    fetchMock.getOnce(statusUrl, { version: '0.0.1', envInfo: [] }, { overwriteRoutes: false })
+    fetchMock.getOnce(statusUrl, { version: '1.0.0', envInfo: [] }, { overwriteRoutes: false })
 
     await performHealthCheckAfterUpdate({
       newVersion: '1.0.0',
@@ -76,7 +76,7 @@ describe('performHealthCheckAfterUpdate', () => {
   })
 
   it('should rollback by restoring backup on timeout', async () => {
-    fetchMock.get(statusUrl, { version: '0.0.1', envInfo: [] } as StatusInfo, { overwriteRoutes: false })
+    fetchMock.get(statusUrl, { version: '0.0.1', envInfo: [] }, { overwriteRoutes: false })
 
     await expect(
       performHealthCheckAfterUpdate({

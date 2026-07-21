@@ -57,8 +57,12 @@ async function main() {
     deletions.push(
       client.resourceGroups
         .beginDelete(name)
-        .then(() => console.info(`Initiated deletion of ${name}`))
-        .catch((err) => console.error(`Failed to delete ${name}:`, err))
+        .then(() => {
+          console.info(`Initiated deletion of ${name}`)
+        })
+        .catch((err) => {
+          console.error(`Failed to delete ${name}:`, err)
+        })
     )
   }
 

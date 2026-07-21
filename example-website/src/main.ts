@@ -39,7 +39,7 @@ async function outputAzureStatus(integrationPath: string) {
     target.setAttribute('data-ok', 'true')
     target.innerHTML = `
     <h2>Azure status</h2>
-    ${writeConfiguration('version', `${status.version}`)}
+    ${writeConfiguration('version', status.version)}
     `
   } catch (error) {
     target.innerHTML = `
