@@ -3,7 +3,7 @@ import { removeResourceGroupAndWait } from './resourceGroup'
 import { deployWebsite } from './website'
 import { deployAppToTempStorage, getUpdatedDeployTemplate } from './tmpStorage'
 import { deployFunctionApp, FunctionAppDeploymentParameters } from './deployFunctionApp'
-import invariant from 'tiny-invariant'
+import { assertIsTruthy } from '../../shared/assert'
 import { provisionFrontDoor } from './frontdoor'
 import { STATUS_PATH } from '../../shared/status'
 
@@ -49,7 +49,7 @@ export async function deployE2EInfrastructure({
       name,
     })
     const functionAppHost = functionApp.hostNames?.[0] || functionApp.enabledHostNames?.[0]
-    invariant(functionAppHost, 'functionAppHost is required')
+    assertIsTruthy(functionAppHost, 'functionAppHost is required')
     console.info(`Function app URL: https://${functionAppHost}`)
 
     const { url: frontdoorUrl, waitForFrontDoor } = await provisionFrontDoor({

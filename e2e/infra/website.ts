@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import { storageClient } from './clients'
 import { KnownKind, KnownSkuName } from '@azure/arm-storage'
 import { execSync } from 'child_process'
-import invariant from 'tiny-invariant'
+import { assertIsTruthy } from '../../shared/assert'
 import { ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob'
 import { globSync } from 'glob'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
@@ -30,12 +30,12 @@ export async function deployWebsite(resourceGroup: string, name: string) {
 
   const account = await poll.pollUntilDone()
 
-  invariant(account.primaryEndpoints?.web, 'Storage account web endpoint not found')
+  assertIsTruthy(account.primaryEndpoints?.web, 'Storage account web endpoint not found')
   const accountUrl = `https://${account.name}.blob.core.windows.net/$web`
 
   const keys = await storageClient.storageAccounts.listKeys(resourceGroup, accountName)
   const key = keys?.keys?.[0]?.value
-  invariant(key, 'Storage account key not found')
+  assertIsTruthy(key, 'Storage account key not found')
 
   console.info(`Storage account ready: ${account.name}`)
 
