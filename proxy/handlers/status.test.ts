@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { CustomerVariables } from '../../shared/customer-variables/CustomerVariables'
 import { CustomerVariableName } from '../../shared/customer-variables/types'
 import { EnvCustomerVariables } from '../../shared/customer-variables/EnvCustomerVariables'

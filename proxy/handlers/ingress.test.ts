@@ -1,3 +1,4 @@
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest'
 import proxyFn from '../index'
 import * as ingress from './ingress'
 import https, { Agent } from 'https'
@@ -8,8 +9,6 @@ import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet, mockRequestPost } from '../../shared/test/azure'
 import { isTruthy } from '../../shared/assert'
 import { Region } from '../utils/region'
-import type { MockInstance } from 'vitest'
-
 describe('Result Endpoint', function () {
   let requestSpy: MockInstance
   const mockSuccessfulResponse = ({

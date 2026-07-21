@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "types": ["node", "vitest/globals"],
-    "composite": true
+    "types": ["node"],
+    "composite": true,
   },
   "extends": "./tsconfig.json",
-  "exclude": ["dist", "node_modules", "e2e"],
+  "exclude": ["**/dist", "**/node_modules", "e2e"],
   "include": ["**/*.test.ts", "**/test/*.ts", "proxy", "management", "shared/test"]
 }

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { addTrafficMonitoringSearchParamsForIngressRequest } from './traffic'
 
 describe('Traffic monitoring', () => {

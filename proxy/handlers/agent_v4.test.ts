@@ -1,10 +1,9 @@
+import { afterEach, beforeEach, describe, expect, test, vi, type Mock, type MockInstance } from 'vitest'
 import https from 'https'
 import proxyFn from '../index'
 import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet } from '../../shared/test/azure'
 import { generateErrorResponse } from '../utils/errorResponse'
-import type { Mock, MockInstance } from 'vitest'
-
 describe('Agent Endpoint V4', () => {
   const origin: string = '__ingress_api__'
 

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { stripPort } from './ip'
 
 describe('Strip port', () => {

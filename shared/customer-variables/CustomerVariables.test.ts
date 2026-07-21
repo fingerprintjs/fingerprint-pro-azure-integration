@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { CustomerVariableProvider, CustomerVariableName } from './types'
 import { CustomerVariables } from './CustomerVariables'
 

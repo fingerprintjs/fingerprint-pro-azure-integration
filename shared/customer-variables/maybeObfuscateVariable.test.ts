@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { CustomerVariableName } from './types'
 import { maybeObfuscateVariable, OBFUSCATED_VALUE } from './maybeObfuscateVariable'
 

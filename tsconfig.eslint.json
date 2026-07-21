@@ -1,9 +1,10 @@
 {
   "extends": ["./tsconfig.json"],
   "compilerOptions": {
-    "types": ["node", "vitest/globals"],
+    "types": ["node"],
     "moduleResolution": "bundler",
-    "module": "ESNext"
+    "module": "ESNext",
+    "noEmit": true
   },
   "include": ["**/*.ts", "**/*.tsx", "package.json", "azuredeploy.json"],
   "exclude": ["**/node_modules"]
