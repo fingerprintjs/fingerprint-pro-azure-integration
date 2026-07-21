@@ -3,18 +3,17 @@ import { readTestInfo } from '../shared/testInfo'
 import pkg from '../../package.json'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
 import dotenv from 'dotenv'
+import { assertIsTruthy } from '../../shared/assert'
 
 dotenv.config()
 
-async function doMockTests() {
+function doMockTests() {
   let hasError = false
   const testInfo = readTestInfo()
 
   const apiUrl = process.env.API_URL
 
-  if (!apiUrl) {
-    throw new Error('API_URL is not set')
-  }
+  assertIsTruthy(apiUrl, 'API_URL is not set')
 
   for (const info of testInfo.tests) {
     const host = info.frontdoorUrl
@@ -82,7 +81,7 @@ async function main() {
   }
 }
 
-main().catch((error) => {
+main().catch((error: unknown) => {
   console.error(error)
   process.exit(1)
 })

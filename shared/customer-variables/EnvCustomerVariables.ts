@@ -5,7 +5,7 @@ export class EnvCustomerVariables implements CustomerVariableProvider {
 
   constructor(private readonly env = process.env) {}
 
-  async getVariable(variable: CustomerVariableName): Promise<string | null> {
-    return this.env[variable] ?? null
+  getVariable(variable: CustomerVariableName): Promise<string | null> {
+    return Promise.resolve(this.env[variable] ?? null)
   }
 }

@@ -2,6 +2,7 @@ import { config } from './config'
 import { isSemverGreater } from './semver'
 import { InvocationContext } from '@azure/functions'
 import { parse } from 'semver'
+import { isTruthy } from '../shared/assert'
 
 export function bearer(token?: string) {
   return `Bearer ${token}`
@@ -9,23 +10,25 @@ export function bearer(token?: string) {
 
 async function getLatestGithubReleaseWithPrelease(token?: string) {
   const response = await fetch(`https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases`, {
-    headers: token
+    headers: isTruthy(token)
       ? {
           Authorization: bearer(token),
         }
       : undefined,
   })
 
+  // `Response.json()` is untyped (returns `any`), so we assert the parsed shape here.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const releases = (await response.json()) as GithubRelease[]
 
-  return releases?.[0]
+  return releases[0]
 }
 
 export async function getLatestGithubRelease(token?: string) {
   const response = await fetch(
     `https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases/latest`,
     {
-      headers: token
+      headers: isTruthy(token)
         ? {
             Authorization: bearer(token),
           }
@@ -33,6 +36,8 @@ export async function getLatestGithubRelease(token?: string) {
     }
   )
 
+  // `Response.json()` is untyped (returns `any`), so we assert the parsed shape here.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return (await response.json()) as GithubRelease
 }
 
@@ -43,7 +48,7 @@ export async function downloadReleaseAsset(url: string, token?: string, logger?:
     Accept: 'application/octet-stream',
     'User-Agent': 'fingerprint-pro-azure-integration',
   }
-  if (token) {
+  if (isTruthy(token)) {
     headers['Authorization'] = bearer(token)
   }
 
@@ -54,7 +59,7 @@ export async function downloadReleaseAsset(url: string, token?: string, logger?:
   return Buffer.from(arrayBuffer)
 }
 
-export async function findFunctionZip(assets: GithubReleaseAsset[]) {
+export function findFunctionZip(assets: GithubReleaseAsset[]) {
   return assets.find(
     (asset) => asset.name === 'package.zip' && asset.state === 'uploaded' && asset.content_type === 'application/zip'
   )
@@ -76,12 +81,12 @@ export async function getLatestFunctionZip(
 
   // Parse tag to include only version
   let tagName: string
-  if (release.tag_name?.includes('@')) {
+  if (release.tag_name.includes('@')) {
     // Example tag: @fingerprint/azure-frontdoor-proxy@1.6.0
     const split = release.tag_name.split('@')
     tagName = split[split.length - 1]
   } else {
-    tagName = release?.tag_name
+    tagName = release.tag_name
   }
 
   if (!isSemverGreater(tagName, version)) {
@@ -100,7 +105,7 @@ export async function getLatestFunctionZip(
 
   logger?.debug(`Found new release ${tagName}`, release.assets)
 
-  const asset = await findFunctionZip(release.assets)
+  const asset = findFunctionZip(release.assets)
 
   logger?.debug(`Found asset ${asset?.name} for release ${release.tag_name}`, asset)
 

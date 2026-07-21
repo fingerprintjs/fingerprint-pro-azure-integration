@@ -3,7 +3,7 @@ import { removeResourceGroupAndWait } from './resourceGroup'
 import { deployWebsite } from './website'
 import { deployAppToTempStorage, getUpdatedDeployTemplate } from './tmpStorage'
 import { deployFunctionApp, FunctionAppDeploymentParameters } from './deployFunctionApp'
-import invariant from 'tiny-invariant'
+import { assertIsTruthy } from '../../shared/assert'
 import { provisionFrontDoor } from './frontdoor'
 import { STATUS_PATH } from '../../shared/status'
 
@@ -38,7 +38,7 @@ export async function deployE2EInfrastructure({
 
     cleanupFns.push(removeBlob)
 
-    const template = await getUpdatedDeployTemplate(tmpStorageUrl)
+    const template = getUpdatedDeployTemplate(tmpStorageUrl)
 
     const functionApp = await deployFunctionApp({
       template,
@@ -48,8 +48,8 @@ export async function deployE2EInfrastructure({
       routePrefix,
       name,
     })
-    const functionAppHost = functionApp.hostNames?.[0] || functionApp.enabledHostNames?.[0]
-    invariant(functionAppHost, 'functionAppHost is required')
+    const functionAppHost = functionApp.hostNames?.[0] ?? functionApp.enabledHostNames?.[0]
+    assertIsTruthy(functionAppHost, 'functionAppHost is required')
     console.info(`Function app URL: https://${functionAppHost}`)
 
     const { url: frontdoorUrl, waitForFrontDoor } = await provisionFrontDoor({
@@ -77,7 +77,7 @@ export async function deployE2EInfrastructure({
       },
     }
   } catch (error) {
-    console.error(`Error deploying resources: ${error}`)
+    console.error(`Error deploying resources: ${String(error)}`)
 
     await cleanup()
 

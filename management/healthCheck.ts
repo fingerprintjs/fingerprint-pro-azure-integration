@@ -58,6 +58,8 @@ async function runHealthCheckSchedule(
     }
 
     const response = await fetch(url, { signal })
+    // `Response.json()` is untyped (returns `any`), so we assert the parsed shape here.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     const json = (await response.json()) as StatusInfo
 
     logger?.debug('Health check response', json)

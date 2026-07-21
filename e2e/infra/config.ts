@@ -1,5 +1,5 @@
-import invariant from 'tiny-invariant'
 import dotenv from 'dotenv'
+import { assertIsTruthy } from '../../shared/assert'
 
 dotenv.config()
 
@@ -9,10 +9,10 @@ const storageContainerName = process.env.AZURE_STORAGE_CONTAINER_NAME
 const storageResourceGroup = process.env.AZURE_STORAGE_RESOURCE_GROUP
 const preSharedSecret = process.env.FPJS_PRE_SHARED_SECRET ?? ''
 
-invariant(subscriptionId, 'AZURE_SUBSCRIPTION_ID is required')
-invariant(storageAccountName, 'AZURE_STORAGE_ACCOUNT_NAME is required')
-invariant(storageContainerName, 'AZURE_STORAGE_CONTAINER_NAME is required')
-invariant(storageResourceGroup, 'AZURE_STORAGE_RESOURCE_GROUP is required')
+assertIsTruthy(subscriptionId, 'AZURE_SUBSCRIPTION_ID is required')
+assertIsTruthy(storageAccountName, 'AZURE_STORAGE_ACCOUNT_NAME is required')
+assertIsTruthy(storageContainerName, 'AZURE_STORAGE_CONTAINER_NAME is required')
+assertIsTruthy(storageResourceGroup, 'AZURE_STORAGE_RESOURCE_GROUP is required')
 
 const config = {
   subscriptionId,

@@ -1,7 +1,7 @@
 import { deploymentsClient } from './clients'
 import config from './config'
 import { getWebApp } from './site'
-import invariant from 'tiny-invariant'
+import { assertIsTruthy } from '../../shared/assert'
 import { doHealthCheck } from './healthCheck'
 import { TestInfo } from '../shared/testInfo'
 
@@ -58,7 +58,8 @@ export async function deployFunctionApp({
   console.info(`App deployed, requesting details from Azure...`)
 
   const website = await getWebApp(resourceGroup, appName)
-  invariant(website.name, 'Website name is required')
+  assertIsTruthy(website.name, 'Website name is required')
+  assertIsTruthy(website.id, 'Website id is required')
 
   console.info(`App deployed with id #${website.id} 🎉`)
   console.info('Performing health check...')

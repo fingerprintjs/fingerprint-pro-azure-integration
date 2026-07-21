@@ -7,5 +7,7 @@ export async function checkAzureStatus(integrationPath: string) {
 
   const response = await fetch(url.toString())
 
+  // `Response.json()` is untyped (returns `any`), so we assert the parsed shape here.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return (await response.json()) as StatusInfo
 }

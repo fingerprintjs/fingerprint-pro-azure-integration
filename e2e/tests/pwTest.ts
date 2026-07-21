@@ -1,6 +1,6 @@
 import { test as baseTest } from '@playwright/test'
 import { readTestInfo, TestInfo } from '../shared/testInfo'
-import invariant from 'tiny-invariant'
+import { assertIsTruthy } from '../../shared/assert'
 
 // For future, in case if we need to extend the base test
 export const test = baseTest.extend<{ azureTestInfo: TestInfo }>({
@@ -8,7 +8,7 @@ export const test = baseTest.extend<{ azureTestInfo: TestInfo }>({
     const testInfo = readTestInfo()
     const project = testInfo.tests.find((info) => info.frontdoorUrl === baseURL)
 
-    invariant(project, 'project is required')
+    assertIsTruthy(project, 'project is required')
 
     console.info(`Using ${project.frontdoorUrl} for tests`)
 

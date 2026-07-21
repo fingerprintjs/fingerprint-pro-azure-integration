@@ -8,7 +8,7 @@ import {
   KnownSkuName,
 } from '@azure/arm-cdn'
 import { KnownSessionAffinityEnabledState } from '@azure/arm-frontdoor'
-import invariant from 'tiny-invariant'
+import { assertIsTruthy } from '../../shared/assert'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
 import { wait } from '../../shared/wait'
 
@@ -81,8 +81,8 @@ export async function provisionFrontDoor({
   ])
 
   console.info('Created origin groups')
-  invariant(functionAppOriginGroup.name, 'functionAppOriginGroup.name is required')
-  invariant(websiteOriginGroup.name, 'websiteOriginGroup.name is required')
+  assertIsTruthy(functionAppOriginGroup.name, 'functionAppOriginGroup.name is required')
+  assertIsTruthy(websiteOriginGroup.name, 'websiteOriginGroup.name is required')
   console.info('Creating origins...')
 
   await Promise.all([
@@ -112,8 +112,8 @@ export async function provisionFrontDoor({
   const endpoint = await cdnClient.afdEndpoints.beginCreateAndWait(resourceGroup, profileName, `fpjs-e2e-proxy-${id}`, {
     location: 'Global',
   })
-  invariant(endpoint.name, 'endpoint.name is required')
-  invariant(endpoint.hostName, 'endpoint.hostName is required')
+  assertIsTruthy(endpoint.name, 'endpoint.name is required')
+  assertIsTruthy(endpoint.hostName, 'endpoint.hostName is required')
 
   console.info('Created endpoints')
   console.info('Creating route...')

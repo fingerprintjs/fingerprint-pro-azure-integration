@@ -6,6 +6,7 @@ import { getValidRegion, Region } from '../utils/region'
 import { getV3AgentPath, INGRESS_CDN_PATH } from '../utils/paths'
 import { isMethodAuthorized } from '../utils/request'
 import { sendIngressRequest } from '../utils/transport'
+import { isTruthy } from '../../shared/assert'
 
 export type RequestType = 'agentV3' | 'ingressV3' | 'v4'
 
@@ -30,8 +31,10 @@ export async function handleIngress({
       suffix = `/${INGRESS_CDN_PATH}${getV3AgentPath(httpRequest.query)}`
       break
 
+    case 'v4':
+    case 'ingressV3':
     default:
-      if (suffix && !suffix.startsWith('/')) {
+      if (isTruthy(suffix) && !suffix.startsWith('/')) {
         suffix = '/' + suffix
       }
       break
@@ -40,7 +43,7 @@ export async function handleIngress({
   const region = httpRequest.query.get('region') ?? Region.us
 
   const url = new URL(getIngressAPIHost(region))
-  if (suffix) {
+  if (isTruthy(suffix)) {
     url.pathname = suffix
   }
   url.search = httpRequest.query.toString()
