@@ -12,5 +12,5 @@ app.http('proxy', {
   authLevel: 'anonymous',
   handler: proxyFn,
   route: '{*restOfPath}',
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH', 'PUT'],
 })
