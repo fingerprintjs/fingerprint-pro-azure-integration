@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpRequest, InvocationContext } from '@azure/functions'
 
 export const mockRequestGet = (url: string, uri: string, query: Record<string, string> = {}) => {

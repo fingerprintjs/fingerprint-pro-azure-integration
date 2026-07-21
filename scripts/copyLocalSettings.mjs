@@ -19,7 +19,7 @@ try {
         Values: {
           FUNCTIONS_WORKER_RUNTIME: 'node',
         },
-      }),
+      })
     )
   }
 } catch (err) {
