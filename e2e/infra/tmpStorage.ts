@@ -15,19 +15,19 @@ if (!fs.existsSync(functionZipPath)) {
 /**
  * Updates deployment template with function url stored in temp storage
  * */
-export async function getUpdatedDeployTemplate(functionUrl: string) {
-  const deployConfig: any = {
-    ...deploymentTemplate,
-  }
-
-  assertIsTruthy(deployConfig.variables?.packageZipUri, 'Package zip uri not found')
+export function getUpdatedDeployTemplate(functionUrl: string) {
+  assertIsTruthy(deploymentTemplate.variables.packageZipUri, 'Package zip uri not found')
 
   /**
    * We have to overwrite it, in order to use function built locally in the infrastructure
    * */
-  deployConfig.variables.packageZipUri = functionUrl
-
-  return deployConfig
+  return {
+    ...deploymentTemplate,
+    variables: {
+      ...deploymentTemplate.variables,
+      packageZipUri: functionUrl,
+    },
+  }
 }
 
 export async function getTmpStorageContainerClient() {

@@ -8,6 +8,7 @@ import { performHealthCheckAfterUpdate } from './healthCheck'
 import { createPackageBackup } from './storage'
 import { RELEASED_PACKAGE_BLOB, USER_ASSIGNED_ENTITY_CLIENT_ID } from './settings'
 import { config } from './config'
+import { isTruthy } from '../shared/assert'
 import crypto from 'crypto'
 import { TimerHandler } from '@azure/functions/types/timer'
 import { performRollback } from './rollback'
@@ -64,7 +65,7 @@ const managementFn: TimerHandler = async (timer, context) => {
 
     const containerUrl = site.functionAppConfig?.deployment?.storage?.value
 
-    if (!containerUrl) {
+    if (!isTruthy(containerUrl)) {
       context.warn('No deployment storage URL found in functionAppConfig')
 
       return

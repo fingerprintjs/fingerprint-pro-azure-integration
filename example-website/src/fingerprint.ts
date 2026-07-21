@@ -1,5 +1,6 @@
 import * as V3 from '@fingerprintjs/fingerprintjs-pro'
 import * as V4 from '@fingerprint/agent'
+import { isTruthy } from '../../shared/assert'
 
 export type FingerprintVersion = 'v3' | 'v4'
 
@@ -15,12 +16,14 @@ export type FingerprintOptions = {
 }
 
 function getValue(search: URLSearchParams, key: string, envKey: string) {
+  // `import.meta.env` is indexed with a dynamic key, so its value type is `any`.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return search.get(key) ?? (import.meta.env[envKey] as string)
 }
 
 function getFingerprintVersion(search: URLSearchParams): FingerprintVersion {
   const version = search.get('version')
-  if (!version) {
+  if (!isTruthy(version)) {
     return 'v3'
   }
   if (version !== 'v3' && version !== 'v4') {
@@ -84,14 +87,16 @@ export async function getVisitorData(options: FingerprintOptions = getOptions())
     case 'v4': {
       const endpoint = new URL(location.origin)
       endpoint.pathname = `/${options.integrationPath}/`
-      const [agent, agentLoadTime] = await withBenchmark(async () =>
-        V4.start({
-          apiKey: options.apiKey,
-          endpoints: endpoint.toString(),
-        })
+      const [agent, agentLoadTime] = await withBenchmark(() =>
+        Promise.resolve(
+          V4.start({
+            apiKey: options.apiKey,
+            endpoints: endpoint.toString(),
+          })
+        )
       )
 
-      const [response, responseLoadTime] = await withBenchmark(async () => agent.get())
+      const [response, responseLoadTime] = await withBenchmark(() => agent.get())
 
       return {
         response,

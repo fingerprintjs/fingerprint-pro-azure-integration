@@ -3,6 +3,7 @@ import { CustomerVariables } from '../../shared/customer-variables/CustomerVaria
 import { maybeObfuscateVariable } from '../../shared/customer-variables/maybeObfuscateVariable'
 import { CustomerVariableName } from '../../shared/customer-variables/types'
 import { EnvVarInfo, StatusFormat, StatusInfo } from '../../shared/status'
+import { isTruthy } from '../../shared/assert'
 
 export interface HandleStatusParams {
   httpRequest: HttpRequest
@@ -27,7 +28,7 @@ async function getEnvInfo(customerVariables: CustomerVariables) {
 }
 
 function renderEnvInfo(envInfo: EnvVarInfo[]) {
-  const isAlSet = envInfo.every((info) => info.isSet && info.resolvedBy)
+  const isAlSet = envInfo.every((info) => info.isSet && isTruthy(info.resolvedBy))
 
   if (isAlSet) {
     return `
@@ -38,7 +39,7 @@ function renderEnvInfo(envInfo: EnvVarInfo[]) {
   }
 
   const children = envInfo
-    .filter((info) => !info.isSet || !info.resolvedBy)
+    .filter((info) => !info.isSet || !isTruthy(info.resolvedBy))
     .map(
       (info) => `
         <div class='env-info-item'>
@@ -111,6 +112,8 @@ export async function handleStatus({ customerVariables, httpRequest }: HandleSta
 
   const info = await getStatusInfo(customerVariables)
 
+  // `format` is an arbitrary query-string value being matched against the enum.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (format === StatusFormat.JSON) {
     return new HttpResponse({
       status: 200,

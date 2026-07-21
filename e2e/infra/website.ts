@@ -34,7 +34,7 @@ export async function deployWebsite(resourceGroup: string, name: string) {
   const accountUrl = `https://${account.name}.blob.core.windows.net/$web`
 
   const keys = await storageClient.storageAccounts.listKeys(resourceGroup, accountName)
-  const key = keys?.keys?.[0]?.value
+  const key = keys.keys?.[0]?.value
   assertIsTruthy(key, 'Storage account key not found')
 
   console.info(`Storage account ready: ${account.name}`)

@@ -3,6 +3,7 @@ import { HttpHeadersInit, HttpRequest, InvocationContext } from '@azure/function
 import { updateCacheControlHeader } from './cacheControl'
 import { filterCookie } from './cookies'
 import { stripPort } from './ip'
+import { isTruthy } from '../../shared/assert'
 
 const CACHE_CONTROL_HEADER_NAME = 'cache-control'
 
@@ -47,7 +48,7 @@ export function updateResponseHeaders(
   const result: HttpHeadersInit = {}
 
   for (const [key, value] of Object.entries(headers)) {
-    if (!isHeaderAllowedForResponse(key) || !value) {
+    if (!isHeaderAllowedForResponse(key) || !isTruthy(value)) {
       continue
     }
 
@@ -71,7 +72,7 @@ export function updateResponseHeaders(
 }
 
 function resolveClientIp(request: HttpRequest, logger?: InvocationContext) {
-  const clientIp = request.headers.get('x-azure-socketip') || ''
+  const clientIp = request.headers.get('x-azure-socketip') ?? ''
 
   logger?.debug('Client IP resolved', {
     clientIp,
@@ -81,7 +82,7 @@ function resolveClientIp(request: HttpRequest, logger?: InvocationContext) {
 }
 
 export function getHost(request: Pick<HttpRequest, 'headers' | 'url'>) {
-  return request.headers.get('x-forwarded-host') || new URL(request.url).hostname
+  return request.headers.get('x-forwarded-host') ?? new URL(request.url).hostname
 }
 
 interface PrepareHeadersForIngressAPIParams {
@@ -108,7 +109,7 @@ export function prepareHeadersForIngressAPI({
   logger?.debug('Host resolved', host)
   headers['fpjs-proxy-forwarded-host'] = host
 
-  if (preSharedSecret) {
+  if (isTruthy(preSharedSecret)) {
     headers['fpjs-proxy-secret'] = preSharedSecret
   }
 

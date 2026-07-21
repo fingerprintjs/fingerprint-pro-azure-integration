@@ -29,7 +29,7 @@ export async function getWebApp(resourceGroup: string, appName: string) {
     const webApps = websiteManagementClient.webApps.list()
 
     for await (const webApp of webApps) {
-      if (webApp.name?.startsWith(appName) && webApp.resourceGroup === resourceGroup) {
+      if (webApp.name?.startsWith(appName) === true && webApp.resourceGroup === resourceGroup) {
         return webApp
       }
     }

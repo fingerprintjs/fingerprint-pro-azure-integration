@@ -2,6 +2,7 @@ import { CustomerVariableProvider, CustomerVariableName, CustomerVariableValue }
 import { getDefaultCustomerVariable } from './defaults'
 import { InvocationContext } from '@azure/functions'
 import { maybeObfuscateVariable } from './maybeObfuscateVariable'
+import { isTruthy } from '../assert'
 
 export interface GetVariableResult {
   value: CustomerVariableValue
@@ -44,7 +45,7 @@ export class CustomerVariables {
       try {
         const result = await provider.getVariable(variable)
 
-        if (result) {
+        if (isTruthy(result)) {
           this.logger?.debug(
             `Resolved customer variable ${variable} with provider ${provider.name}. Value: ${maybeObfuscateVariable(
               variable,

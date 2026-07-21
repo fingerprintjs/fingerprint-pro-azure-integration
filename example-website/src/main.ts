@@ -2,7 +2,7 @@ import { FingerprintOptions, getOptions } from './fingerprint'
 import { handleVisitorData } from './result'
 import { checkAzureStatus } from './azure'
 
-async function main() {
+function main() {
   const options = getOptions()
 
   outputOptions(options)
@@ -44,7 +44,7 @@ async function outputAzureStatus(integrationPath: string) {
   } catch (error) {
     target.innerHTML = `
     <h2>Azure status</h2>
-    ${writeConfiguration('status', `⚠️ Failed to obtain status. ${error}`)}
+    ${writeConfiguration('status', `⚠️ Failed to obtain status. ${String(error)}`)}
     <span>Azure integration is not running correctly, or the website is configured not properly</span>
     `
   }
@@ -58,4 +58,4 @@ function writeConfiguration(key: string, value: string) {
 </div>`.trim()
 }
 
-main().catch(console.error)
+main()

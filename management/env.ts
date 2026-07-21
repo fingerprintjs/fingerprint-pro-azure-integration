@@ -1,11 +1,10 @@
 import { InvocationContext } from '@azure/functions'
+import { assertIsTruthy } from '../shared/assert'
 
 export function getEnv(name: string) {
   const value = process.env[name]
 
-  if (!value) {
-    throw new Error(`Missing environment variable: ${name}`)
-  }
+  assertIsTruthy(value, `Missing environment variable: ${name}`)
 
   return value
 }
@@ -19,7 +18,7 @@ export function gatherEnvs(logger: InvocationContext) {
       allowPrerelease: process.env.ALLOW_PRERELEASE === 'true',
     }
   } catch (error) {
-    logger.error(`Error gathering environment variables: ${error}`)
+    logger.error(`Error gathering environment variables: ${String(error)}`)
 
     return null
   }

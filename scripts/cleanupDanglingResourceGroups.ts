@@ -1,5 +1,6 @@
 import { DefaultAzureCredential } from '@azure/identity'
 import { ResourceManagementClient } from '@azure/arm-resources'
+import { assertIsTruthy, isTruthy } from '../shared/assert'
 
 const RESOURCE_GROUP_NAME_REGEX = /^fpjs-dev-e2e-(\d+)$/
 // 6h
@@ -7,9 +8,7 @@ const MAX_AGE_MS = 6 * 60 * 60 * 1000
 
 async function main() {
   const subscriptionId = process.env.AZURE_SUBSCRIPTION_ID
-  if (!subscriptionId) {
-    throw new Error('AZURE_SUBSCRIPTION_ID is required')
-  }
+  assertIsTruthy(subscriptionId, 'AZURE_SUBSCRIPTION_ID is required')
 
   const dryRun = process.env.DRY_RUN === 'true'
   const now = Date.now()
@@ -24,7 +23,7 @@ async function main() {
   for await (const group of client.resourceGroups.list()) {
     scanned++
     const name = group.name
-    if (!name) {
+    if (!isTruthy(name)) {
       continue
     }
 
@@ -60,7 +59,7 @@ async function main() {
         .then(() => {
           console.info(`Initiated deletion of ${name}`)
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           console.error(`Failed to delete ${name}:`, err)
         })
     )
@@ -71,7 +70,7 @@ async function main() {
   console.info(`Done. Scanned ${scanned} groups, matched ${matched}, stale ${stale}.`)
 }
 
-main().catch((err) => {
+main().catch((err: unknown) => {
   console.error(err)
   process.exit(1)
 })

@@ -18,6 +18,25 @@ const config = [
         tsconfigRootDir: __dirname,
       },
     },
+    rules: {
+      // Numbers and booleans interpolated into template literals are safe to use.
+      '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true, allowBoolean: true }],
+    },
+  },
+
+  {
+    // Test and test-helper files rely heavily on mocks and type assertions,
+    // where strict type-checked rules add noise without catching real bugs.
+    files: ['**/*.test.{ts,tsx}', 'shared/test/**', 'e2e/scripts/mockTests.ts', 'e2e/tests/**'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/consistent-type-assertions': 'off',
+    },
   },
 
   {

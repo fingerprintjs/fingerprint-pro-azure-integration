@@ -1,5 +1,4 @@
 import fetchMock from 'fetch-mock'
-import { StatusInfo } from '../shared/status'
 import { performHealthCheckAfterUpdate } from './healthCheck'
 import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings'
 

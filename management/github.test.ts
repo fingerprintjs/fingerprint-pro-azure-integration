@@ -57,8 +57,8 @@ describe('downloadReleaseAsset', () => {
 })
 
 describe('findFunctionZip', () => {
-  it('should return correct asset', async () => {
-    const result = await findFunctionZip(mockRelease.assets)
+  it('should return correct asset', () => {
+    const result = findFunctionZip(mockRelease.assets)
 
     expect(result).toEqual(mockRelease.assets[0])
   })
