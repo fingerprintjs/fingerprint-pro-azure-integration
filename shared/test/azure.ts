@@ -1,4 +1,5 @@
 import { HttpRequest, InvocationContext } from '@azure/functions'
+import { vi } from 'vitest'
 
 export const mockRequestGet = (url: string, uri: string, query: Record<string, string> = {}) => {
   return new HttpRequest({

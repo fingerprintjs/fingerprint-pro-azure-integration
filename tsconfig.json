@@ -23,6 +23,9 @@
     },
     {
       "path": "./tsconfig.vite.json"
+    },
+    {
+      "path": "./tsconfig.e2e.json"
     }
   ]
 }

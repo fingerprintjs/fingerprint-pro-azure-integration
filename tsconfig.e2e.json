@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "module": "CommonJS",
+    "composite": true
+  },
+  "exclude": ["node_modules"],
+  "include": ["e2e/**/*.ts", "**/package.json"]
+}

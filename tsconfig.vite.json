@@ -5,5 +5,6 @@
     "moduleResolution": "bundler",
     "module": "ESNext"
   },
-  "include": ["vite.config.ts", "package.json", "shared"]
+  "include": ["vite.config.ts", "package.json", "shared"],
+  "exclude": ["shared/test"]
 }
