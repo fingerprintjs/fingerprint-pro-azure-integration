@@ -4,22 +4,22 @@ import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings'
 
 describe('performHealthCheckAfterUpdate', () => {
   const mockCopyPoller = {
-    pollUntilDone: jest.fn().mockResolvedValue(undefined),
+    pollUntilDone: vi.fn().mockResolvedValue(undefined),
   }
 
   const mockBackupBlobClient = {
-    beginCopyFromURL: jest.fn().mockResolvedValue(mockCopyPoller),
+    beginCopyFromURL: vi.fn().mockResolvedValue(mockCopyPoller),
     url: `https://storageaccount.blob.core.windows.net/function-releases/${BACKUP_PACKAGE_BLOB}`,
   }
 
   const mockReleasedBlobClient = {
-    beginCopyFromURL: jest.fn().mockResolvedValue(mockCopyPoller),
+    beginCopyFromURL: vi.fn().mockResolvedValue(mockCopyPoller),
     url: `https://storageaccount.blob.core.windows.net/function-releases/${RELEASED_PACKAGE_BLOB}`,
   }
 
   const mockStorageClient = {
-    deleteBlob: jest.fn(),
-    getBlockBlobClient: jest.fn().mockImplementation((name: string) => {
+    deleteBlob: vi.fn(),
+    getBlockBlobClient: vi.fn().mockImplementation((name: string) => {
       if (name === BACKUP_PACKAGE_BLOB) {
         return mockBackupBlobClient
       }
@@ -33,7 +33,7 @@ describe('performHealthCheckAfterUpdate', () => {
   const statusUrl = 'https://example.org/fpjs/status'
 
   beforeEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
     mockStorageClient.deleteBlob.mockClear()
     mockBackupBlobClient.beginCopyFromURL.mockClear()
     mockReleasedBlobClient.beginCopyFromURL.mockClear()
@@ -52,7 +52,7 @@ describe('performHealthCheckAfterUpdate', () => {
       statusUrl,
       storageClient: mockStorageClient as any,
       checkInterval: 500,
-      restartApp: jest.fn(),
+      restartApp: vi.fn(),
     })
 
     expect(mockStorageClient.deleteBlob).toHaveBeenCalledWith(BACKUP_PACKAGE_BLOB)
@@ -68,7 +68,7 @@ describe('performHealthCheckAfterUpdate', () => {
       statusUrl,
       storageClient: mockStorageClient as any,
       checkInterval: 500,
-      restartApp: jest.fn(),
+      restartApp: vi.fn(),
     })
 
     expect(mockStorageClient.deleteBlob).toHaveBeenCalledWith(BACKUP_PACKAGE_BLOB)
@@ -83,7 +83,7 @@ describe('performHealthCheckAfterUpdate', () => {
         statusUrl,
         storageClient: mockStorageClient as any,
         checkInterval: 100,
-        restartApp: jest.fn(),
+        restartApp: vi.fn(),
       })
     ).rejects.toThrow('Version mismatch, expected: 1.0.0, received: 0.0.1')
 

@@ -8,9 +8,10 @@ import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet, mockRequestPost } from '../../shared/test/azure'
 import { isTruthy } from '../../shared/assert'
 import { Region } from '../utils/region'
+import type { MockInstance } from 'vitest'
 
 describe('Result Endpoint', function () {
-  let requestSpy: jest.MockInstance<ClientRequest, any>
+  let requestSpy: MockInstance
   const mockSuccessfulResponse = ({
     checkRequestUrl,
     responseHeaders = {},
@@ -28,12 +29,12 @@ describe('Result Endpoint', function () {
 
       Object.assign(response, {
         headers: responseHeaders,
-        setEncoding: jest.fn(),
+        setEncoding: vi.fn(),
       })
 
       Object.assign(request, {
-        end: jest.fn(),
-        write: jest.fn(),
+        end: vi.fn(),
+        write: vi.fn(),
       })
 
       callback(response)
@@ -54,8 +55,8 @@ describe('Result Endpoint', function () {
   const getSearchWithRegion = (region: string) => `?region=${region}&${search.replace('?', '')}`
 
   beforeAll(() => {
-    jest.spyOn(ingress, 'handleIngress')
-    requestSpy = jest.spyOn(https, 'request')
+    vi.spyOn(ingress, 'handleIngress')
+    requestSpy = vi.spyOn(https, 'request')
   })
 
   beforeEach(() => {
@@ -63,7 +64,7 @@ describe('Result Endpoint', function () {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   test('Traffic monitoring', async () => {
@@ -178,7 +179,7 @@ describe('Result Endpoint', function () {
       Object.assign(emitter, {
         statusCode: 500,
         headers: resHeaders,
-        setEncoding: jest.fn(),
+        setEncoding: vi.fn(),
       })
 
       callback(emitter)
@@ -201,8 +202,8 @@ describe('Result Endpoint', function () {
       const emitter = new EventEmitter()
 
       Object.assign(emitter, {
-        write: jest.fn(),
-        end: jest.fn(),
+        write: vi.fn(),
+        end: vi.fn(),
       })
 
       setTimeout(() => {
@@ -365,10 +366,10 @@ describe('Result Endpoint', function () {
 })
 
 describe('Browser caching endpoint', () => {
-  let requestSpy: jest.MockInstance<ClientRequest, any>
+  let requestSpy: MockInstance
 
   beforeAll(() => {
-    requestSpy = jest.spyOn(https, 'request')
+    requestSpy = vi.spyOn(https, 'request')
   })
 
   afterAll(() => {

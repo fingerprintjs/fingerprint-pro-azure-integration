@@ -2,23 +2,23 @@ import { createPackageBackup, deletePackageBackup, restorePackageFromBackup } fr
 import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings'
 
 const mockCopyPoller = {
-  pollUntilDone: jest.fn().mockResolvedValue(undefined),
+  pollUntilDone: vi.fn().mockResolvedValue(undefined),
 }
 
 const mockBackupBlobClient = {
-  beginCopyFromURL: jest.fn().mockResolvedValue(mockCopyPoller),
+  beginCopyFromURL: vi.fn().mockResolvedValue(mockCopyPoller),
   url: `https://storageaccount.blob.core.windows.net/function-releases/${BACKUP_PACKAGE_BLOB}`,
-  exists: jest.fn().mockResolvedValue(false),
+  exists: vi.fn().mockResolvedValue(false),
 }
 
 const mockReleasedBlobClient = {
-  beginCopyFromURL: jest.fn().mockResolvedValue(mockCopyPoller),
+  beginCopyFromURL: vi.fn().mockResolvedValue(mockCopyPoller),
   url: `https://storageaccount.blob.core.windows.net/function-releases/${RELEASED_PACKAGE_BLOB}`,
 }
 
 const mockContainerClient = {
-  deleteBlob: jest.fn(),
-  getBlockBlobClient: jest.fn().mockImplementation((name: string) => {
+  deleteBlob: vi.fn(),
+  getBlockBlobClient: vi.fn().mockImplementation((name: string) => {
     if (name === BACKUP_PACKAGE_BLOB) {
       return mockBackupBlobClient
     }
@@ -30,7 +30,7 @@ const mockContainerClient = {
 }
 
 beforeEach(() => {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
   mockCopyPoller.pollUntilDone.mockResolvedValue(undefined)
   mockBackupBlobClient.beginCopyFromURL.mockResolvedValue(mockCopyPoller)
   mockReleasedBlobClient.beginCopyFromURL.mockResolvedValue(mockCopyPoller)
