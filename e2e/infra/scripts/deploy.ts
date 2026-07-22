@@ -66,7 +66,12 @@ async function cleanup() {
 
 // Ctrl+C
 process.on('SIGINT', () => {
-  void cleanup().then(() => process.exit(0))
+  void cleanup()
+    .then(() => process.exit(0))
+    .catch((error: unknown) => {
+      console.error(error)
+      process.exit(1)
+    })
 })
 
 // kill <pid> (default kill signal)
