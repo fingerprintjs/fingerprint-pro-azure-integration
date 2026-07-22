@@ -8,7 +8,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && NODE_OPTIONS=\"--max_old_space_size=4098\" vite build",
-    "build:release": "FPDCN=fpcdn.io INGRESS_API=api.fpjs.io IS_RELEASE_BUILD=true pnpm build",
+    "build:release": "INGRESS_API=api.fpjs.io IS_RELEASE_BUILD=true pnpm build",
     "prepare-package": "./scripts/preparePackage.sh",
     "watch": "vite build --watch",
     "prepare": "husky install",

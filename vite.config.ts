@@ -27,7 +27,6 @@ function getEnv(key: string, defaultValue: string) {
 }
 
 const env = {
-  fpcdn: getEnv('FPCDN', 'fpcdn.io'),
   ingressApi: getEnv('INGRESS_API', 'api.fpjs.io'),
 }
 
@@ -165,7 +164,6 @@ export default defineConfig({
       },
       plugins: [
         replaceTokensPlugin({
-          __FPCDN__: env.fpcdn,
           __INGRESS_API__: env.ingressApi,
           __azure_function_version__: packageJson.version,
         }),
