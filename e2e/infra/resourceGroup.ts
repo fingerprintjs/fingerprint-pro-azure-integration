@@ -16,13 +16,11 @@ export async function createResourceGroup() {
 export async function removeResourceGroupAndWait(name: string) {
   console.info('Removing resource group', name)
 
-  const poll = await resourcesClient.resourceGroups.beginDelete(name)
-
-  await poll.pollUntilDone()
+  await resourcesClient.resourceGroups.delete(name)
 }
 
 export async function removeResourceGroup(name: string) {
   console.info('Beginning resource group removal', name)
 
-  await resourcesClient.resourceGroups.beginDelete(name)
+  await resourcesClient.resourceGroups.delete(name).submitted()
 }

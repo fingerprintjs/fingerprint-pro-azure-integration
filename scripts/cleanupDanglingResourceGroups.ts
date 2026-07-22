@@ -55,7 +55,8 @@ async function main() {
     console.info(`Deleting ${name} (age ${ageHours}h)`)
     deletions.push(
       client.resourceGroups
-        .beginDelete(name)
+        .delete(name)
+        .submitted()
         .then(() => {
           console.info(`Initiated deletion of ${name}`)
         })

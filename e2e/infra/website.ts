@@ -1,7 +1,7 @@
 import path from 'path'
 import * as fs from 'fs'
 import { storageClient } from './clients'
-import { KnownKind, KnownSkuName } from '@azure/arm-storage'
+import { KnownKind, KnownSkuName, StorageAccount } from '@azure/arm-storage'
 import { execSync } from 'child_process'
 import { assertIsTruthy } from '../../shared/assert'
 import { ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob'
@@ -13,11 +13,14 @@ if (!fs.existsSync(websiteDistPath)) {
   throw new Error(`Website dist folder not found at ${websiteDistPath}`)
 }
 
-export async function deployWebsite(resourceGroup: string, name: string) {
+export async function deployWebsite(
+  resourceGroup: string,
+  name: string
+): Promise<{ url: string; account: StorageAccount }> {
   const accountName = `e2e${name}${resourceGroup.replace(/[^0-9]/gi, '')}`
 
   console.info(`Creating storage account for website: ${accountName}`)
-  const poll = await storageClient.storageAccounts.beginCreate(resourceGroup, accountName, {
+  const account = await storageClient.storageAccounts.create(resourceGroup, accountName, {
     kind: KnownKind.StorageV2,
     location: 'westus',
     sku: {
@@ -27,8 +30,6 @@ export async function deployWebsite(resourceGroup: string, name: string) {
     allowSharedKeyAccess: true,
     allowBlobPublicAccess: true,
   })
-
-  const account = await poll.pollUntilDone()
 
   assertIsTruthy(account.primaryEndpoints?.web, 'Storage account web endpoint not found')
   const accountUrl = `https://${account.name}.blob.core.windows.net/$web`

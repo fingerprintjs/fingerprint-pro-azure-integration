@@ -4,6 +4,7 @@ import { getWebApp } from './site'
 import { assertIsTruthy } from '../../shared/assert'
 import { doHealthCheck } from './healthCheck'
 import { TestInfo } from '../shared/testInfo'
+import { Site } from '@azure/arm-appservice'
 
 export type FunctionAppDeploymentParameters = Pick<TestInfo, 'routePrefix' | 'agentDownloadPath' | 'getResultPath'>
 
@@ -23,12 +24,12 @@ export async function deployFunctionApp({
   routePrefix,
   agentDownloadPath,
   name,
-}: DeployFunctionAppOptions) {
+}: DeployFunctionAppOptions): Promise<Site> {
   const appName = `fpjs-dev-e2e-app-${name}-${resourceGroup.replace(/[^0-9]/gi, '')}`
 
   console.info(`Deploying app ${appName} to ${resourceGroup} resource group`)
 
-  await deploymentsClient.deployments.beginCreateOrUpdate(resourceGroup, `${resourceGroup}-${name}-deployment`, {
+  await deploymentsClient.deployments.createOrUpdate(resourceGroup, `${resourceGroup}-${name}-deployment`, {
     properties: {
       template,
       parameters: {
