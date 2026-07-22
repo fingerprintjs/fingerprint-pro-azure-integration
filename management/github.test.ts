@@ -25,7 +25,7 @@ const mockRelease = {
 } satisfies GithubRelease
 
 beforeEach(() => {
-  fetchMock.hardReset()
+  fetchMock.hardReset().mockGlobal()
 
   fetchMock.get(
     `https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases/latest`,
@@ -40,9 +40,9 @@ describe('getLatestGithubRelease', () => {
     expect(response).toEqual(mockRelease)
 
     const call = fetchMock.callHistory.lastCall()
-    const requestHeaders = call?.request?.headers
+    const requestHeaders = call?.options.headers as Record<string, string>
 
-    expect(requestHeaders?.get('Authorization')).toEqual('Bearer 123')
+    expect(requestHeaders['authorization']).toEqual('Bearer 123')
   })
 })
 
