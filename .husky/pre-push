@@ -1,5 +1,4 @@
 #!/bin/bash
-. "$(dirname "$0")/_/husky.sh"
 
 containsref() { if [[ $2 =~ $1 ]]; then echo 1; else echo 0; fi }
 
