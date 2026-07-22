@@ -76,7 +76,12 @@ process.on('SIGINT', () => {
 
 // kill <pid> (default kill signal)
 process.on('SIGTERM', () => {
-  void cleanup().then(() => process.exit(0))
+  void cleanup()
+    .then(() => process.exit(0))
+    .catch((error: unknown) => {
+      console.error(error)
+      process.exit(1)
+    })
 })
 
 main().catch((error: unknown) => {
