@@ -74,7 +74,11 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
         requestType: 'agentV3',
       })
     } else if (isTruthy(resultPathMatches) && resultPathMatches.length > 0) {
-      const suffix = resultPathMatches[1] ?? ''
+      let suffix = ''
+      if (isTruthy(resultPathMatches[1])) {
+        suffix = resultPathMatches[1]
+      }
+
       context.debug(`Handling result path: ${suffix}`, { resultPathMatches })
       return await handleIngress({
         httpRequest: req,
