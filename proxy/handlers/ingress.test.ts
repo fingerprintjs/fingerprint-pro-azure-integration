@@ -1,14 +1,14 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest'
-import proxyFn from '../index'
-import * as ingress from './ingress'
+import proxyFn from '../index.ts'
+import * as ingress from './ingress.ts'
 import https, { Agent } from 'https'
 import { ClientRequest, IncomingMessage } from 'http'
 import { Socket } from 'net'
-import { CustomerVariableName } from '../../shared/customer-variables/types'
+import { CustomerVariableName } from '../../shared/customer-variables/types.ts'
 import { EventEmitter } from 'events'
-import { mockContext, mockRequestGet, mockRequestPost } from '../../shared/test/azure'
-import { isTruthy } from '../../shared/assert'
-import { Region } from '../utils/region'
+import { mockContext, mockRequestGet, mockRequestPost } from '../../shared/test/azure.ts'
+import { isTruthy } from '../../shared/assert.ts'
+import { Region } from '../utils/region.ts'
 describe('Result Endpoint', function () {
   let requestSpy: MockInstance
   const mockSuccessfulResponse = ({

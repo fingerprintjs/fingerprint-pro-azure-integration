@@ -1,7 +1,11 @@
-import { createResourceGroup, removeResourceGroup, removeResourceGroupAndWait } from '../resourceGroup'
-import { addTestInfo, deleteTestInfo, initTestInfo, safeReadTestInfo } from '../../shared/testInfo'
-import { deployE2EInfrastructure, DeployE2EInfrastructureOptions, DeployE2EInfrastructureResult } from '../infra'
-import { destroyTestInfo } from '../destroyTestInfo'
+import { createResourceGroup, removeResourceGroup, removeResourceGroupAndWait } from '../resourceGroup.ts'
+import { addTestInfo, deleteTestInfo, initTestInfo, safeReadTestInfo } from '../../shared/testInfo.ts'
+import {
+  deployE2EInfrastructure,
+  type DeployE2EInfrastructureOptions,
+  type DeployE2EInfrastructureResult,
+} from '../infra.ts'
+import { destroyTestInfo } from '../destroyTestInfo.ts'
 
 function getId() {
   return Math.random().toString(36).substring(2, 15)

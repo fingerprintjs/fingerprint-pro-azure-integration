@@ -1,6 +1,6 @@
 import { DefaultAzureCredential } from '@azure/identity'
 import { ResourceManagementClient } from '@azure/arm-resources'
-import { assertIsTruthy, isTruthy } from '../shared/assert'
+import { assertIsTruthy, isTruthy } from '../shared/assert.ts'
 
 const RESOURCE_GROUP_NAME_REGEX = /^fpjs-dev-e2e-(\d+)$/
 // 6h

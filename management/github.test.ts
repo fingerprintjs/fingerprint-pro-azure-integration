@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import fetchMock from 'fetch-mock'
-import { config } from './config'
+import { config } from './config.ts'
 import {
   downloadReleaseAsset,
   findFunctionZip,
   getLatestFunctionZip,
   getLatestGithubRelease,
   GithubRelease,
-} from './github'
+} from './github.ts'
 
 const mockRelease = {
   url: 'https://api.github.com/repos/owner/repo/releases/123',

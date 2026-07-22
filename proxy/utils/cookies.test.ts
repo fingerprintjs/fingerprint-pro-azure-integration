@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { filterCookie } from './cookies'
+import { filterCookie } from './cookies.ts'
 
 describe('filterCookies', () => {
   const predicate = (key: string) => key === '_iidt'

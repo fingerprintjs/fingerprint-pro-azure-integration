@@ -1,6 +1,6 @@
-import { StatusFormat } from '../../shared/status'
+import { StatusFormat } from '../../shared/status.ts'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
-import { websiteManagementClient } from './clients'
+import { websiteManagementClient } from './clients.ts'
 
 export function getSiteUrl(siteName: string) {
   return `https://${siteName}.azurewebsites.net`

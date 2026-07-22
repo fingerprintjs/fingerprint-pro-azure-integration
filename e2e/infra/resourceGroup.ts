@@ -1,4 +1,4 @@
-import { resourcesClient } from './clients'
+import { resourcesClient } from './clients.ts'
 
 export async function createResourceGroup() {
   const name = `fpjs-dev-e2e-${Date.now()}`

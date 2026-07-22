@@ -1,5 +1,5 @@
-import { TestInfo } from '../shared/testInfo'
-import { getTmpStorageContainerClient } from './tmpStorage'
+import type { TestInfo } from '../shared/testInfo.ts'
+import { getTmpStorageContainerClient } from './tmpStorage.ts'
 
 export async function destroyTestInfo(testInfo: TestInfo) {
   try {

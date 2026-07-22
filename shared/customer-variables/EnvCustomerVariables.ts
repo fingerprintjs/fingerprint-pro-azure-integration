@@ -1,4 +1,4 @@
-import { CustomerVariableProvider, CustomerVariableName } from './types'
+import { CustomerVariableProvider, CustomerVariableName } from './types.ts'
 
 export class EnvCustomerVariables implements CustomerVariableProvider {
   readonly name = 'EnvCustomerVariables'

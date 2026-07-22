@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import dotenv from 'dotenv'
 import packageJson from './package.json' with { type: 'json' }
-import { isTruthy } from './shared/assert'
+import { isTruthy } from './shared/assert.ts'
 import path from 'path'
 import { fileURLToPath } from 'url'
 

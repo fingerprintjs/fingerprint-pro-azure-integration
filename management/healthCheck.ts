@@ -1,8 +1,8 @@
 import { InvocationContext } from '@azure/functions'
-import { StatusInfo } from '../shared/status'
+import { StatusInfo } from '../shared/status.ts'
 import { ContainerClient } from '@azure/storage-blob'
-import { performRollback } from './rollback'
-import { deletePackageBackup } from './storage'
+import { performRollback } from './rollback.ts'
+import { deletePackageBackup } from './storage.ts'
 import { eq } from 'semver'
 import { ConstantBackoff, handleAll, retry } from 'cockatiel'
 

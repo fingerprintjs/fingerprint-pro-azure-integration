@@ -1,11 +1,11 @@
-import { TestInfo } from '../shared/testInfo'
-import { removeResourceGroupAndWait } from './resourceGroup'
-import { deployWebsite } from './website'
-import { deployAppToTempStorage, getUpdatedDeployTemplate } from './tmpStorage'
-import { deployFunctionApp, FunctionAppDeploymentParameters } from './deployFunctionApp'
-import { assertIsTruthy } from '../../shared/assert'
-import { provisionFrontDoor } from './frontdoor'
-import { STATUS_PATH } from '../../shared/status'
+import type { TestInfo } from '../shared/testInfo.ts'
+import { removeResourceGroupAndWait } from './resourceGroup.ts'
+import { deployWebsite } from './website.ts'
+import { deployAppToTempStorage, getUpdatedDeployTemplate } from './tmpStorage.ts'
+import { deployFunctionApp, type FunctionAppDeploymentParameters } from './deployFunctionApp.ts'
+import { assertIsTruthy } from '../../shared/assert.ts'
+import { provisionFrontDoor } from './frontdoor.ts'
+import { STATUS_PATH } from '../../shared/status.ts'
 
 export interface DeployE2EInfrastructureOptions extends FunctionAppDeploymentParameters {
   resourceGroup: string

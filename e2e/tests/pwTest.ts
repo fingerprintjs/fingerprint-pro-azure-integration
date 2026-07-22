@@ -1,6 +1,6 @@
 import { test as baseTest } from '@playwright/test'
-import { readTestInfo, TestInfo } from '../shared/testInfo'
-import { assertIsTruthy } from '../../shared/assert'
+import { readTestInfo, TestInfo } from '../shared/testInfo.ts'
+import { assertIsTruthy } from '../../shared/assert.ts'
 
 // For future, in case if we need to extend the base test
 export const test = baseTest.extend<{ azureTestInfo: TestInfo }>({

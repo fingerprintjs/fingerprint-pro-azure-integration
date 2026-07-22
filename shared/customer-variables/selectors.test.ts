@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest'
-import { CustomerVariables } from './CustomerVariables'
-import { EnvCustomerVariables } from './EnvCustomerVariables'
-import { getAgentDownloadUri, getResultUri, getStatusUri } from './selectors'
-import { CustomerVariableName } from './types'
+import { CustomerVariables } from './CustomerVariables.ts'
+import { EnvCustomerVariables } from './EnvCustomerVariables.ts'
+import { getAgentDownloadUri, getResultUri, getStatusUri } from './selectors.ts'
+import { CustomerVariableName } from './types.ts'
 
 describe('customer variables selectors', () => {
   describe('from env', () => {

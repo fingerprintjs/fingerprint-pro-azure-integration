@@ -1,20 +1,20 @@
 import { HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
-import { handleIngress } from './handlers/ingress'
-import { CustomerVariables } from '../shared/customer-variables/CustomerVariables'
-import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables'
-import { handleStatus } from './handlers/status'
-import { removeTrailingSlashes } from '../shared/routing'
+import { handleIngress } from './handlers/ingress.ts'
+import { CustomerVariables } from '../shared/customer-variables/CustomerVariables.ts'
+import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables.ts'
+import { handleStatus } from './handlers/status.ts'
+import { removeTrailingSlashes } from '../shared/routing.ts'
 import {
   getAgentDownloadUri,
   getPreSharedSecret,
   getResultUri,
   getRoutePrefix,
   getStatusUri,
-} from '../shared/customer-variables/selectors'
-import { stripRoutePrefix } from './utils/paths'
-import { generateErrorResponse } from './utils/errorResponse'
-import { isTruthy } from '../shared/assert'
-import { toError } from './utils/error'
+} from '../shared/customer-variables/selectors.ts'
+import { stripRoutePrefix } from './utils/paths.ts'
+import { generateErrorResponse } from './utils/errorResponse.ts'
+import { isTruthy } from '../shared/assert.ts'
+import { toError } from './utils/error.ts'
 
 async function withErrorHandling(callback: () => Promise<HttpResponse>, context: InvocationContext) {
   try {

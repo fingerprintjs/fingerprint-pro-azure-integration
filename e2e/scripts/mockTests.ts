@@ -1,9 +1,9 @@
 import { execSync } from 'child_process'
-import { readTestInfo } from '../shared/testInfo'
-import pkg from '../../package.json'
+import { readTestInfo } from '../shared/testInfo.ts'
+import pkg from '../../package.json' with { type: 'json' }
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
 import dotenv from 'dotenv'
-import { assertIsTruthy } from '../../shared/assert'
+import { assertIsTruthy } from '../../shared/assert.ts'
 
 dotenv.config()
 

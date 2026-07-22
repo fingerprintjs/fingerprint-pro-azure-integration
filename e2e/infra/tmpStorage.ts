@@ -2,12 +2,15 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as storageBlob from '@azure/storage-blob'
 import { BlobSASPermissions, StorageSharedKeyCredential } from '@azure/storage-blob'
-import { assertIsTruthy } from '../../shared/assert'
-import deploymentTemplate from '../../azuredeploy.json'
-import config from './config'
-import { storageClient } from './clients'
+import { assertIsTruthy } from '../../shared/assert.ts'
+import deploymentTemplate from '../../azuredeploy.json' with { type: 'json' }
+import config from './config.ts'
+import { storageClient } from './clients.ts'
+import { fileURLToPath } from 'url'
 
-const functionZipPath = path.resolve(__dirname, '../../package.zip')
+const dirname = path.dirname(fileURLToPath(import.meta.url))
+const functionZipPath = path.resolve(dirname, '../../package.zip')
+
 if (!fs.existsSync(functionZipPath)) {
   throw new Error(`Built functions zip not found at: ${functionZipPath}`)
 }

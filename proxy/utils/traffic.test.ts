@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addTrafficMonitoringSearchParamsForIngressRequest } from './traffic'
+import { addTrafficMonitoringSearchParamsForIngressRequest } from './traffic.ts'
 
 describe('Traffic monitoring', () => {
   it('ingress request', () => {

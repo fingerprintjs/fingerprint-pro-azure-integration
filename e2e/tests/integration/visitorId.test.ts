@@ -1,7 +1,7 @@
 import { expect, Page } from '@playwright/test'
-import { isRequestIdValid } from '../utils/areVisitorIdAndRequestIdValid'
-import { test } from '../pwTest'
-import { trackRequests } from '../utils/playwright'
+import { isRequestIdValid } from '../utils/areVisitorIdAndRequestIdValid.ts'
+import { test } from '../pwTest.ts'
+import { trackRequests } from '../utils/playwright.ts'
 
 async function checkResponse(page: Page) {
   const response = await page.waitForSelector('#response pre').then((element) => element.textContent())

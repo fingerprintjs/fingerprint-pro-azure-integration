@@ -1,5 +1,7 @@
 import * as fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
+import { dirname } from 'node:path'
 
 export interface TestInfo {
   functionAppUrl: string
@@ -16,6 +18,8 @@ export interface TestMetadata {
   resourceGroup: string
   tests: TestInfo[]
 }
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const filePath = path.join(__dirname, '..', 'test-info.json')
 

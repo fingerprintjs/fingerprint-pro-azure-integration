@@ -1,6 +1,6 @@
 import { Config } from '@playwright/test'
 import path from 'path'
-import { readTestInfo } from './shared/testInfo'
+import { readTestInfo } from './shared/testInfo.ts'
 
 const isCi = process.env.CI === 'true'
 

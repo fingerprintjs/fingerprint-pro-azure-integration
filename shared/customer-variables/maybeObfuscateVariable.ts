@@ -1,5 +1,5 @@
-import { CustomerVariableName, CustomerVariableValue } from './types'
-import { isTruthy } from '../assert'
+import { CustomerVariableName, CustomerVariableValue } from './types.ts'
+import { isTruthy } from '../assert.ts'
 
 export const OBFUSCATED_VALUE = '********'
 

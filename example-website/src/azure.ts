@@ -1,4 +1,4 @@
-import { STATUS_PATH, StatusFormat, StatusInfo } from '../../shared/status'
+import { STATUS_PATH, StatusFormat, StatusInfo } from '../../shared/status.ts'
 
 export async function checkAzureStatus(integrationPath: string) {
   const url = new URL(location.origin)

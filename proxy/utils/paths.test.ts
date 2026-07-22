@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getV3AgentPath, INGRESS_CDN_PATH, stripRoutePrefix } from './paths'
+import { getV3AgentPath, INGRESS_CDN_PATH, stripRoutePrefix } from './paths.ts'
 
 describe('INGRESS_CDN_PATH', () => {
   it('is set to "web"', () => {

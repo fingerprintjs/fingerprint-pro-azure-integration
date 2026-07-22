@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { updateCacheControlHeader } from './cacheControl'
+import { updateCacheControlHeader } from './cacheControl.ts'
 
 describe('updateCacheControlHeader', () => {
   it('adjust max-age to lower value', () => {

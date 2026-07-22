@@ -1,14 +1,18 @@
 import path from 'path'
 import * as fs from 'fs'
-import { storageClient } from './clients'
-import { KnownKind, KnownSkuName, StorageAccount } from '@azure/arm-storage'
+import { storageClient } from './clients.ts'
+import { KnownKind, KnownSkuName } from '@azure/arm-storage'
+import type { StorageAccount } from '@azure/arm-storage'
 import { execSync } from 'child_process'
-import { assertIsTruthy } from '../../shared/assert'
+import { assertIsTruthy } from '../../shared/assert.ts'
 import { ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob'
 import { globSync } from 'glob'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
+import { fileURLToPath } from 'url'
 
-const websiteDistPath = path.resolve(__dirname, '../../example-website/dist')
+const dirname = path.dirname(fileURLToPath(import.meta.url))
+
+const websiteDistPath = path.resolve(dirname, '../../example-website/dist')
 if (!fs.existsSync(websiteDistPath)) {
   throw new Error(`Website dist folder not found at ${websiteDistPath}`)
 }

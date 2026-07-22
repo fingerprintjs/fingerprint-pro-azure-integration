@@ -1,10 +1,10 @@
 import { FunctionEnvelope, WebSiteManagementClient } from '@azure/arm-appservice'
-import { StatusFormat } from '../shared/status'
+import { StatusFormat } from '../shared/status.ts'
 import { InvocationContext } from '@azure/functions'
-import { CustomerVariables } from '../shared/customer-variables/CustomerVariables'
-import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables'
-import { getStatusUri } from '../shared/customer-variables/selectors'
-import { removeTrailingSlashes } from '../shared/routing'
+import { CustomerVariables } from '../shared/customer-variables/CustomerVariables.ts'
+import { EnvCustomerVariables } from '../shared/customer-variables/EnvCustomerVariables.ts'
+import { getStatusUri } from '../shared/customer-variables/selectors.ts'
+import { removeTrailingSlashes } from '../shared/routing.ts'
 
 export async function getSiteStatusUrl(
   client: WebSiteManagementClient,

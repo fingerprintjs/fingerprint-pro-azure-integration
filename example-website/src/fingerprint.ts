@@ -1,6 +1,6 @@
 import * as V3 from '@fingerprintjs/fingerprintjs-pro'
 import * as V4 from '@fingerprint/agent'
-import { isTruthy } from '../../shared/assert'
+import { isTruthy } from '../../shared/assert.ts'
 
 export type FingerprintVersion = 'v3' | 'v4'
 

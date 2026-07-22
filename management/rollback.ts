@@ -1,6 +1,6 @@
 import { ContainerClient } from '@azure/storage-blob'
 import { InvocationContext } from '@azure/functions'
-import { restorePackageFromBackup } from './storage'
+import { restorePackageFromBackup } from './storage.ts'
 
 export interface PerformRollbackParams {
   storageClient: ContainerClient

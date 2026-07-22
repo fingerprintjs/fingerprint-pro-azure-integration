@@ -1,10 +1,10 @@
-import { deploymentsClient } from './clients'
-import config from './config'
-import { getWebApp } from './site'
-import { assertIsTruthy } from '../../shared/assert'
-import { doHealthCheck } from './healthCheck'
-import { TestInfo } from '../shared/testInfo'
-import { Site } from '@azure/arm-appservice'
+import { deploymentsClient } from './clients.ts'
+import config from './config.ts'
+import { getWebApp } from './site.ts'
+import { assertIsTruthy } from '../../shared/assert.ts'
+import { doHealthCheck } from './healthCheck.ts'
+import type { TestInfo } from '../shared/testInfo.ts'
+import type { Site } from '@azure/arm-appservice'
 
 export type FunctionAppDeploymentParameters = Pick<TestInfo, 'routePrefix' | 'agentDownloadPath' | 'getResultPath'>
 

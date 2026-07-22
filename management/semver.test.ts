@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isSemverGreater } from './semver'
+import { isSemverGreater } from './semver.ts'
 
 describe('isSemverGreater', () => {
   it.each([
