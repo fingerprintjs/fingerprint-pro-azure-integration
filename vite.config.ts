@@ -1,12 +1,13 @@
 import { defineConfig, Plugin } from 'vite'
 import { builtinModules } from 'node:module'
 import { join } from 'node:path'
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import dotenv from 'dotenv'
 import packageJson from './package.json' with { type: 'json' }
 import { isTruthy } from './shared/assert'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { getLicenseBanner } from './build-utils/license'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -28,24 +29,6 @@ function getEnv(key: string, defaultValue: string) {
 
 const env = {
   ingressApi: getEnv('INGRESS_API', 'api.fpjs.io'),
-}
-
-/**
- * Prepends the license banner (from assets/license_banner.txt) to the bundle,
- * interpolating the lodash-style tokens the file uses.
- */
-function buildBanner(): string {
-  const raw = readFileSync(join('assets', 'license_banner.txt'), 'utf-8')
-  const interpolated = raw
-    .replace('<%= pkg.version %>', packageJson.version)
-    .replace('<%= new Date().getFullYear() %>', String(new Date().getFullYear()))
-
-  const body = interpolated
-    .trimEnd()
-    .split('\n')
-    .map((line) => ` * ${line}`)
-    .join('\n')
-  return `/**\n${body}\n */`
 }
 
 /**
@@ -133,9 +116,7 @@ export default defineConfig({
         format: 'cjs',
         entryFileNames: `${artifactName}.js`,
         exports: 'named',
-        banner: buildBanner(),
-        // Emit a single self-contained file (Rolldown's successor to
-        // Rollup's deprecated `inlineDynamicImports`).
+        banner: getLicenseBanner('Azure Front Door Proxy Integration'),
         codeSplitting: false,
       },
       plugins: [packageJsonPlugin(), copyLocalSettingsPlugin(), copyHost()],
