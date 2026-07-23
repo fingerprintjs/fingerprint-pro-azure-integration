@@ -3,12 +3,14 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import cfg from '@fingerprintjs/eslint-config-dx-team/type-checked'
 import tseslint from 'typescript-eslint'
+import importPlugin from 'eslint-plugin-import'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 const config = [
   includeIgnoreFile(path.resolve(__dirname, '.gitignore')),
   ...cfg,
+  importPlugin.flatConfigs.typescript,
 
   {
     files: ['**/*.{ts,tsx,mts,cts}'],
@@ -21,6 +23,12 @@ const config = [
     rules: {
       // Numbers and booleans interpolated into template literals are safe to use.
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true, allowBoolean: true }],
+      'import/extensions': [
+        'error',
+        {
+          ts: 'always',
+        },
+      ],
     },
   },
 
