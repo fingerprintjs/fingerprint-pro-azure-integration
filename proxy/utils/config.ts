@@ -1,3 +1,3 @@
 export const config = {
-  ingressApi: '__INGRESS_API__',
+  ingressApi: __ingress_api__,
 }
