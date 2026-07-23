@@ -2,6 +2,7 @@
   "extends": "@fingerprintjs/tsconfig-dx-team/tsconfig.json",
   "compilerOptions": {
     "module": "esnext",
+    "noEmit": true,
     "target": "es2020",
     "outDir": "dist",
     "rootDir": ".",
@@ -9,7 +10,7 @@
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "sourceMap": true,
     "exactOptionalPropertyTypes": false,
