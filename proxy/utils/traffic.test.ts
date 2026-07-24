@@ -7,6 +7,6 @@ describe('Traffic monitoring', () => {
     addTrafficMonitoringSearchParamsForIngressRequest(url)
 
     const param = url.searchParams.get('ii')
-    expect(param).toBe('fingerprint-pro-azure/__azure_function_version__/ingress')
+    expect(param).toBe('fingerprint-pro-azure/0.0.0/ingress')
   })
 })
