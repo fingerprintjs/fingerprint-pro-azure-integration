@@ -1,4 +1,5 @@
 import { FingerprintOptions, getVisitorData } from './fingerprint'
+import { isTruthy } from '../../shared/assert'
 
 type Text = string | { html: string }
 
@@ -11,7 +12,7 @@ export function handleVisitorData(options: FingerprintOptions) {
 
   button.disabled = false
 
-  button.addEventListener('click', () => getAndPrintData(options))
+  button.addEventListener('click', () => void getAndPrintData(options))
 }
 
 async function getAndPrintData(options: FingerprintOptions) {
@@ -99,7 +100,7 @@ function addOutputSection({
   }
   container.appendChild(contentElement)
 
-  if (comment) {
+  if (isTruthy(comment)) {
     const commentElement = document.createElement('div')
     commentElement.appendChild(textToDOM(comment))
     commentElement.classList.add('comment')

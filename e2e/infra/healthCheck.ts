@@ -22,6 +22,8 @@ export function doHealthCheck(siteName: string, integrationPath: string) {
     }
 
     const response = await fetch(url)
+    // `Response.json()` is untyped (returns `any`), so we assert the parsed shape here.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     const json = (await response.json()) as StatusInfo | undefined
 
     if (!json) {

@@ -6,6 +6,7 @@ import { Socket } from 'net'
 import { CustomerVariableName } from '../../shared/customer-variables/types'
 import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet, mockRequestPost } from '../../shared/test/azure'
+import { isTruthy } from '../../shared/assert'
 import { Region } from '../utils/region'
 
 describe('Result Endpoint', function () {
@@ -46,7 +47,8 @@ describe('Result Endpoint', function () {
     })
   }
 
-  const getOrigin = (region?: string) => (region ? `https://${region}.__ingress_api__` : 'https://__ingress_api__')
+  const getOrigin = (region?: string) =>
+    isTruthy(region) ? `https://${region}.__ingress_api__` : 'https://__ingress_api__'
   const defaultOrigin: string = getOrigin()
   const search: string = '?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress'
   const getSearchWithRegion = (region: string) => `?region=${region}&${search.replace('?', '')}`

@@ -47,7 +47,9 @@ export function readTestInfo(): TestMetadata {
     throw new Error('Test info file does not exist')
   }
 
-  return JSON.parse(fs.readFileSync(filePath).toString())
+  // `JSON.parse` is untyped (returns `any`), so we assert the persisted shape here.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  return JSON.parse(fs.readFileSync(filePath).toString()) as TestMetadata
 }
 
 export function safeReadTestInfo(): TestMetadata | null {

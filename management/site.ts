@@ -48,7 +48,7 @@ async function findProxyFunction(
 }
 
 export function isProxyFunction(fn: FunctionEnvelope) {
-  return fn.name?.endsWith('/proxy')
+  return fn.name?.endsWith('/proxy') ?? false
 }
 
 export function parseFunctionUrl(fn: FunctionEnvelope) {

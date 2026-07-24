@@ -1,7 +1,7 @@
 import { chromium, FullConfig } from '@playwright/test'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
 import { readTestInfo } from '../shared/testInfo'
-import invariant from 'tiny-invariant'
+import { assertIsTruthy } from '../../shared/assert'
 
 export default async function setup(config: FullConfig) {
   const testInfo = readTestInfo()
@@ -18,8 +18,8 @@ export default async function setup(config: FullConfig) {
       headless: target.headless,
     })
 
-    invariant(target.testInfo, `Test info for ${target.name} not found`)
-    invariant(target.url, `URL for ${target.name} not found`)
+    assertIsTruthy(target.testInfo, `Test info for ${target.name} not found`)
+    assertIsTruthy(target.url, `URL for ${target.name} not found`)
 
     const queryParams = new URLSearchParams({
       integrationPath: target.testInfo.routePrefix,

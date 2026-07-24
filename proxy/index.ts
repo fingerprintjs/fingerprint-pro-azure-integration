@@ -13,6 +13,7 @@ import {
 } from '../shared/customer-variables/selectors'
 import { stripRoutePrefix } from './utils/paths'
 import { generateErrorResponse } from './utils/errorResponse'
+import { isTruthy } from '../shared/assert'
 import { toError } from './utils/error'
 
 async function withErrorHandling(callback: () => Promise<HttpResponse>, context: InvocationContext) {
@@ -39,7 +40,7 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
 
   const customerVariables = new CustomerVariables([new EnvCustomerVariables()], context)
 
-  const restOfPath = req.params?.restOfPath
+  const restOfPath = req.params.restOfPath
 
   if (!restOfPath) {
     return new HttpResponse({
@@ -72,11 +73,12 @@ export const proxyFn = async (req: HttpRequest, context: InvocationContext): Pro
         suffix: path,
         requestType: 'agentV3',
       })
-    } else if (resultPathMatches?.length) {
+    } else if (isTruthy(resultPathMatches) && resultPathMatches.length > 0) {
       let suffix = ''
-      if (resultPathMatches && resultPathMatches.length >= 1) {
-        suffix = resultPathMatches[1] ?? ''
+      if (isTruthy(resultPathMatches[1])) {
+        suffix = resultPathMatches[1]
       }
+
       context.debug(`Handling result path: ${suffix}`, { resultPathMatches })
       return await handleIngress({
         httpRequest: req,

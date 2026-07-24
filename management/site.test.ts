@@ -12,7 +12,7 @@ beforeEach(() => {
 
 describe('getSiteStatusUrl', () => {
   it('should return correct url for proxy function', async () => {
-    client.webApps.listFunctions.mockImplementation(async function* () {
+    client.webApps.listFunctions.mockImplementation(function* () {
       yield {
         name: 'function',
         config: {
@@ -35,7 +35,7 @@ describe('getSiteStatusUrl', () => {
   })
 
   it('should throw if proxy function cannot be found', async () => {
-    client.webApps.listFunctions.mockImplementation(async function* () {
+    client.webApps.listFunctions.mockImplementation(function* () {
       yield {
         config: {
           scriptFile: './fingerprint-pro-azure-function-management.js',

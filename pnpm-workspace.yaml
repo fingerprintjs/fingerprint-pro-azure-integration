@@ -2,5 +2,6 @@ packages:
   - example-website
   - ./
 
-onlyBuiltDependencies:
-  - azure-functions-core-tools
+allowBuilds:
+  azure-functions-core-tools: true
+  core-js: false

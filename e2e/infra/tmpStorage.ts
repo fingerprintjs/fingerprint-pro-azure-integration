@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as storageBlob from '@azure/storage-blob'
 import { BlobSASPermissions, StorageSharedKeyCredential } from '@azure/storage-blob'
-import invariant from 'tiny-invariant'
+import { assertIsTruthy } from '../../shared/assert'
 import deploymentTemplate from '../../azuredeploy.json'
 import config from './config'
 import { storageClient } from './clients'
@@ -15,19 +15,19 @@ if (!fs.existsSync(functionZipPath)) {
 /**
  * Updates deployment template with function url stored in temp storage
  * */
-export async function getUpdatedDeployTemplate(functionUrl: string) {
-  const deployConfig: any = {
-    ...deploymentTemplate,
-  }
-
-  invariant(deployConfig.variables?.packageZipUri, 'Package zip uri not found')
+export function getUpdatedDeployTemplate(functionUrl: string) {
+  assertIsTruthy(deploymentTemplate.variables.packageZipUri, 'Package zip uri not found')
 
   /**
    * We have to overwrite it, in order to use function built locally in the infrastructure
    * */
-  deployConfig.variables.packageZipUri = functionUrl
-
-  return deployConfig
+  return {
+    ...deploymentTemplate,
+    variables: {
+      ...deploymentTemplate.variables,
+      packageZipUri: functionUrl,
+    },
+  }
 }
 
 export async function getTmpStorageContainerClient() {
@@ -36,7 +36,7 @@ export async function getTmpStorageContainerClient() {
   const { keys } = await storageClient.storageAccounts.listKeys(config.storageResourceGroup, config.storageAccountName)
 
   const key = keys?.[0].value
-  invariant(key, 'Storage key not found')
+  assertIsTruthy(key, 'Storage key not found')
 
   return new storageBlob.ContainerClient(url, new StorageSharedKeyCredential(config.storageAccountName, key))
 }

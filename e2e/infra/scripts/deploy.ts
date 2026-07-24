@@ -65,18 +65,26 @@ async function cleanup() {
 }
 
 // Ctrl+C
-process.on('SIGINT', async () => {
-  await cleanup()
-  process.exit(0)
+process.on('SIGINT', () => {
+  void cleanup()
+    .then(() => process.exit(0))
+    .catch((error: unknown) => {
+      console.error(error)
+      process.exit(1)
+    })
 })
 
 // kill <pid> (default kill signal)
-process.on('SIGTERM', async () => {
-  await cleanup()
-  process.exit(0)
+process.on('SIGTERM', () => {
+  void cleanup()
+    .then(() => process.exit(0))
+    .catch((error: unknown) => {
+      console.error(error)
+      process.exit(1)
+    })
 })
 
-main().catch((error) => {
+main().catch((error: unknown) => {
   console.error(error)
 
   process.exit(1)

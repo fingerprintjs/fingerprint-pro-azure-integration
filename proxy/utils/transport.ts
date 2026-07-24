@@ -29,7 +29,7 @@ function sendHttpRequest(
       const chunks: Buffer[] = []
 
       response.setEncoding('binary')
-      response.on('data', (data) => {
+      response.on('data', (data: Buffer | string) => {
         const chunk = Buffer.isBuffer(data) ? data : Buffer.from(data, 'binary')
 
         chunks.push(chunk)
