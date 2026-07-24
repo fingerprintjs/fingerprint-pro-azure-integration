@@ -1,4 +1,3 @@
 export const config = {
-  fpcdn: '__FPCDN__',
-  ingressApi: '__INGRESS_API__',
+  ingressApi: __ingress_api__,
 }
