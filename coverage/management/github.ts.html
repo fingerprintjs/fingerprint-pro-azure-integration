@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.61% </span>
+                <span class="strong">97.67% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>41/42</span>
+                <span class='fraction'>42/43</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.61% </span>
+                <span class="strong">97.67% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>41/42</span>
+                <span class='fraction'>42/43</span>
             </div>
         
             
@@ -192,9 +192,15 @@
 <a name='L127'></a><a href='#L127'>127</a>
 <a name='L128'></a><a href='#L128'>128</a>
 <a name='L129'></a><a href='#L129'>129</a>
-<a name='L130'></a><a href='#L130'>130</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -210,6 +216,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -217,6 +225,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -325,6 +335,7 @@
 import { isSemverGreater } from './semver'
 import { InvocationContext } from '@azure/functions'
 import { parse } from 'semver'
+import { isTruthy } from '../shared/assert'
 &nbsp;
 export function bearer(token?: string) {
   return `Bearer ${token}`
@@ -332,23 +343,25 @@ export function bearer(token?: string) {
 &nbsp;
 async function getLatestGithubReleaseWithPrelease(token?: string) {
   const response = await fetch(`https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases`, {
-    headers: token
+    headers: isTruthy(token)
       ? <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
           Authorization: bearer(token),
         }
       : undefined,
   })
 &nbsp;
+  // `Response.json()` is untyped (returns `any`), so we assert the parsed shape here.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const releases = (await response.json()) as GithubRelease[]
 &nbsp;
-  return releases?.[0]
+  return releases[0]
 }
 &nbsp;
 export async function getLatestGithubRelease(token?: string) {
   const response = await fetch(
     `https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases/latest`,
     {
-      headers: token
+      headers: isTruthy(token)
         ? {
             Authorization: bearer(token),
           }
@@ -356,6 +369,8 @@ export async function getLatestGithubRelease(token?: string) {
     }
   )
 &nbsp;
+  // `Response.json()` is untyped (returns `any`), so we assert the parsed shape here.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   return (await response.json()) as GithubRelease
 }
 &nbsp;
@@ -366,7 +381,7 @@ export async function downloadReleaseAsset(url: string, token?: string, logger?:
     Accept: 'application/octet-stream',
     'User-Agent': 'fingerprint-pro-azure-integration',
   }
-  if (token) {
+  if (isTruthy(token)) {
     headers['Authorization'] = bearer(token)
   }
 &nbsp;
@@ -377,7 +392,7 @@ export async function downloadReleaseAsset(url: string, token?: string, logger?:
   return Buffer.from(arrayBuffer)
 }
 &nbsp;
-export async function findFunctionZip(assets: GithubReleaseAsset[]) {
+export function findFunctionZip(assets: GithubReleaseAsset[]) {
   return assets.find(
     (asset) =&gt; asset.name === 'package.zip' &amp;&amp; asset.state === 'uploaded' &amp;&amp; asset.content_type === 'application/zip'
   )
@@ -399,12 +414,12 @@ export async function getLatestFunctionZip(
 &nbsp;
   // Parse tag to include only version
   let tagName: string
-  if (release.tag_name?.includes('@')) {
+  if (release.tag_name.includes('@')) {
     // Example tag: @fingerprint/azure-frontdoor-proxy@1.6.0
     const split = release.tag_name.split('@')
     tagName = split[split.length - 1]
   } else <span class="missing-if-branch" title="else path not taken" >E</span>{
-<span class="cstat-no" title="statement not covered" >    tagName = release?.tag_name</span>
+<span class="cstat-no" title="statement not covered" >    tagName = release.tag_name</span>
   }
 &nbsp;
   if (!isSemverGreater(tagName, version)) {
@@ -423,7 +438,7 @@ export async function getLatestFunctionZip(
 &nbsp;
   logger?.debug(`Found new release ${tagName}`, release.assets)
 &nbsp;
-  const asset = await findFunctionZip(release.assets)
+  const asset = findFunctionZip(release.assets)
 &nbsp;
   logger?.debug(`Found asset ${asset?.name} for release ${release.tag_name}`, asset)
 &nbsp;
@@ -457,7 +472,7 @@ export interface GithubReleaseAsset {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-16T09:58:40.960Z
+                at 2026-07-24T08:14:18.218Z
             </div>
         <script src="../prettify.js"></script>
         <script>
