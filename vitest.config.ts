@@ -2,8 +2,8 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   define: {
-    __ingress_api__: JSON.stringify('__ingress_api__'),
-    __azure_function_version__: JSON.stringify('__azure_function_version__'),
+    __ingress_api__: JSON.stringify('api.fpjs.io'),
+    __azure_function_version__: JSON.stringify('0.0.0'),
   },
   test: {
     environment: 'node',

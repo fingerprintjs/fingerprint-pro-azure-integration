@@ -5,7 +5,7 @@ import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet } from '../../shared/test/azure.ts'
 import { generateErrorResponse } from '../utils/errorResponse.ts'
 describe('Agent Endpoint', () => {
-  const origin: string = '__ingress_api__'
+  const origin: string = 'api.fpjs.io'
 
   const agentScript =
     '/** FingerprintJS Pro - Copyright (c) FingerprintJS, Inc, 2022 (https://fingerprint.com) /** function hi() { console.log("hello world!!") }'

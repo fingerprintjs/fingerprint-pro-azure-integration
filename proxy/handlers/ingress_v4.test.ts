@@ -47,10 +47,9 @@ describe('Ingress Endpoint V4', () => {
     })
   }
 
-  const getOrigin = (region?: string) =>
-    isTruthy(region) ? `https://${region}.__ingress_api__` : 'https://__ingress_api__'
+  const getOrigin = (region?: string) => (isTruthy(region) ? `https://${region}.api.fpjs.io` : 'https://api.fpjs.io')
   const defaultOrigin: string = getOrigin()
-  const search: string = '?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress'
+  const search: string = '?ii=fingerprint-pro-azure%2F0.0.0%2Fingress'
   const getSearchWithRegion = (region: string) => `?region=${region}&${search.replace('?', '')}`
 
   beforeAll(() => {
@@ -71,7 +70,7 @@ describe('Ingress Endpoint V4', () => {
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
         expect(url.pathname).toBe('/')
-        expect(url.searchParams.get('ii')).toBe('fingerprint-pro-azure/__azure_function_version__/ingress')
+        expect(url.searchParams.get('ii')).toBe('fingerprint-pro-azure/0.0.0/ingress')
       },
     })
 

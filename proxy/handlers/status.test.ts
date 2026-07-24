@@ -33,46 +33,46 @@ describe('Handle status', () => {
     })
 
     expect(removeNonce(await result.text())).toMatchInlineSnapshot(`
-    "
-        <html lang='en-US'>
-          <head>
-            <title>Fingerprint Pro Azure integration status</title>
-            <meta charset='utf-8'>
-            <style>
-              body, .env-info {
-                display: flex;
-              }
-
-              .env-info {
-                flex-direction: column;
-              }
-
-              body {
-                flex-direction: column;
-                align-items: center;
-              }
-
-              body > * {
-                margin-bottom: 1em;
-              }
-            </style>
-          </head>
-          <body>
-            <h1>Fingerprint Pro Azure integration status</h1>
-            <div>
-              Fingerprint Pro Azure Function App version: __azure_function_version__
-            </div>
-            
-          <div>
-            ✅ All environment variables are set
-          </div>
-        
-              <span>
-                Please reach out our support via <a href='mailto:support@fingerprint.com'>support@fingerprint.com</a> if you have any issues
-              </span>
-          </body>
-        </html>
       "
+          <html lang='en-US'>
+            <head>
+              <title>Fingerprint Pro Azure integration status</title>
+              <meta charset='utf-8'>
+              <style>
+                body, .env-info {
+                  display: flex;
+                }
+
+                .env-info {
+                  flex-direction: column;
+                }
+
+                body {
+                  flex-direction: column;
+                  align-items: center;
+                }
+
+                body > * {
+                  margin-bottom: 1em;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>Fingerprint Pro Azure integration status</h1>
+              <div>
+                Fingerprint Pro Azure Function App version: 0.0.0
+              </div>
+              
+            <div>
+              ✅ All environment variables are set
+            </div>
+          
+                <span>
+                  Please reach out our support via <a href='mailto:support@fingerprint.com'>support@fingerprint.com</a> if you have any issues
+                </span>
+            </body>
+          </html>
+        "
     `)
   })
 
@@ -87,58 +87,58 @@ describe('Handle status', () => {
     })
 
     expect(removeNonce(await result.text())).toMatchInlineSnapshot(`
-    "
-        <html lang='en-US'>
-          <head>
-            <title>Fingerprint Pro Azure integration status</title>
-            <meta charset='utf-8'>
-            <style>
-              body, .env-info {
-                display: flex;
-              }
-
-              .env-info {
-                flex-direction: column;
-              }
-
-              body {
-                flex-direction: column;
-                align-items: center;
-              }
-
-              body > * {
-                margin-bottom: 1em;
-              }
-            </style>
-          </head>
-          <body>
-            <h1>Fingerprint Pro Azure integration status</h1>
-            <div>
-              Fingerprint Pro Azure Function App version: __azure_function_version__
-            </div>
-            
-        <div class='env-info'>
-          
-            <div class='env-info-item'>
-                ⚠️ <strong>fpjs_route_prefix </strong> is not defined and uses default value
-            </div>
-            <div class='env-info-item'>
-                ⚠️ <strong>fpjs_get_result_path </strong> is not defined and uses default value
-            </div>
-            <div class='env-info-item'>
-                ⚠️ <strong>fpjs_pre_shared_secret </strong> is not defined
-            </div>
-            <div class='env-info-item'>
-                ⚠️ <strong>fpjs_agent_download_path </strong> is not defined and uses default value
-            </div>
-        </div>
-      
-              <span>
-                Please reach out our support via <a href='mailto:support@fingerprint.com'>support@fingerprint.com</a> if you have any issues
-              </span>
-          </body>
-        </html>
       "
+          <html lang='en-US'>
+            <head>
+              <title>Fingerprint Pro Azure integration status</title>
+              <meta charset='utf-8'>
+              <style>
+                body, .env-info {
+                  display: flex;
+                }
+
+                .env-info {
+                  flex-direction: column;
+                }
+
+                body {
+                  flex-direction: column;
+                  align-items: center;
+                }
+
+                body > * {
+                  margin-bottom: 1em;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>Fingerprint Pro Azure integration status</h1>
+              <div>
+                Fingerprint Pro Azure Function App version: 0.0.0
+              </div>
+              
+          <div class='env-info'>
+            
+              <div class='env-info-item'>
+                  ⚠️ <strong>fpjs_route_prefix </strong> is not defined and uses default value
+              </div>
+              <div class='env-info-item'>
+                  ⚠️ <strong>fpjs_get_result_path </strong> is not defined and uses default value
+              </div>
+              <div class='env-info-item'>
+                  ⚠️ <strong>fpjs_pre_shared_secret </strong> is not defined
+              </div>
+              <div class='env-info-item'>
+                  ⚠️ <strong>fpjs_agent_download_path </strong> is not defined and uses default value
+              </div>
+          </div>
+        
+                <span>
+                  Please reach out our support via <a href='mailto:support@fingerprint.com'>support@fingerprint.com</a> if you have any issues
+                </span>
+            </body>
+          </html>
+        "
     `)
   })
 })
