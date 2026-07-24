@@ -7,7 +7,7 @@ import packageJson from './package.json' with { type: 'json' }
 import { isTruthy } from './shared/assert.ts'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { getLicenseBanner } from './build-utils/license'
+import { getLicenseBanner } from './build-utils/license.ts'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
