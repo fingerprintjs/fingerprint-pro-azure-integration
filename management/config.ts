@@ -1,5 +1,5 @@
 export const config = {
   repository: 'azure-frontdoor-proxy',
   repositoryOwner: 'fingerprintjs',
-  version: '__azure_function_version__',
+  version: __azure_function_version__,
 }

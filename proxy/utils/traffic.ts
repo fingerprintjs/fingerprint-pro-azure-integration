@@ -1,4 +1,4 @@
-const FUNCTION_VERSION = '__azure_function_version__'
+const FUNCTION_VERSION = __azure_function_version__
 const PARAM_NAME = 'ii'
 
 export function addTrafficMonitoringSearchParamsForIngressRequest(url: URL) {
