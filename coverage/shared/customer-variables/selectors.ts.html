@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for proxy/utils/errorResponse.ts</title>
+    <title>Code coverage report for shared/customer-variables/selectors.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">proxy/utils</a> errorResponse.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">shared/customer-variables</a> selectors.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -93,66 +93,69 @@
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">36x</span>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">70x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">70x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">68x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">216x</span>
+<span class="cline-any cline-yes">68x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">417x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export function generateErrorResponse(err: Error) {
-  return {
-    v: '2',
-    error: {
-      code: 'Failed',
-      message: `An error occured with Fingerprint Pro Azure function. Reason: ${err.message}`,
-    },
-    requestId: generateRequestId(),
-    products: {},
-  }
-}
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">209x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">209x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { CustomerVariables, GetVariableResult } from './CustomerVariables'
+import { CustomerVariableName } from './types'
+import { STATUS_PATH } from '../status'
 &nbsp;
-function generateRequestId(): string {
-  const uniqueId = generateRequestUniqueId()
-  const now = new Date().getTime()
-  return `${now}.${uniqueId}`
-}
+export const getAgentDownloadUri = async (variables: CustomerVariables) =&gt;
+  `${await getRoutePrefix(variables)}/${await getAgentDownloadPath(variables)}`
 &nbsp;
-function generateRequestUniqueId(): string {
-  return generateRandomString(6)
-}
+export const getResultUri = async (variables: CustomerVariables) =&gt;
+  `${await getRoutePrefix(variables)}/${await getResultPath(variables)}`
 &nbsp;
-function generateRandomString(length: number): string {
-  let result = ''
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  for (let i = 0; i &lt; length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length))
-  }
-  return result
-}
+export const getStatusUri = async (variables: CustomerVariables) =&gt; `${await getRoutePrefix(variables)}/${STATUS_PATH}`
+&nbsp;
+export const getPreSharedSecret = async (variables: CustomerVariables) =&gt;
+  variables
+    .getVariable(CustomerVariableName.PreSharedSecret)
+    .then(extractVariable)
+    .then((v) =&gt; v ?? undefined)
+&nbsp;
+const extractVariable = (result: GetVariableResult) =&gt; result.value
+&nbsp;
+export const getRoutePrefix = async (variables: CustomerVariables) =&gt;
+  variables
+    .getVariable(CustomerVariableName.RoutePrefix)
+    .then(extractVariable)
+    .then((v) =&gt; v ?? <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>
+&nbsp;
+const getAgentDownloadPath = async (variables: CustomerVariables) =&gt;
+  variables.getVariable(CustomerVariableName.AgentDownloadPath).then(extractVariable)
+&nbsp;
+const getResultPath = async (variables: CustomerVariables) =&gt;
+  variables.getVariable(CustomerVariableName.GetResultPath).then(extractVariable)
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
