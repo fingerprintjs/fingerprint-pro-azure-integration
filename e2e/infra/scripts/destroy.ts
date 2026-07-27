@@ -1,6 +1,6 @@
-import { removeResourceGroup } from '../resourceGroup'
-import { deleteTestInfo, readTestInfo } from '../../shared/testInfo'
-import { destroyTestInfo } from '../destroyTestInfo'
+import { removeResourceGroup } from '../resourceGroup.ts'
+import { deleteTestInfo, readTestInfo } from '../../shared/testInfo.ts'
+import { destroyTestInfo } from '../destroyTestInfo.ts'
 
 async function main() {
   const testInfo = readTestInfo()

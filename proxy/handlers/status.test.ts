@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { CustomerVariables } from '../../shared/customer-variables/CustomerVariables'
-import { CustomerVariableName } from '../../shared/customer-variables/types'
-import { EnvCustomerVariables } from '../../shared/customer-variables/EnvCustomerVariables'
-import { handleStatus } from './status'
-import { mockRequestGet } from '../../shared/test/azure'
+import { CustomerVariables } from '../../shared/customer-variables/CustomerVariables.ts'
+import { CustomerVariableName } from '../../shared/customer-variables/types.ts'
+import { EnvCustomerVariables } from '../../shared/customer-variables/EnvCustomerVariables.ts'
+import { handleStatus } from './status.ts'
+import { mockRequestGet } from '../../shared/test/azure.ts'
 
 const req = mockRequestGet('https://fp.domain.com', '/fpjs/status')
 

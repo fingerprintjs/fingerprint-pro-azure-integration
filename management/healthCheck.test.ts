@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import fetchMock from 'fetch-mock'
-import { performHealthCheckAfterUpdate } from './healthCheck'
-import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings'
+import { performHealthCheckAfterUpdate } from './healthCheck.ts'
+import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings.ts'
 
 describe('performHealthCheckAfterUpdate', () => {
   const mockCopyPoller = {
@@ -39,7 +39,8 @@ describe('performHealthCheckAfterUpdate', () => {
     mockBackupBlobClient.beginCopyFromURL.mockClear()
     mockReleasedBlobClient.beginCopyFromURL.mockClear()
     mockCopyPoller.pollUntilDone.mockClear()
-    fetchMock.reset()
+    fetchMock.hardReset()
+    fetchMock.mockGlobal()
   })
 
   it('should delete backup if health check passed', async () => {
@@ -61,8 +62,8 @@ describe('performHealthCheckAfterUpdate', () => {
 
   it('should retry status request', async () => {
     fetchMock.getOnce(statusUrl, { version: '0.0.1', envInfo: [] })
-    fetchMock.getOnce(statusUrl, { version: '0.0.1', envInfo: [] }, { overwriteRoutes: false })
-    fetchMock.getOnce(statusUrl, { version: '1.0.0', envInfo: [] }, { overwriteRoutes: false })
+    fetchMock.getOnce(statusUrl, { version: '0.0.1', envInfo: [] })
+    fetchMock.getOnce(statusUrl, { version: '1.0.0', envInfo: [] })
 
     await performHealthCheckAfterUpdate({
       newVersion: '1.0.0',
@@ -76,7 +77,7 @@ describe('performHealthCheckAfterUpdate', () => {
   })
 
   it('should rollback by restoring backup on timeout', async () => {
-    fetchMock.get(statusUrl, { version: '0.0.1', envInfo: [] }, { overwriteRoutes: false })
+    fetchMock.get(statusUrl, { version: '0.0.1', envInfo: [] })
 
     await expect(
       performHealthCheckAfterUpdate({

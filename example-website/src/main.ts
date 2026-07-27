@@ -1,6 +1,6 @@
-import { FingerprintOptions, getOptions } from './fingerprint'
-import { handleVisitorData } from './result'
-import { checkAzureStatus } from './azure'
+import { FingerprintOptions, getOptions } from './fingerprint.ts'
+import { handleVisitorData } from './result.ts'
+import { checkAzureStatus } from './azure.ts'
 
 function main() {
   const options = getOptions()

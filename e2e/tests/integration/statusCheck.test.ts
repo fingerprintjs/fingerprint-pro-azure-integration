@@ -1,6 +1,6 @@
-import { test } from '../pwTest'
+import { test } from '../pwTest.ts'
 import { expect } from '@playwright/test'
-import { STATUS_PATH } from '../../../shared/status'
+import { STATUS_PATH } from '../../../shared/status.ts'
 
 test.describe('Status check', () => {
   test('should return correct status info', async ({ page, azureTestInfo }) => {

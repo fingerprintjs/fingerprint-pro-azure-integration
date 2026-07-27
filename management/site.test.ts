@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getSiteStatusUrl } from './site'
+import { getSiteStatusUrl } from './site.ts'
 
 const client = {
   webApps: {

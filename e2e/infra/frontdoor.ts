@@ -1,4 +1,4 @@
-import { cdnClient } from './clients'
+import { cdnClient } from './clients.ts'
 import {
   KnownAFDEndpointProtocols,
   KnownAfdQueryStringCachingBehavior,
@@ -8,9 +8,9 @@ import {
   KnownSkuName,
 } from '@azure/arm-cdn'
 import { KnownSessionAffinityEnabledState } from '@azure/arm-frontdoor'
-import { assertIsTruthy } from '../../shared/assert'
+import { assertIsTruthy } from '../../shared/assert.ts'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
-import { wait } from '../../shared/wait'
+import { wait } from '../../shared/wait.ts'
 
 export interface ProvisionFrontDoorParams {
   resourceGroup: string

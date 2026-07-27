@@ -4,7 +4,8 @@
     "types": ["node"],
     "moduleResolution": "bundler",
     "module": "ESNext",
-    "noEmit": true
+    "noEmit": true,
+    "skipLibCheck": true
   },
   "include": ["**/*.ts", "**/*.tsx", "package.json", "azuredeploy.json"],
   "exclude": ["**/node_modules"]

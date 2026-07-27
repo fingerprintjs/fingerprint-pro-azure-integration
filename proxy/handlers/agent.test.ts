@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi, type Mock, type MockInstance } from 'vitest'
 import https from 'https'
-import proxyFn from '../index'
+import proxyFn from '../index.ts'
 import { EventEmitter } from 'events'
-import { mockContext, mockRequestGet } from '../../shared/test/azure'
-import { generateErrorResponse } from '../utils/errorResponse'
+import { mockContext, mockRequestGet } from '../../shared/test/azure.ts'
+import { generateErrorResponse } from '../utils/errorResponse.ts'
 describe('Agent Endpoint', () => {
   const origin: string = 'api.fpjs.io'
 

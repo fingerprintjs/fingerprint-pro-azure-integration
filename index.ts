@@ -1,6 +1,6 @@
 import { app } from '@azure/functions'
-import managementFn from './management'
-import proxyFn from './proxy'
+import managementFn from './management/index.ts'
+import proxyFn from './proxy/index.ts'
 
 app.timer('management', {
   schedule: '*/30 * * * *',

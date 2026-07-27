@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { assertIsTruthy } from '../../shared/assert'
+import { assertIsTruthy } from '../../shared/assert.ts'
 
 dotenv.config()
 

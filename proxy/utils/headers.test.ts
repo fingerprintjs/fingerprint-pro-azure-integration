@@ -4,9 +4,9 @@ import {
   prepareHeadersForIngressAPI,
   updateResponseHeaders,
   updateResponseHeadersForAgentDownload,
-} from './headers'
+} from './headers.ts'
 import { IncomingHttpHeaders } from 'http'
-import { mockRequestGet } from '../../shared/test/azure'
+import { mockRequestGet } from '../../shared/test/azure.ts'
 
 const mockReq = mockRequestGet('https://example.org', '/fpjs/client', {
   apiKey: 'ujKG34hUYKLJKJ1F',

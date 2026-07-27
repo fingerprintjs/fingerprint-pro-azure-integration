@@ -1,6 +1,6 @@
-import { config } from '../management/config'
-import { bearer, downloadReleaseAsset, findFunctionZip, GithubRelease } from '../management/github'
-import { assertIsTruthy, isTruthy } from '../shared/assert'
+import { config } from '../management/config.ts'
+import { bearer, downloadReleaseAsset, findFunctionZip, GithubRelease } from '../management/github.ts'
+import { assertIsTruthy, isTruthy } from '../shared/assert.ts'
 import fs from 'fs'
 import path from 'path'
 

@@ -1,9 +1,9 @@
 import * as http from 'http'
 import { HttpHeadersInit, HttpRequest, InvocationContext } from '@azure/functions'
-import { updateCacheControlHeader } from './cacheControl'
-import { filterCookie } from './cookies'
-import { stripPort } from './ip'
-import { isTruthy } from '../../shared/assert'
+import { updateCacheControlHeader } from './cacheControl.ts'
+import { filterCookie } from './cookies.ts'
+import { stripPort } from './ip.ts'
+import { isTruthy } from '../../shared/assert.ts'
 
 const CACHE_CONTROL_HEADER_NAME = 'cache-control'
 

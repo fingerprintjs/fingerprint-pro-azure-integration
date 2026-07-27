@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { removeTrailingSlashes } from '../../shared/routing'
+import { removeTrailingSlashes } from '../../shared/routing.ts'
 
 describe('removeTrailingSlashes', () => {
   it('returns /path for /path', () => {

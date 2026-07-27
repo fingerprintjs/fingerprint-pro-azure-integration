@@ -1,5 +1,5 @@
-import { FingerprintOptions, getVisitorData } from './fingerprint'
-import { isTruthy } from '../../shared/assert'
+import { FingerprintOptions, getVisitorData } from './fingerprint.ts'
+import { isTruthy } from '../../shared/assert.ts'
 
 type Text = string | { html: string }
 

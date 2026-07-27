@@ -1,4 +1,4 @@
-import { CustomerVariableValue } from './customer-variables/types'
+import type { CustomerVariableValue } from './customer-variables/types.ts'
 
 export enum StatusFormat {
   HTML = 'html',

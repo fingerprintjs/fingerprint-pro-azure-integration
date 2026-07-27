@@ -1,6 +1,6 @@
 import { DefaultAzureCredential } from '@azure/identity'
 import { ResourceManagementClient } from '@azure/arm-resources'
-import config from './config'
+import config from './config.ts'
 import { StorageManagementClient } from '@azure/arm-storage'
 import { WebSiteManagementClient } from '@azure/arm-appservice'
 import { DeploymentsClient } from '@azure/arm-resourcesdeployments'

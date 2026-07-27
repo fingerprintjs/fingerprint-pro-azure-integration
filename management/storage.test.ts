@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { createPackageBackup, deletePackageBackup, restorePackageFromBackup } from './storage'
-import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings'
+import { createPackageBackup, deletePackageBackup, restorePackageFromBackup } from './storage.ts'
+import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings.ts'
 
 const mockCopyPoller = {
   pollUntilDone: vi.fn().mockResolvedValue(undefined),

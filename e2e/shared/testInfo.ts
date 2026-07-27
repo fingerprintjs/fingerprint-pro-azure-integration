@@ -17,7 +17,7 @@ export interface TestMetadata {
   tests: TestInfo[]
 }
 
-const filePath = path.join(__dirname, '..', 'test-info.json')
+const filePath = path.resolve('..', 'test-info.json')
 
 export function initTestInfo(resourceGroup: string) {
   if (fs.existsSync(filePath)) {

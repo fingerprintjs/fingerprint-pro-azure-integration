@@ -1,8 +1,8 @@
-import { config } from './config'
-import { isSemverGreater } from './semver'
+import { config } from './config.ts'
+import { isSemverGreater } from './semver.ts'
 import { InvocationContext } from '@azure/functions'
 import { parse } from 'semver'
-import { isTruthy } from '../shared/assert'
+import { isTruthy } from '../shared/assert.ts'
 
 export function bearer(token?: string) {
   return `Bearer ${token}`

@@ -1,6 +1,6 @@
-import { getSiteUrl, getStatusUrl } from './site'
+import { getSiteUrl, getStatusUrl } from './site.ts'
 import { ExponentialBackoff, handleAll, retry, timeout, TimeoutStrategy, wrap } from 'cockatiel'
-import { StatusInfo } from '../../shared/status'
+import type { StatusInfo } from '../../shared/status.ts'
 
 export function doHealthCheck(siteName: string, integrationPath: string) {
   const url = getStatusUrl(getSiteUrl(siteName), integrationPath)

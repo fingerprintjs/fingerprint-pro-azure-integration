@@ -1,4 +1,4 @@
-import { isTruthy } from '../../shared/assert'
+import { isTruthy } from '../../shared/assert.ts'
 
 // Path used for CDN request in ingress
 export const INGRESS_CDN_PATH = 'web'

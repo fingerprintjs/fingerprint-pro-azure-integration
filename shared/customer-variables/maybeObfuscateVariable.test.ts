@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { CustomerVariableName } from './types'
-import { maybeObfuscateVariable, OBFUSCATED_VALUE } from './maybeObfuscateVariable'
+import { CustomerVariableName } from './types.ts'
+import { maybeObfuscateVariable, OBFUSCATED_VALUE } from './maybeObfuscateVariable.ts'
 
 describe('maybe obfuscate variable', () => {
   it('should obfuscate pre shared secret', () => {

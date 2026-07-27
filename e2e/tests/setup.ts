@@ -1,7 +1,7 @@
 import { chromium, FullConfig } from '@playwright/test'
 import { ExponentialBackoff, handleAll, retry } from 'cockatiel'
-import { readTestInfo } from '../shared/testInfo'
-import { assertIsTruthy } from '../../shared/assert'
+import { readTestInfo } from '../shared/testInfo.ts'
+import { assertIsTruthy } from '../../shared/assert.ts'
 
 export default async function setup(config: FullConfig) {
   const testInfo = readTestInfo()

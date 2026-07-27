@@ -1,8 +1,8 @@
-import { CustomerVariableProvider, CustomerVariableName, CustomerVariableValue } from './types'
-import { getDefaultCustomerVariable } from './defaults'
+import { CustomerVariableProvider, CustomerVariableName, CustomerVariableValue } from './types.ts'
+import { getDefaultCustomerVariable } from './defaults.ts'
 import { InvocationContext } from '@azure/functions'
-import { maybeObfuscateVariable } from './maybeObfuscateVariable'
-import { isTruthy } from '../assert'
+import { maybeObfuscateVariable } from './maybeObfuscateVariable.ts'
+import { isTruthy } from '../assert.ts'
 
 export interface GetVariableResult {
   value: CustomerVariableValue

@@ -1,13 +1,13 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import fetchMock from 'fetch-mock'
-import { config } from './config'
+import { config } from './config.ts'
 import {
   downloadReleaseAsset,
   findFunctionZip,
   getLatestFunctionZip,
   getLatestGithubRelease,
   GithubRelease,
-} from './github'
+} from './github.ts'
 
 const mockRelease = {
   url: 'https://api.github.com/repos/owner/repo/releases/123',
@@ -25,7 +25,7 @@ const mockRelease = {
 } satisfies GithubRelease
 
 beforeEach(() => {
-  fetchMock.reset()
+  fetchMock.hardReset().mockGlobal()
 
   fetchMock.get(
     `https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases/latest`,
@@ -39,10 +39,10 @@ describe('getLatestGithubRelease', () => {
 
     expect(response).toEqual(mockRelease)
 
-    const call = fetchMock.lastCall()
-    const requestHeaders = call?.[1]?.headers as Record<string, string> | undefined
+    const call = fetchMock.callHistory.lastCall()
+    const requestHeaders = call?.options.headers as Record<string, string>
 
-    expect(requestHeaders?.Authorization).toEqual('Bearer 123')
+    expect(requestHeaders['authorization']).toEqual('Bearer 123')
   })
 })
 
@@ -67,7 +67,12 @@ describe('findFunctionZip', () => {
 
 describe('getLatestFunctionZip', () => {
   beforeEach(() => {
+    fetchMock.mockGlobal()
     fetchMock.get(mockRelease.assets[0].url, 'Test')
+  })
+
+  afterEach(() => {
+    fetchMock.unmockGlobal()
   })
 
   it('should return latest zip if release version is greater than function version', async () => {
@@ -80,7 +85,7 @@ describe('getLatestFunctionZip', () => {
   })
 
   it('should return latest zip if release version is greater than function version for pre-release', async () => {
-    fetchMock.reset()
+    fetchMock.hardReset().mockGlobal()
     fetchMock.get(`https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases`, [
       {
         ...mockRelease,
@@ -98,7 +103,7 @@ describe('getLatestFunctionZip', () => {
   })
 
   it.each(['2.0.0', '2.0.0-rc.1'])('should return null if major versions does not match', async (tagName) => {
-    fetchMock.reset()
+    fetchMock.hardReset().mockGlobal()
     fetchMock.get(`https://api.github.com/repos/${config.repositoryOwner}/${config.repository}/releases/latest`, {
       ...mockRelease,
       tag_name: `@fingerprint/azure-frontdoor-proxy@${tagName}`,
@@ -107,7 +112,7 @@ describe('getLatestFunctionZip', () => {
     const result = await getLatestFunctionZip(undefined, undefined, '1.5.0')
 
     expect(result).toBeNull()
-    expect(fetchMock.calls()).toHaveLength(1)
+    expect(fetchMock.callHistory.calls()).toHaveLength(1)
   })
 
   it('should return undefined if version is the same', async () => {

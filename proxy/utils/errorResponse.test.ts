@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { generateErrorResponse } from './errorResponse'
+import { generateErrorResponse } from './errorResponse.ts'
 
 describe('generateErrorResponse', () => {
   it('request id "id" part should be exactly 6 characters long', () => {

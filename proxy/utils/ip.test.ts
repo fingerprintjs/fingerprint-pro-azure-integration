@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { stripPort } from './ip'
+import { stripPort } from './ip.ts'
 
 describe('Strip port', () => {
   it('strip port from ipv4 address', () => {

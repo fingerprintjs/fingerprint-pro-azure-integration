@@ -1,5 +1,5 @@
 import { InvocationContext } from '@azure/functions'
-import { assertIsTruthy } from '../shared/assert'
+import { assertIsTruthy } from '../shared/assert.ts'
 
 export function getEnv(name: string) {
   const value = process.env[name]

@@ -1,9 +1,9 @@
 import { HttpRequest, HttpResponse } from '@azure/functions'
-import { CustomerVariables } from '../../shared/customer-variables/CustomerVariables'
-import { maybeObfuscateVariable } from '../../shared/customer-variables/maybeObfuscateVariable'
-import { CustomerVariableName } from '../../shared/customer-variables/types'
-import { EnvVarInfo, StatusFormat, StatusInfo } from '../../shared/status'
-import { isTruthy } from '../../shared/assert'
+import { CustomerVariables } from '../../shared/customer-variables/CustomerVariables.ts'
+import { maybeObfuscateVariable } from '../../shared/customer-variables/maybeObfuscateVariable.ts'
+import { CustomerVariableName } from '../../shared/customer-variables/types.ts'
+import { EnvVarInfo, StatusFormat, StatusInfo } from '../../shared/status.ts'
+import { isTruthy } from '../../shared/assert.ts'
 
 export interface HandleStatusParams {
   httpRequest: HttpRequest

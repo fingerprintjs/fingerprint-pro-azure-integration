@@ -1,6 +1,6 @@
 import { ContainerClient } from '@azure/storage-blob'
 import { InvocationContext } from '@azure/functions'
-import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings'
+import { BACKUP_PACKAGE_BLOB, RELEASED_PACKAGE_BLOB } from './settings.ts'
 
 export async function createPackageBackup(containerClient: ContainerClient, logger?: InvocationContext) {
   const sourceClient = containerClient.getBlockBlobClient(RELEASED_PACKAGE_BLOB)

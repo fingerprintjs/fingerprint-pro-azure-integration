@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { IntegrationError } from './IntegrationError'
+import { IntegrationError } from './IntegrationError.ts'
 
 describe('check integration error result', () => {
   it('check if error return valid body', () => {

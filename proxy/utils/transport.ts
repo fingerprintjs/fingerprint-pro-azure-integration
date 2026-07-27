@@ -1,9 +1,9 @@
 import https, { RequestOptions } from 'https'
 import { IncomingMessage, OutgoingHttpHeaders } from 'http'
 import { HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
-import { generateErrorResponse } from './errorResponse'
-import { toError } from './error'
-import { updateResponseHeaders } from './headers'
+import { generateErrorResponse } from './errorResponse.ts'
+import { toError } from './error.ts'
+import { updateResponseHeaders } from './headers.ts'
 
 type SendHttpRequestResult = {
   response: IncomingMessage

@@ -1,4 +1,4 @@
-import { CustomerVariableValue, CustomerVariableName } from './types'
+import { CustomerVariableValue, CustomerVariableName } from './types.ts'
 
 const defaultCustomerVariables = {
   [CustomerVariableName.RoutePrefix]: 'fpjs',

@@ -1,5 +1,5 @@
 import { HttpResponse } from '@azure/functions'
-import { IntegrationError } from '../errors/IntegrationError'
+import { IntegrationError } from '../errors/IntegrationError.ts'
 
 export class HttpResponse404 extends HttpResponse {
   constructor(path: string) {
