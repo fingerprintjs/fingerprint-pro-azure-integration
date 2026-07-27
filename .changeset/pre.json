@@ -5,5 +5,7 @@
     "@fingerprint/azure-frontdoor-proxy": "2.1.0",
     "example-website": "0.0.1"
   },
-  "changesets": []
+  "changesets": [
+    "pink-colts-glow"
+  ]
 }

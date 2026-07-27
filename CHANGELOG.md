@@ -1,3 +1,9 @@
+## 2.2.0-test.0
+
+### Minor Changes
+
+- Support remaining HTTP methods in proxy function ([35f8642](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/35f864239927e0515db0dcefe4893c0b5b55bee6))
+
 ## 2.1.0
 
 ### Minor Changes
@@ -53,19 +59,16 @@
 
 - Migrate to a **Flex Consumption** plan and **runtime 4.x**.
 
-  > [!IMPORTANT]
-  > Microsoft is retiring the Consumption plan. [Learn more about the consumption plan change](https://learn.microsoft.com/en-us/azure/azure-functions/migration/migrate-plan-consumption-to-flex?tabs=azure-cli%2Ccopilot-cli%2Csystem-assigned%2Ccontinuous%2Cbicep%2Ctraces-table&pivots=platform-linux#migration-methods).
+  > [!IMPORTANT] Microsoft is retiring the Consumption plan. [Learn more about the consumption plan change](https://learn.microsoft.com/en-us/azure/azure-functions/migration/migrate-plan-consumption-to-flex?tabs=azure-cli%2Ccopilot-cli%2Csystem-assigned%2Ccontinuous%2Cbicep%2Ctraces-table&pivots=platform-linux#migration-methods).
 
-  > [!TIP]
-  > To use the new plan, you need to re-deploy the function app using the v2 version. [See the migration guide for details.](https://docs.fingerprint.com/docs/azure-proxy-integration-migration-from-v1-to-v2) ([ecfc104](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/ecfc1049ac64d6d197b07bc7ddad049275a53693))
+  > [!TIP] To use the new plan, you need to re-deploy the function app using the v2 version. [See the migration guide for details.](https://docs.fingerprint.com/docs/azure-proxy-integration-migration-from-v1-to-v2) ([ecfc104](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/ecfc1049ac64d6d197b07bc7ddad049275a53693))
 
 ### Minor Changes
 
 - Update Node.js runtime to 24. ([e685126](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/e685126490199424ec05d3d8993fba2f00293bab))
 - Add support for JS Agent V4.
 
-  > [!NOTE]
-  > This change adds support for Fingerprint [JavaScript agent v4](https://docs.fingerprint.com/reference/js-agent-v4). Compatibility with JavaScript agent v3 is maintained, you can upgrade to the latest JavaScript agent at your convenience.
+  > [!NOTE] This change adds support for Fingerprint [JavaScript agent v4](https://docs.fingerprint.com/reference/js-agent-v4). Compatibility with JavaScript agent v3 is maintained, you can upgrade to the latest JavaScript agent at your convenience.
   >
   > When upgrading to the JavaScript agent v4, remove the `scriptUrlPattern` and `endpoint` options. Replace them with a single `endpoints` option pointing to your Front Door integration domain:
   >
