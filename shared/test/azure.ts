@@ -1,4 +1,5 @@
 import { HttpRequest, InvocationContext } from '@azure/functions'
+import { vi } from 'vitest'
 
 export const mockRequestGet = (url: string, uri: string, query: Record<string, string> = {}) => {
   return new HttpRequest({
@@ -59,11 +60,11 @@ export const mockContext = (): InvocationContext => {
     functionName: '',
     invocationId: '',
     options: undefined as any,
-    debug: jest.fn(),
-    error: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    trace: jest.fn(),
-    log: jest.fn(),
+    debug: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    trace: vi.fn(),
+    log: vi.fn(),
   }
 }

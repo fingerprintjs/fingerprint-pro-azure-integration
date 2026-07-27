@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "types": ["node", "jest"],
-    "composite": true
+    "types": ["node"],
+    "composite": true,
   },
   "extends": "./tsconfig.json",
-  "exclude": ["dist", "node_modules", "e2e"],
-  "include": ["**/*.test.ts", "**/test/*.ts", "proxy", "management", "shared"]
+  "exclude": ["**/dist", "**/node_modules", "e2e"],
+  "include": ["**/*.test.ts", "**/test/*.ts", "proxy", "management", "shared/test", "vite-env.d.ts"]
 }

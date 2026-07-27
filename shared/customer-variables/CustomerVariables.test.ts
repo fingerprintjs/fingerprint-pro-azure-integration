@@ -1,10 +1,11 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { CustomerVariableProvider, CustomerVariableName } from './types'
 import { CustomerVariables } from './CustomerVariables'
 
 describe('customer variables', () => {
   const mockProvider = {
     name: 'Mock',
-    getVariable: jest.fn(),
+    getVariable: vi.fn(),
   } satisfies CustomerVariableProvider
 
   beforeEach(() => {

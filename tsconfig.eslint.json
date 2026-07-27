@@ -1,8 +1,11 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": ["./tsconfig.json"],
   "compilerOptions": {
-    "noEmit": true,
-    "types": ["node", "jest"]
+    "types": ["node"],
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "noEmit": true
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "**/*.tsx", "package.json", "azuredeploy.json"],
+  "exclude": ["**/node_modules"]
 }

@@ -12,15 +12,20 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "sourceMap": true,
-    "exactOptionalPropertyTypes": false
+    "exactOptionalPropertyTypes": false,
   },
-  "include": ["proxy", "management"],
   "references": [
     {
       "path": "./tsconfig.app.json"
     },
     {
       "path": "./tsconfig.test.json"
+    },
+    {
+      "path": "./tsconfig.vite.json"
+    },
+    {
+      "path": "./tsconfig.e2e.json"
     }
   ]
 }

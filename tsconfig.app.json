@@ -5,6 +5,6 @@
     "module": "ES2020",
     "composite": true
   },
-  "exclude": ["dist", "node_modules", "**/*.test.ts", "shared/test", "e2e"],
-  "include": ["**/*.ts"]
+  "include": ["index.ts", "proxy", "management", "shared", "vite-env.d.ts"],
+  "exclude": ["shared/test", "**/*.test.ts"]
 }

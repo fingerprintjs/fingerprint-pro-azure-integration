@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { IntegrationError } from './IntegrationError'
 
 describe('check integration error result', () => {

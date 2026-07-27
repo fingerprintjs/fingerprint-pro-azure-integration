@@ -1,13 +1,14 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getSiteStatusUrl } from './site'
 
 const client = {
   webApps: {
-    listFunctions: jest.fn(),
+    listFunctions: vi.fn(),
   },
 }
 
 beforeEach(() => {
-  jest.restoreAllMocks()
+  vi.restoreAllMocks()
 })
 
 describe('getSiteStatusUrl', () => {

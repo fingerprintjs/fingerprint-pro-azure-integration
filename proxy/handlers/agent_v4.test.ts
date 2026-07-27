@@ -1,34 +1,34 @@
+import { afterEach, beforeEach, describe, expect, test, vi, type Mock, type MockInstance } from 'vitest'
 import https from 'https'
 import proxyFn from '../index'
 import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet } from '../../shared/test/azure'
 import { generateErrorResponse } from '../utils/errorResponse'
-
 describe('Agent Endpoint V4', () => {
-  const origin: string = '__ingress_api__'
+  const origin: string = 'api.fpjs.io'
 
   const agentScript =
     '/** FingerprintJS Pro - Copyright (c) FingerprintJS, Inc, 2022 (https://fingerprint.com) /** function hi() { console.log("hello world!!") }'
 
-  let requestSpy: jest.SpyInstance
+  let requestSpy: MockInstance
 
-  const setEncoding = jest.fn()
+  const setEncoding = vi.fn()
 
   let mockHttpResponse: EventEmitter & {
-    setEncoding: jest.Mock
+    setEncoding: Mock
     headers: any
     statusCode: number
   }
   let mockHttpRequest: EventEmitter
 
   beforeEach(() => {
-    requestSpy = jest.spyOn(https, 'request')
+    requestSpy = vi.spyOn(https, 'request')
 
     mockHttpResponse = new EventEmitter() as any
     mockHttpRequest = new EventEmitter()
 
     Object.assign(mockHttpRequest, {
-      end: jest.fn(),
+      end: vi.fn(),
     })
     Object.assign(mockHttpResponse, {
       setEncoding,
@@ -49,7 +49,7 @@ describe('Agent Endpoint V4', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   test('Call with all params', async () => {

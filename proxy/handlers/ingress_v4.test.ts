@@ -1,3 +1,4 @@
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest'
 import proxyFn from '../index'
 import * as ingress from './ingress'
 import https, { Agent } from 'https'
@@ -8,9 +9,8 @@ import { EventEmitter } from 'events'
 import { mockContext, mockRequestGet, mockRequestPost } from '../../shared/test/azure'
 import { isTruthy } from '../../shared/assert'
 import { Region } from '../utils/region'
-
 describe('Ingress Endpoint V4', () => {
-  let requestSpy: jest.MockInstance<ClientRequest, any>
+  let requestSpy: MockInstance
   const mockSuccessfulResponse = ({
     checkRequestUrl,
     responseHeaders = {},
@@ -28,12 +28,12 @@ describe('Ingress Endpoint V4', () => {
 
       Object.assign(response, {
         headers: responseHeaders,
-        setEncoding: jest.fn(),
+        setEncoding: vi.fn(),
       })
 
       Object.assign(request, {
-        end: jest.fn(),
-        write: jest.fn(),
+        end: vi.fn(),
+        write: vi.fn(),
       })
 
       callback(response)
@@ -47,15 +47,14 @@ describe('Ingress Endpoint V4', () => {
     })
   }
 
-  const getOrigin = (region?: string) =>
-    isTruthy(region) ? `https://${region}.__ingress_api__` : 'https://__ingress_api__'
+  const getOrigin = (region?: string) => (isTruthy(region) ? `https://${region}.api.fpjs.io` : 'https://api.fpjs.io')
   const defaultOrigin: string = getOrigin()
-  const search: string = '?ii=fingerprint-pro-azure%2F__azure_function_version__%2Fingress'
+  const search: string = '?ii=fingerprint-pro-azure%2F0.0.0%2Fingress'
   const getSearchWithRegion = (region: string) => `?region=${region}&${search.replace('?', '')}`
 
   beforeAll(() => {
-    jest.spyOn(ingress, 'handleIngress')
-    requestSpy = jest.spyOn(https, 'request')
+    vi.spyOn(ingress, 'handleIngress')
+    requestSpy = vi.spyOn(https, 'request')
   })
 
   beforeEach(() => {
@@ -63,7 +62,7 @@ describe('Ingress Endpoint V4', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   test('Traffic monitoring', async () => {
@@ -71,7 +70,7 @@ describe('Ingress Endpoint V4', () => {
     mockSuccessfulResponse({
       checkRequestUrl: (url) => {
         expect(url.pathname).toBe('/')
-        expect(url.searchParams.get('ii')).toBe('fingerprint-pro-azure/__azure_function_version__/ingress')
+        expect(url.searchParams.get('ii')).toBe('fingerprint-pro-azure/0.0.0/ingress')
       },
     })
 
@@ -175,7 +174,7 @@ describe('Ingress Endpoint V4', () => {
       Object.assign(emitter, {
         statusCode: 500,
         headers: resHeaders,
-        setEncoding: jest.fn(),
+        setEncoding: vi.fn(),
       })
 
       callback(emitter)
@@ -198,8 +197,8 @@ describe('Ingress Endpoint V4', () => {
       const emitter = new EventEmitter()
 
       Object.assign(emitter, {
-        write: jest.fn(),
-        end: jest.fn(),
+        write: vi.fn(),
+        end: vi.fn(),
       })
 
       setTimeout(() => {
@@ -362,10 +361,10 @@ describe('Ingress Endpoint V4', () => {
 })
 
 describe('Browser caching endpoint', () => {
-  let requestSpy: jest.MockInstance<ClientRequest, any>
+  let requestSpy: MockInstance
 
   beforeAll(() => {
-    requestSpy = jest.spyOn(https, 'request')
+    requestSpy = vi.spyOn(https, 'request')
   })
 
   afterAll(() => {
