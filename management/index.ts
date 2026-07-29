@@ -38,7 +38,7 @@ const managementFn: TimerHandler = async (timer, context) => {
   const latestFunction = await getLatestFunctionZip({
     logger: context,
     token: process.env.GITHUB_TOKEN,
-    version: await getIntegrationVersion(),
+    version: getIntegrationVersion(),
     allowPrerelease: env.allowPrerelease,
   })
 

@@ -1,3 +1,5 @@
-export async function getIntegrationVersion() {
-  return import('../package.json').then(({ version }) => version)
+import { version } from '../package.json'
+
+export function getIntegrationVersion() {
+  return version
 }

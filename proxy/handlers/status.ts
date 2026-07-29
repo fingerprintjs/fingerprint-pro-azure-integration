@@ -103,7 +103,7 @@ function renderHtml({ version, envInfo }: StatusInfo) {
 
 export async function getStatusInfo(customerVariables: CustomerVariables): Promise<StatusInfo> {
   return {
-    version: await getIntegrationVersion(),
+    version: getIntegrationVersion(),
     envInfo: await getEnvInfo(customerVariables),
   }
 }
