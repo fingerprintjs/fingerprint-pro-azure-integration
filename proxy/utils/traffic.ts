@@ -1,10 +1,11 @@
-const FUNCTION_VERSION = __azure_function_version__
+import { getIntegrationVersion } from '../../shared/version.ts'
+
 const PARAM_NAME = 'ii'
 
-export function addTrafficMonitoringSearchParamsForIngressRequest(url: URL) {
-  url.searchParams.append(PARAM_NAME, getTrafficMonitoringValue())
+export async function addTrafficMonitoringSearchParamsForIngressRequest(url: URL) {
+  url.searchParams.append(PARAM_NAME, await getTrafficMonitoringValue())
 }
 
-function getTrafficMonitoringValue(): string {
-  return `fingerprint-pro-azure/${FUNCTION_VERSION}/ingress`
+async function getTrafficMonitoringValue() {
+  return `fingerprint-pro-azure/${await getIntegrationVersion()}/ingress`
 }

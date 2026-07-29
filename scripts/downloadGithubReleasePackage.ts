@@ -1,8 +1,10 @@
 import { config } from '../management/config.ts'
-import { bearer, downloadReleaseAsset, findFunctionZip, GithubRelease } from '../management/github.ts'
+import { bearer, downloadReleaseAsset, findFunctionZip, type GithubRelease } from '../management/github.ts'
 import { assertIsTruthy, isTruthy } from '../shared/assert.ts'
 import fs from 'fs'
 import path from 'path'
+
+const dirname = path.dirname(new URL(import.meta.url).pathname)
 
 async function main() {
   const tag = process.env.TAG
@@ -39,7 +41,7 @@ async function main() {
 
   const asset = await downloadReleaseAsset(functionZip.url, token)
 
-  fs.writeFileSync(path.resolve(__dirname, '../package.zip'), asset)
+  fs.writeFileSync(path.resolve(dirname, '../package.zip'), asset)
 }
 
 main().catch((err: unknown) => {

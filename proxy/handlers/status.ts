@@ -4,6 +4,7 @@ import { maybeObfuscateVariable } from '../../shared/customer-variables/maybeObf
 import { CustomerVariableName } from '../../shared/customer-variables/types.ts'
 import { EnvVarInfo, StatusFormat, StatusInfo } from '../../shared/status.ts'
 import { isTruthy } from '../../shared/assert.ts'
+import { getIntegrationVersion } from '../../shared/version.ts'
 
 export interface HandleStatusParams {
   httpRequest: HttpRequest
@@ -102,7 +103,7 @@ function renderHtml({ version, envInfo }: StatusInfo) {
 
 export async function getStatusInfo(customerVariables: CustomerVariables): Promise<StatusInfo> {
   return {
-    version: __azure_function_version__,
+    version: await getIntegrationVersion(),
     envInfo: await getEnvInfo(customerVariables),
   }
 }

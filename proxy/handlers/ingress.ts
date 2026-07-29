@@ -62,7 +62,7 @@ export async function handleIngress({
     logger.debug('Removing cookie header for browser cache request')
     delete headers['cookie']
   } else {
-    addTrafficMonitoringSearchParamsForIngressRequest(url)
+    await addTrafficMonitoringSearchParamsForIngressRequest(url)
   }
 
   logger.debug('Performing request', url.toString())

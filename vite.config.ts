@@ -100,7 +100,6 @@ function isExternal(id: string) {
 export default defineConfig({
   define: {
     __ingress_api__: JSON.stringify(env.ingressApi),
-    __azure_function_version__: JSON.stringify(packageJson.version),
   },
   build: {
     target: 'node24',

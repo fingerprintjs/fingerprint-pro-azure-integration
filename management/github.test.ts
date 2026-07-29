@@ -76,7 +76,7 @@ describe('getLatestFunctionZip', () => {
   })
 
   it('should return latest zip if release version is greater than function version', async () => {
-    const result = await getLatestFunctionZip(undefined, undefined, '1.0.0')
+    const result = await getLatestFunctionZip({ logger: undefined, token: undefined, version: '1.0.0' })
 
     expect(result?.name).toEqual(mockRelease.assets[0].name)
     expect(result?.version).toEqual('v1.1.0')
@@ -94,7 +94,12 @@ describe('getLatestFunctionZip', () => {
     ])
     fetchMock.get(mockRelease.assets[0].url, 'Test')
 
-    const result = await getLatestFunctionZip(undefined, undefined, '1.0.0', true)
+    const result = await getLatestFunctionZip({
+      logger: undefined,
+      token: undefined,
+      version: '1.0.0',
+      allowPrerelease: true,
+    })
 
     expect(result?.name).toEqual(mockRelease.assets[0].name)
     expect(result?.version).toEqual('v1.1.0-rc.1')
@@ -109,14 +114,14 @@ describe('getLatestFunctionZip', () => {
       tag_name: `@fingerprint/azure-frontdoor-proxy@${tagName}`,
     })
 
-    const result = await getLatestFunctionZip(undefined, undefined, '1.5.0')
+    const result = await getLatestFunctionZip({ logger: undefined, token: undefined, version: '1.5.0' })
 
     expect(result).toBeNull()
     expect(fetchMock.callHistory.calls()).toHaveLength(1)
   })
 
   it('should return undefined if version is the same', async () => {
-    const result = await getLatestFunctionZip(undefined, undefined, '1.1.0')
+    const result = await getLatestFunctionZip({ logger: undefined, token: undefined, version: '1.1.0' })
 
     expect(result).toBeNull()
   })

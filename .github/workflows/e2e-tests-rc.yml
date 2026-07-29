@@ -44,7 +44,7 @@ jobs:
           TAG: ${{ github.event.release.tag_name }}
 
       - name: Download release artifact from GitHub
-        run: pnpm exec ts-node scripts/downloadGithubReleasePackage.ts
+        run: node scripts/downloadGithubReleasePackage.ts
         env:
           TAG: ${{ github.event.release.tag_name }}
 
