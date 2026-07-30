@@ -7,11 +7,11 @@ import { getSiteStatusUrl } from './site.ts'
 import { performHealthCheckAfterUpdate } from './healthCheck.ts'
 import { createPackageBackup } from './storage.ts'
 import { RELEASED_PACKAGE_BLOB, USER_ASSIGNED_ENTITY_CLIENT_ID } from './settings.ts'
-import { config } from './config.ts'
 import { isTruthy } from '../shared/assert.ts'
 import crypto from 'crypto'
 import { TimerHandler } from '@azure/functions/types/timer'
 import { performRollback } from './rollback.ts'
+import { getIntegrationVersion } from '../shared/version.ts'
 
 const managementFn: TimerHandler = async (timer, context) => {
   if (timer.isPastDue) {
@@ -35,12 +35,12 @@ const managementFn: TimerHandler = async (timer, context) => {
 
   const { resourceGroupName, appName, subscriptionId } = env
 
-  const latestFunction = await getLatestFunctionZip(
-    context,
-    process.env.GITHUB_TOKEN,
-    config.version,
-    env.allowPrerelease
-  )
+  const latestFunction = await getLatestFunctionZip({
+    logger: context,
+    token: process.env.GITHUB_TOKEN,
+    version: getIntegrationVersion(),
+    allowPrerelease: env.allowPrerelease,
+  })
 
   if (!latestFunction) {
     context.info('No new release found')

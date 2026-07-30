@@ -3,9 +3,9 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   define: {
     __ingress_api__: JSON.stringify('api.fpjs.io'),
-    __azure_function_version__: JSON.stringify('0.0.0'),
   },
   test: {
+    setupFiles: ['shared/test/globalSetup.ts'],
     environment: 'node',
     include: ['proxy/**/*.test.ts', 'management/**/*.test.ts', 'shared/**/*.test.ts'],
     passWithNoTests: true,

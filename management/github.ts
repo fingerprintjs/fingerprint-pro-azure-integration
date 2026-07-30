@@ -1,6 +1,6 @@
 import { config } from './config.ts'
 import { isSemverGreater } from './semver.ts'
-import { InvocationContext } from '@azure/functions'
+import { type InvocationContext } from '@azure/functions'
 import { parse } from 'semver'
 import { isTruthy } from '../shared/assert.ts'
 
@@ -65,12 +65,19 @@ export function findFunctionZip(assets: GithubReleaseAsset[]) {
   )
 }
 
-export async function getLatestFunctionZip(
-  logger?: InvocationContext,
-  token?: string,
-  version = config.version,
-  allowPrerelease = false
-) {
+interface GetLatestFunctionZipParams {
+  logger?: InvocationContext
+  token?: string
+  version: string
+  allowPrerelease?: boolean
+}
+
+export async function getLatestFunctionZip({
+  logger,
+  token,
+  version,
+  allowPrerelease = false,
+}: GetLatestFunctionZipParams) {
   if (allowPrerelease) {
     logger?.info('Pre-releases are allowed')
   }

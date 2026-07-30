@@ -2,9 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "types": ["node"],
-    "module": "ES2020",
+    "module": "nodenext",
     "composite": true
   },
-  "include": ["index.ts", "proxy", "management", "shared", "vite-env.d.ts"],
+  "include": ["index.ts", "proxy", "management", "shared", "vite-env.d.ts", "package.json"],
   "exclude": ["shared/test", "**/*.test.ts"]
 }
