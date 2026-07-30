@@ -1,6 +1,6 @@
 {
   "name": "@fingerprint/azure-frontdoor-proxy",
-  "version": "2.2.0-test.0",
+  "version": "2.2.0-test.1",
   "description": "Fingerprint Azure Front Door Proxy integration",
   "license": "MIT",
   "sideEffects": false,
