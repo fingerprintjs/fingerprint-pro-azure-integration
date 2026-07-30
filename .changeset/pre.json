@@ -6,6 +6,7 @@
     "example-website": "0.0.1"
   },
   "changesets": [
+    "humble-bars-kiss",
     "pink-colts-glow"
   ]
 }

@@ -1,3 +1,9 @@
+## 2.2.0-test.1
+
+### Patch Changes
+
+- Replace static version placeholders with dynamic version retrieval from package.json ([8e0df81](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/8e0df81e43b0dabc8f026ebc766899d42c6fd7df))
+
 ## 2.2.0-test.0
 
 ### Minor Changes
