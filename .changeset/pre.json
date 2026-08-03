@@ -1,9 +1,0 @@
-{
-  "mode": "exit",
-  "tag": "test",
-  "initialVersions": {
-    "@fingerprint/azure-frontdoor-proxy": "2.1.0",
-    "example-website": "0.0.1"
-  },
-  "changesets": ["pink-colts-glow"]
-}

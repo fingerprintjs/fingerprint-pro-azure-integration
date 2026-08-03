@@ -1,3 +1,9 @@
+## 2.2.0
+
+### Minor Changes
+
+- Support remaining HTTP methods in proxy function ([35f8642](https://github.com/fingerprintjs/azure-frontdoor-proxy/commit/35f864239927e0515db0dcefe4893c0b5b55bee6))
+
 ## 2.2.0-test.1
 
 ### Patch Changes
