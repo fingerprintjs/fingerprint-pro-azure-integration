@@ -1,11 +1,10 @@
 import * as http from 'http'
-import { HttpHeadersInit, HttpRequest, InvocationContext } from '@azure/functions'
-import { updateCacheControlHeader } from './cacheControl.ts'
+import { HttpRequest, InvocationContext } from '@azure/functions'
 import { filterCookie } from './cookies.ts'
 import { stripPort } from './ip.ts'
 import { isTruthy } from '../../shared/assert.ts'
 
-const CACHE_CONTROL_HEADER_NAME = 'cache-control'
+const AGE_HEADER_NAME = 'age'
 
 const FPJS_COOKIE_NAME = '_iidt'
 
@@ -14,6 +13,8 @@ const BLACKLISTED_HEADERS_PREFIXES = ['x-edge-', 'x-arr-', 'x-site', 'x-azure-']
 
 const BLACKLISTED_REQUEST_HEADERS = new Set(['host', 'strict-transport-security'])
 const BLACKLISTED_RESPONSE_HEADERS = new Set(['strict-transport-security', 'transfer-encoding'])
+// The upstream CDN's purge tag isn't exposed for agent downloads
+const CACHE_TAG_HEADER_NAME = 'cache-tag'
 
 export function filterRequestHeaders(headers: Headers) {
   return Array.from(headers.entries()).reduce((result: { [key: string]: string }, [name, value]) => {
@@ -43,29 +44,25 @@ export const updateResponseHeadersForAgentDownload = (headers: http.IncomingHttp
 
 export function updateResponseHeaders(
   headers: http.IncomingHttpHeaders,
-  overrideCacheControl = false
-): HttpHeadersInit {
-  const result: HttpHeadersInit = {}
+  isAgentDownload = false
+): Record<string, string> {
+  const result: Record<string, string> = {}
 
   for (const [key, value] of Object.entries(headers)) {
     if (!isHeaderAllowedForResponse(key) || !isTruthy(value)) {
       continue
     }
 
-    switch (key) {
-      case CACHE_CONTROL_HEADER_NAME: {
-        if (overrideCacheControl) {
-          result[CACHE_CONTROL_HEADER_NAME] = updateCacheControlHeader(value.toString())
-        } else {
-          result[key] = value.toString()
-        }
-
-        break
-      }
-
-      default:
-        result[key] = value.toString()
+    if (isAgentDownload && key === CACHE_TAG_HEADER_NAME) {
+      continue
     }
+
+    result[key] = value.toString()
+  }
+
+  // Front Door replays stored responses as they are, so the agent is always served as fresh
+  if (isAgentDownload) {
+    result[AGE_HEADER_NAME] = '0'
   }
 
   return result

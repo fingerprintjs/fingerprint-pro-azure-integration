@@ -81,7 +81,7 @@ describe('updateResponseHeaders', () => {
     expect(resultHeaders.has('strict-transport-security')).toBe(false)
   })
 
-  it('updates cache policy', () => {
+  it('passes origin cache policy as it is', () => {
     const headers: IncomingHttpHeaders = {
       'access-control-allow-credentials': 'true',
       'access-control-allow-origin': 'true',
@@ -122,6 +122,8 @@ describe('updateResponseHeadersForAgentDownload', () => {
       'custom-header-1': 'gdfddfd',
       'x-edge-xxx': 'ery8u',
       'strict-transport-security': 'max-age=1000',
+      age: '8552',
+      'cache-tag': 'procdn',
     }
 
     const resultHeaders = new Headers(updateResponseHeadersForAgentDownload(headers))
@@ -129,11 +131,13 @@ describe('updateResponseHeadersForAgentDownload', () => {
     expect(resultHeaders.has('custom-header-1')).toBe(true)
     expect(resultHeaders.has('content-length')).toBe(true)
     expect(resultHeaders.has('x-edge-xxx')).toBe(false)
-    expect(resultHeaders.get('cache-control')).toBe('public, max-age=3600, s-maxage=60')
+    expect(resultHeaders.get('cache-control')).toBe('public, max-age=40000, s-maxage=40000')
     expect(resultHeaders.has('strict-transport-security')).toBe(false)
+    expect(resultHeaders.get('age')).toBe('0')
+    expect(resultHeaders.has('cache-tag')).toBe(false)
   })
 
-  it('updates cache policy', () => {
+  it('passes origin cache policy as it is', () => {
     const headers: IncomingHttpHeaders = {
       'access-control-allow-credentials': 'true',
       'access-control-allow-origin': 'true',
@@ -153,7 +157,7 @@ describe('updateResponseHeadersForAgentDownload', () => {
 
     expect(resultHeaders.has('custom-header-1')).toBe(true)
     expect(resultHeaders.has('content-length')).toBe(true)
-    expect(resultHeaders.get('cache-control')).toBe('no-cache, max-age=3600, s-maxage=60')
+    expect(resultHeaders.get('cache-control')).toBe('no-cache')
   })
 })
 

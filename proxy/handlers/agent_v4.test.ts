@@ -63,7 +63,7 @@ describe('Agent Endpoint V4', () => {
     expect(url.toString()).toEqual(`https://${origin}/web/v4/ujKG34hUYKLJKJ1F`)
   })
 
-  test('Browser cache set to an hour when original value is higher', async () => {
+  test('Origin browser cache higher than an hour is passed as it is', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     Object.assign(mockHttpResponse.headers, {
@@ -76,13 +76,14 @@ describe('Agent Endpoint V4', () => {
 
     expect(res.headers).toEqual(
       new Headers({
-        'cache-control': 'public, max-age=3600, s-maxage=60',
+        age: '0',
+        'cache-control': 'public, max-age=3613',
         'content-type': 'text/javascript; charset=utf-8',
       })
     )
   })
 
-  test('Browser cache is the same when original value is lower than an hour', async () => {
+  test('Origin browser cache lower than an hour is passed as it is', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     Object.assign(mockHttpResponse.headers, {
@@ -95,13 +96,14 @@ describe('Agent Endpoint V4', () => {
 
     expect(res.headers).toEqual(
       new Headers({
-        'cache-control': 'public, max-age=100, s-maxage=60',
+        age: '0',
+        'cache-control': 'public, max-age=100',
         'content-type': 'text/javascript; charset=utf-8',
       })
     )
   })
 
-  test('Proxy cache set to a minute when original value is higher', async () => {
+  test('Origin shared cache is passed as it is', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     Object.assign(mockHttpResponse.headers, {
@@ -114,13 +116,14 @@ describe('Agent Endpoint V4', () => {
 
     expect(res.headers).toEqual(
       new Headers({
-        'cache-control': 'public, max-age=3600, s-maxage=60',
+        age: '0',
+        'cache-control': 'public, max-age=3613, s-maxage=575500',
         'content-type': 'text/javascript; charset=utf-8',
       })
     )
   })
 
-  test('Proxy cache is the same when original value is lower than a minute', async () => {
+  test('Origin shared cache lower than a minute is passed as it is', async () => {
     const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
 
     Object.assign(mockHttpResponse.headers, {
@@ -133,8 +136,42 @@ describe('Agent Endpoint V4', () => {
 
     expect(res.headers).toEqual(
       new Headers({
-        'cache-control': 'public, max-age=3600, s-maxage=10',
+        age: '0',
+        'cache-control': 'public, max-age=3613, s-maxage=10',
         'content-type': 'text/javascript; charset=utf-8',
+      })
+    )
+  })
+
+  test('Conditional response without content type gets agent cache headers', async () => {
+    const req = mockRequestGet('https://fp.domain.com', 'fpjs/web/v4/ujKG34hUYKLJKJ1F')
+
+    // A 304 has no body
+    requestSpy.mockImplementation((_url: any, _options: any, callback): any => {
+      callback(mockHttpResponse)
+      mockHttpResponse.emit('end')
+
+      return mockHttpRequest
+    })
+
+    Object.assign(mockHttpResponse, {
+      statusCode: 304,
+      headers: {
+        'cache-control': 'public, max-age=3613, s-maxage=575500',
+        age: '120',
+        'cache-tag': 'procdn',
+      },
+    })
+
+    const ctx = mockContext()
+
+    const res = await proxyFn(req, ctx)
+
+    expect(res.status).toBe(304)
+    expect(res.headers).toEqual(
+      new Headers({
+        age: '0',
+        'cache-control': 'public, max-age=3613, s-maxage=575500',
       })
     )
   })
@@ -154,6 +191,7 @@ describe('Agent Endpoint V4', () => {
 
     expect(res.headers).toEqual(
       new Headers({
+        age: '0',
         'content-type': 'text/javascript; charset=utf-8',
         'some-header': 'some-value',
       })

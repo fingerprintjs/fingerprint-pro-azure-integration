@@ -4,6 +4,9 @@ import { HttpRequest, HttpResponse, InvocationContext } from '@azure/functions'
 import { generateErrorResponse } from './errorResponse.ts'
 import { toError } from './error.ts'
 import { updateResponseHeaders } from './headers.ts'
+import { INGRESS_CDN_PATH } from './paths.ts'
+
+const NULL_BODY_STATUSES = new Set([204, 205, 304])
 
 type SendHttpRequestResult = {
   response: IncomingMessage
@@ -105,20 +108,24 @@ export async function sendIngressRequest(
       data: requestBody,
       headers: requestHeaders,
     })
-    const isJavascript = response.headers['content-type']?.includes('text/javascript')
+    // Decided by the request path, since a 304 may come without Content-Type
+    const isAgentDownload = requestUrl.pathname.startsWith(`/${INGRESS_CDN_PATH}/`)
 
     const dataString = data.toString('utf-8')
 
     context.debug('Response from Ingress API', {
       statusCode: response.statusCode,
       payload: dataString,
-      isJavascript,
+      isAgentDownload,
     })
 
+    const status = response.statusCode ?? 500
+
     return new HttpResponse({
-      status: response.statusCode ?? 500,
-      body: data,
-      headers: updateResponseHeaders(response.headers, isJavascript),
+      status,
+      // Responses like 304 must not have a body, the Response constructor rejects them otherwise
+      body: NULL_BODY_STATUSES.has(status) ? undefined : data,
+      headers: updateResponseHeaders(response.headers, isAgentDownload),
     })
   } catch (error) {
     return new HttpResponse({
